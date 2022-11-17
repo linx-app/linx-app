@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1003695627478",
+    "project_id": "linx-2022",
+    "storage_bucket": "linx-2022.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1003695627478:android:b91ac4fc6919a9f0fb3d77",
+        "android_client_info": {
+          "package_name": "com.linx.linx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1003695627478-4b0c297fdscobdu14bifr4er8qc1phe6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5KGCyeT-uFTsikLnf--SJtp5HdRHlfwc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1003695627478-4b0c297fdscobdu14bifr4er8qc1phe6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1003695627478-95ucj98vu3b8vledvsfmq1t7buq8ukj5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.linx"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
