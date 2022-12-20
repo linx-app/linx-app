@@ -1,53 +1,40 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/text.dart';
+import 'package:linx/features/authentication/ui/landing_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(
+      child: LinxApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+final firebaseInitializerProvider = FutureProvider<FirebaseApp>((ref) async {
+  return await Firebase.initializeApp();
+});
+
+class LinxApp extends ConsumerWidget {
+  const LinxApp({super.key});
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final firebaseInitialization = ref.watch(firebaseInitializerProvider);
     return MaterialApp(
       title: 'LINX application',
       theme: ThemeData(
         fontFamily: "Inter",
         colorScheme: LinxColors.colorScheme,
-        textTheme: linxTextTheme(),
+        textTheme: LinxTextStyles.theme,
       ),
-      home: const InitialScreen(title: 'LINX Application'),
-    );
-  }
-}
-
-class InitialScreen extends StatelessWidget {
-  const InitialScreen({super.key, required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(MediaQuery.of(context).padding.top),
-        child: SizedBox(
-          height: MediaQuery.of(context).padding.top,
-        ),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              "This is the LINX application",
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ],
-        ),
+      home: firebaseInitialization.when(
+        data: (data) => const LandingScreen(),
+        error: (e, st) => const LandingScreen(),
+        loading: () => const LandingScreen(),
       ),
     );
   }

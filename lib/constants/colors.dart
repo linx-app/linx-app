@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class LinxColors {
+abstract class LinxColors {
   static const ColorScheme colorScheme = ColorScheme(
       brightness: Brightness.light,
       primary: LinxColors.background,
@@ -23,8 +23,11 @@ class LinxColors {
   static const Color stroke = Color(0xFFDFDFDF);
 
   static const Color black = Colors.black;
-  static const Color black_5 = Color(0x0D0000000);
-  static const Color black_60 = Color(0x990000000);
+  static const Color black_5 = Color(0x0D000000);
+  static const Color black_60 = Color(0x99000000);
 
   static const Color grey = Color(0xFF666666);
+  static const Color backButtonGrey = Color(0xFF262626);
+  static const Color subtitleGrey = Color(0xFF333333);
+  static const Color buttonGrey = Color(0xFFEAEAEA);
 }
