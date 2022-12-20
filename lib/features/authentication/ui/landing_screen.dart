@@ -63,7 +63,7 @@ class LandingScreen extends ConsumerWidget {
   void onSignUpPressed(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const SignUpScreen()),
+      MaterialPageRoute(builder: (context) => SignUpScreen()),
     );
   }
 }
