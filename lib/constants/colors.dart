@@ -30,4 +30,7 @@ abstract class LinxColors {
   static const Color backButtonGrey = Color(0xFF262626);
   static const Color subtitleGrey = Color(0xFF333333);
   static const Color buttonGrey = Color(0xFFEAEAEA);
+  static const Color progressGrey = Color(0xFF1C1C1C);
+
+  static const Color transparent = Colors.transparent;
 }
