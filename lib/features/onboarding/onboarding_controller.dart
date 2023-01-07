@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/authentication/domain/models/user_type.dart';
 import 'package:linx/features/authentication/ui/signup_screen.dart';
+import 'package:linx/features/authentication/ui/widgets/user_type_toggle_button.dart';
 
 class OnboardingController {
   final ProviderRef ref;
