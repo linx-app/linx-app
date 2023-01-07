@@ -4,7 +4,7 @@ import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/text.dart';
-import 'package:linx/features/authentication/ui/signup_screen.dart';
+import 'package:linx/features/onboarding/onboarding_screen.dart';
 
 class LandingScreen extends ConsumerWidget {
   const LandingScreen({super.key});
@@ -39,12 +39,16 @@ class LandingScreen extends ConsumerWidget {
               const Spacer(flex: 3),
               RoundedButton(
                 style: greenButtonStyle(),
-                onPressed: () { onLogInPressed(context); },
+                onPressed: () {
+                  onLogInPressed(context);
+                },
                 text: "Log In",
               ),
               RoundedButton(
                 style: greyButtonStyle(),
-                onPressed: () { onSignUpPressed(context); } ,
+                onPressed: () {
+                  onSignUpPressed(context, ref);
+                },
                 text: "Sign Up",
               ),
               const Spacer(flex: 3),
@@ -60,10 +64,12 @@ class LandingScreen extends ConsumerWidget {
     print("Log In Pressed");
   }
 
-  void onSignUpPressed(BuildContext context) {
+  void onSignUpPressed(BuildContext context, WidgetRef ref) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SignUpScreen()),
+      MaterialPageRoute(
+        builder: (context) => OnboardingScreen(),
+      ),
     );
   }
 }

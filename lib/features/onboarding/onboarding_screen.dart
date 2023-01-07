@@ -5,37 +5,29 @@ import 'package:linx/common/buttons/back_button.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/text.dart';
-import 'package:linx/features/authentication/domain/models/user_type.dart';
-import 'package:linx/features/authentication/ui/signup_screen.dart';
+import 'package:linx/features/onboarding/onboarding_controller.dart';
+import 'package:linx/features/onboarding/onboarding_view.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
-final onboardingProgressStateProvider = StateProvider((ref) => 1);
-
 class OnboardingScreen extends ConsumerWidget {
-  final VoidCallback onBackPressed;
-  final VoidCallback onNextPressed;
-  final Widget body;
-  final bool isStepRequired;
   final double _stepWeight = 1 / 8;
-  final String stepTitle;
   final TextStyle _onboardingStepTextStyle = const TextStyle(
       fontSize: 12.0,
       fontWeight: FontWeight.w400,
       color: LinxColors.onboardingStepGrey);
 
-  const OnboardingScreen({
-    super.key,
-    required this.stepTitle,
-    required this.onBackPressed,
-    required this.body,
-    required this.onNextPressed,
-    this.isStepRequired = true,
-  });
+  OnboardingScreen({super.key});
+
+  late OnboardingController _controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    int totalSteps = getTotalSteps(ref.watch(userTypeToggleStateProvider));
-    int step = ref.watch(onboardingProgressStateProvider);
+    _controller = ref.read(OnboardingController.provider);
+    int step = ref.watch(_controller.stepProvider);
+    int totalSteps = ref.watch(_controller.totalStepsProvider);
+    bool isStepRequired = ref.watch(_controller.stepRequiredProvider);
+    OnboardingView currentView = ref.watch(_controller.currentOnboardingView);
+
     EdgeInsets padding =
         const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0);
 
@@ -47,7 +39,9 @@ class OnboardingScreen extends ConsumerWidget {
             height: 56.0,
             child: Material(
               elevation: 2.5,
-              child: Row(children: [LinxBackButton(onPressed: onBackPressed)]),
+              child: Row(children: [
+                LinxBackButton(onPressed: () => {onBackPressed(context, ref)})
+              ]),
             ),
           ),
           LinearProgressIndicator(
@@ -63,14 +57,22 @@ class OnboardingScreen extends ConsumerWidget {
                   Container(
                     width: context.width(),
                     padding: padding,
-                    child: _getStepCount(step: step, totalSteps: totalSteps),
+                    child: _getStepCount(
+                      _controller.getStepCountText(
+                        step,
+                        totalSteps,
+                        isStepRequired,
+                      ),
+                    ),
                   ),
                   Container(
                     width: context.width(),
                     padding: const EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 24.0),
-                    child: _getStepTitle(),
+                    child: _getStepTitle(currentView.pageTitle()),
                   ),
-                  body,
+                  Container(
+                    child: currentView,
+                  ),
                 ],
               ),
             ),
@@ -79,7 +81,7 @@ class OnboardingScreen extends ConsumerWidget {
             padding: padding,
             child: RoundedButton(
               style: greenButtonStyle(),
-              onPressed: onNextPressed,
+              onPressed: () => onNextPressed(ref),
               text: "Next",
             ),
           )
@@ -88,32 +90,21 @@ class OnboardingScreen extends ConsumerWidget {
     );
   }
 
-  int getTotalSteps(UserType type) {
-    if (type == UserType.club) {
-      return 7;
-    } else {
-      return 6;
-    }
+  Text _getStepTitle(String title) {
+    return Text(title, style: LinxTextStyles.title);
   }
 
-  Text _getStepTitle() {
-    return Text(
-      stepTitle,
-      style: LinxTextStyles.title,
-    );
+  Text _getStepCount(String stepCountText) {
+    return Text(stepCountText, style: _onboardingStepTextStyle);
   }
 
-  Text _getStepCount({required int step, required int totalSteps}) {
-    if (isStepRequired) {
-      return Text(
-        "STEP $step OF $totalSteps",
-        style: _onboardingStepTextStyle,
-      );
-    } else {
-      return Text(
-        "STEP $step OF $totalSteps (OPTIONAL)",
-        style: _onboardingStepTextStyle,
-      );
-    }
+  void onNextPressed(WidgetRef ref) {
+    ref.read(_controller.currentOnboardingView).onNextPressed();
+    _controller.onNextPressed();
+  }
+
+  void onBackPressed(BuildContext context, WidgetRef ref) {
+    ref.read(_controller.currentOnboardingView).onBackPressed();
+    Navigator.pop(context);
   }
 }
