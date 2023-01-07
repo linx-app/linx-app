@@ -11,6 +11,7 @@ import 'package:linx/utils/ui_extensions.dart';
 
 class SignUpScreen extends ConsumerWidget implements OnboardingView {
   late SignUpController _controller;
+  late UserType _selectedUserType;
 
   SignUpScreen({super.key});
 
@@ -22,6 +23,7 @@ class SignUpScreen extends ConsumerWidget implements OnboardingView {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     _controller = ref.read(SignUpController.provider);
+    _selectedUserType = ref.watch(userTypeToggleStateProvider);
     List<bool> isUserTypeSelected = ref.watch(userTypeToggleStateListProvider);
 
     return Column(
@@ -77,7 +79,7 @@ class SignUpScreen extends ConsumerWidget implements OnboardingView {
 
   @override
   void onNextPressed() async {
-    _controller.initiateSignUp();
+    _controller.initiateSignUp(_selectedUserType);
   }
 
   void _onUserToggledPressed(int index, WidgetRef ref) {

@@ -1,6 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-abstract class OnboardingView extends ConsumerWidget {
+abstract class OnboardingView {
   String pageTitle();
   void onNextPressed();
   void onBackPressed();

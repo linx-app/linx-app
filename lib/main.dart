@@ -33,8 +33,8 @@ class LinxApp extends ConsumerWidget {
       ),
       home: firebaseInitialization.when(
         data: (data) => const LandingScreen(),
-        error: (e, st) => const LandingScreen(),
-        loading: () => const LandingScreen(),
+        error: (e, st) => const LandingScreen(), // TODO: Network error screen
+        loading: () => const LandingScreen(), //  TODO: Loading screen
       ),
     );
   }

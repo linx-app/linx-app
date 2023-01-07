@@ -9,6 +9,7 @@ class LinxTextField extends StatelessWidget {
   final Widget? icon;
   final bool shouldObscureText;
   final TextEditingController controller;
+  final String? Function(String?)? validator;
 
   const LinxTextField({
     super.key,
@@ -16,14 +17,16 @@ class LinxTextField extends StatelessWidget {
     required this.controller,
     this.icon,
     this.shouldObscureText = false,
+    this.validator
   });
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
+      validator: validator,
       controller: controller,
       decoration: InputDecoration(
-        icon: icon,
+        suffixIcon: icon,
         hintText: label,
         hintStyle: _hintTextStyle(),
         enabledBorder: OutlineInputBorder(
