@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/linx_text_field.dart';
-import 'package:linx/common/onboarding_screen.dart';
 import 'package:linx/constants/colors.dart';
+import 'package:linx/features/authentication/presentation/signup_controller.dart';
+import 'package:linx/features/authentication/ui/widgets/password_text_field.dart';
+import 'package:linx/features/onboarding/onboarding_view.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 import '../domain/models/user_type.dart';
@@ -20,7 +22,9 @@ final _userTypeToggleStateListProvider = Provider<List<bool>>((ref) {
   }
 });
 
-class SignUpScreen extends ConsumerWidget {
+class SignUpScreen extends ConsumerWidget implements OnboardingView {
+  late SignUpController _controller;
+
   SignUpScreen({super.key});
 
   final List<Widget> _userTypeTexts = <Widget>[
@@ -30,65 +34,69 @@ class SignUpScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return OnboardingScreen(
-      stepTitle: "Create Account",
-      onBackPressed: () {
-        _onBackPressed(context);
-      },
-      onNextPressed: () {
-        _onNextPressed(context);
-      },
-      body: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(2.0),
-            decoration: const BoxDecoration(
-              color: LinxColors.black_5,
-              borderRadius: BorderRadius.all(Radius.circular(8.0)),
+    _controller = ref.read(SignUpController.provider);
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(2.0),
+          decoration: const BoxDecoration(
+            color: LinxColors.black_5,
+            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          ),
+          child: ToggleButtons(
+            borderColor: LinxColors.transparent,
+            selectedBorderColor: LinxColors.transparent,
+            splashColor: LinxColors.transparent,
+            isSelected: ref.watch(_userTypeToggleStateListProvider),
+            constraints: BoxConstraints(
+              minHeight: 10.0,
+              minWidth: (context.width() - 58.0) / 2,
             ),
-            child: ToggleButtons(
-              borderColor: LinxColors.transparent,
-              selectedBorderColor: LinxColors.transparent,
-              splashColor: LinxColors.transparent,
-              isSelected: ref.watch(_userTypeToggleStateListProvider),
-              constraints: BoxConstraints(
-                minHeight: 10.0,
-                minWidth: (context.width() - 58.0) / 2,
-              ),
-              onPressed: (int index) {
-                _onUserToggledPressed(index, ref);
-              },
-              children: _userTypeTexts,
-            ),
+            onPressed: (int index) {
+              _onUserToggledPressed(index, ref);
+            },
+            children: _userTypeTexts,
           ),
-          Container(
-            padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 10.0),
-            child: const LinxTextField(label: "Email"),
+        ),
+        Container(
+          padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 10.0),
+          child: LinxTextField(
+            label: "Email",
+            controller: _controller.emailController,
           ),
-          Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
-            child: const LinxTextField(label: "Password"),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
+          child: PasswordTextField(
+            label: "Password",
+            controller: _controller.passwordController,
           ),
-          Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
-            child: const LinxTextField(label: "Confirm Password"),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
+          child: PasswordTextField(
+            label: "Confirm Password",
+            controller: _controller.confirmController,
           ),
-        ],
-      ),
+        ),
+      ],
     );
+  }
+
+  @override
+  void onBackPressed() {}
+
+  @override
+  void onNextPressed() async {
+    _controller.initiateSignUp();
   }
 
   void _onUserToggledPressed(int index, WidgetRef ref) {
     ref.read(userTypeToggleStateProvider.notifier).state = UserType.values[index];
   }
 
-  void _onBackPressed(BuildContext context) {
-    Navigator.pop(context);
-  }
-
-  void _onNextPressed(BuildContext context) {}
+  @override
+  String pageTitle() => "Create Account";
 }
 
 class _UserToggleButton extends ConsumerWidget {

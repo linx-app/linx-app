@@ -6,15 +6,26 @@ class LinxTextField extends StatelessWidget {
   final double _textFieldCornerRadius = 8.0;
   final double _textFieldInputPadding = 10.0;
   final double _textSize = 17.0;
+  final Widget? icon;
+  final bool shouldObscureText;
+  final TextEditingController controller;
 
-  const LinxTextField({super.key, required this.label});
+  const LinxTextField({
+    super.key,
+    required this.label,
+    required this.controller,
+    this.icon,
+    this.shouldObscureText = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: controller,
       decoration: InputDecoration(
-        labelText: label,
-        labelStyle: _hintTextStyle(),
+        icon: icon,
+        hintText: label,
+        hintStyle: _hintTextStyle(),
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: LinxColors.transparent),
           borderRadius:
@@ -28,6 +39,7 @@ class LinxTextField extends StatelessWidget {
       showCursor: true,
       cursorColor: LinxColors.grey,
       style: _inputTextStyle(),
+      obscureText: shouldObscureText,
     );
   }
 
