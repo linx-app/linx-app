@@ -20,7 +20,7 @@ class SignUpController {
 
   SignUpController({required this.ref});
 
-  Future<void> initiateSignUp(UserType userType) async {
+  Future<bool> initiateSignUp(UserType userType) async {
     String email = emailController.value.text;
     String password = passwordController.value.text;
     String confirm = confirmController.value.text;
@@ -37,7 +37,10 @@ class SignUpController {
     }
 
     if (emailError == null && passwordError == null) {
-      authService.createUserWithEmailAndPassword(email, password, userType);
+      await authService.createUserWithEmailAndPassword(email, password, userType);
+      return true;
+    } else {
+      return false;
     }
   }
 }

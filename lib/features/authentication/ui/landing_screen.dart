@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/constants/colors.dart';
+import 'package:linx/constants/routes.dart';
 import 'package:linx/constants/text.dart';
-import 'package:linx/features/onboarding/onboarding_screen.dart';
 
 class LandingScreen extends ConsumerWidget {
   const LandingScreen({super.key});
@@ -46,9 +46,7 @@ class LandingScreen extends ConsumerWidget {
               ),
               RoundedButton(
                 style: greyButtonStyle(),
-                onPressed: () {
-                  onSignUpPressed(context, ref);
-                },
+                onPressed: () => onSignUpPressed(context),
                 text: "Sign Up",
               ),
               const Spacer(flex: 3),
@@ -64,12 +62,7 @@ class LandingScreen extends ConsumerWidget {
     print("Log In Pressed");
   }
 
-  void onSignUpPressed(BuildContext context, WidgetRef ref) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => OnboardingScreen(),
-      ),
-    );
+  void onSignUpPressed(BuildContext context) {
+    Navigator.pushNamed(context, routeOnboardingStart);
   }
 }

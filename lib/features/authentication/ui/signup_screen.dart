@@ -6,14 +6,20 @@ import 'package:linx/features/authentication/domain/models/user_type.dart';
 import 'package:linx/features/authentication/presentation/signup_controller.dart';
 import 'package:linx/features/authentication/ui/widgets/password_text_field.dart';
 import 'package:linx/features/authentication/ui/widgets/user_type_toggle_button.dart';
-import 'package:linx/features/onboarding/onboarding_view.dart';
+import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
-class SignUpScreen extends ConsumerWidget implements OnboardingView {
+class SignUpScreen extends OnboardingView {
   late SignUpController _controller;
   late UserType _selectedUserType;
 
-  SignUpScreen({super.key});
+  @override
+  late final VoidCallback onScreenCompleted;
+
+  @override
+  late String pageTitle = "Create Account";
+
+  SignUpScreen({required this.onScreenCompleted});
 
   final List<Widget> _userTypeTexts = <Widget>[
     const UserTypeToggleButton(label: "Club/Team", index: 0),
@@ -28,6 +34,7 @@ class SignUpScreen extends ConsumerWidget implements OnboardingView {
 
     return Column(
       children: [
+        buildOnboardingStepTitle(context),
         Container(
           padding: const EdgeInsets.all(2.0),
           decoration: const BoxDecoration(
@@ -79,13 +86,15 @@ class SignUpScreen extends ConsumerWidget implements OnboardingView {
 
   @override
   void onNextPressed() async {
-    _controller.initiateSignUp(_selectedUserType);
+    bool signUpSuccess = await _controller.initiateSignUp(_selectedUserType);
+    onScreenCompleted();
+    // if (signUpSuccess) {
+    //   onScreenComplete();
+    // } else {}
   }
 
   void _onUserToggledPressed(int index, WidgetRef ref) {
-    ref.read(userTypeToggleStateProvider.notifier).state = UserType.values[index];
+    ref.read(userTypeToggleStateProvider.notifier).state =
+        UserType.values[index];
   }
-
-  @override
-  String pageTitle() => "Create Account";
 }
