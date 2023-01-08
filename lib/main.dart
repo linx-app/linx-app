@@ -2,10 +2,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/constants/colors.dart';
+import 'package:linx/constants/routes.dart';
 import 'package:linx/constants/text.dart';
 import 'package:linx/features/authentication/ui/landing_screen.dart';
+import 'package:linx/features/onboarding/ui/onboarding_flow.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(
     const ProviderScope(
       child: LinxApp(),
@@ -13,17 +17,12 @@ void main() {
   );
 }
 
-final firebaseInitializerProvider = FutureProvider<FirebaseApp>((ref) async {
-  return await Firebase.initializeApp();
-});
-
 class LinxApp extends ConsumerWidget {
   const LinxApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final firebaseInitialization = ref.watch(firebaseInitializerProvider);
     return MaterialApp(
       title: 'LINX application',
       theme: ThemeData(
@@ -31,11 +30,25 @@ class LinxApp extends ConsumerWidget {
         colorScheme: LinxColors.colorScheme,
         textTheme: LinxTextStyles.theme,
       ),
-      home: firebaseInitialization.when(
-        data: (data) => const LandingScreen(),
-        error: (e, st) => const LandingScreen(), // TODO: Network error screen
-        loading: () => const LandingScreen(), //  TODO: Loading screen
-      ),
+      onGenerateRoute: (settings) {
+        late Widget page;
+
+        if (settings.name == routeLanding) {
+          page = const LandingScreen();
+        } else if (settings.name!.startsWith(routeOnboardingRoot)) {
+          final subRoute = settings.name!.substring(routeOnboardingRoot.length);
+          page = OnboardingFlow(initialRoute: subRoute);
+        } else {
+          throw Exception("Unknown route: ${settings.name}");
+        }
+
+        return MaterialPageRoute(
+          builder: (context) {
+            return page;
+          },
+          settings: settings,
+        );
+      },
     );
   }
 }

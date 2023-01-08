@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/authentication/domain/models/user_type.dart';
-import 'package:linx/features/authentication/ui/signup_screen.dart';
 import 'package:linx/features/authentication/ui/widgets/user_type_toggle_button.dart';
 
 class OnboardingController {
@@ -8,7 +7,6 @@ class OnboardingController {
 
   static final provider = Provider((ref) => OnboardingController(ref: ref));
 
-  final currentOnboardingView = StateProvider((ref) => SignUpScreen());
   final stepRequiredProvider = StateProvider((ref) => true);
   final stepProvider = StateProvider((ref) => 1);
   final totalStepsProvider = StateProvider((ref) {
@@ -30,10 +28,17 @@ class OnboardingController {
   }
 
   void onNextPressed() {
-    int step = ref.read(stepProvider) + 1;
-    // Update Step Provider
-    ref.read(stepProvider.notifier).state = step;
+    int step = ref.read(stepProvider);
+    ref.read(stepProvider.notifier).state = step + 1;
+  }
 
-    // TODO: Update currentOnboardingView with next page
+  void onBackPressed() {
+    int step = ref.read(stepProvider);
+    ref.read(stepProvider.notifier).state = step - 1;
+  }
+
+  void reset() {
+    ref.read(stepProvider.notifier).state = 1;
+    ref.read(stepRequiredProvider.notifier).state = true;
   }
 }
