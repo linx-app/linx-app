@@ -36,5 +36,8 @@ abstract class LinxColors {
   static const Color progressGrey = Color(0xFF1C1C1C);
   static const Color onboardingStepGrey = Color(0xFFBDBDBD);
 
+  static const Color chipTextGrey = Color(0xFF4F4F4F);
+  static const Color chipBackground = Color(0xFFF1F1F1);
+
   static const Color transparent = Colors.transparent;
 }
