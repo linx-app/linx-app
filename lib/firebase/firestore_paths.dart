@@ -1,5 +1,14 @@
 class FirestorePaths {
 
+  /// MISC COLLECTION ///
+  static const String MISC = "misc";
+
+  static const String CATEGORIES = "categories";
+
+  static const String SPORTS = "sports";
+  static const String ARTS = "arts";
+
+
   /// USER COLLECTION ///
   static const String USERS = "users";
 
