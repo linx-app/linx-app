@@ -8,16 +8,11 @@ import 'package:linx/constants/routes.dart';
 import 'package:linx/features/authentication/ui/signup_screen.dart';
 import 'package:linx/features/onboarding/presentation/onboarding_flow_controller.dart';
 import 'package:linx/features/onboarding/ui/onboarding_basic_info_screen.dart';
+import 'package:linx/features/onboarding/ui/onboarding_chip_selection_screen.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class OnboardingFlow extends ConsumerWidget {
-  final double _stepWeight = 1 / 8;
-  final TextStyle _onboardingStepTextStyle = const TextStyle(
-    fontSize: 12.0,
-    fontWeight: FontWeight.w400,
-    color: LinxColors.onboardingStepGrey,
-  );
   final _navigatorKey = GlobalKey<NavigatorState>();
   final String initialRoute;
   OnboardingView? currentScreen;
@@ -40,7 +35,7 @@ class OnboardingFlow extends ConsumerWidget {
       body: Column(
         children: [
           _buildOnboardingAppBar(context, ref),
-          _buildProgressIndicator(step),
+          _buildProgressIndicator(step, totalSteps),
           Expanded(
             flex: 1,
             child: SingleChildScrollView(
@@ -83,9 +78,9 @@ class OnboardingFlow extends ConsumerWidget {
     );
   }
 
-  LinearProgressIndicator _buildProgressIndicator(int step) {
+  LinearProgressIndicator _buildProgressIndicator(int step, int totalSteps) {
     return LinearProgressIndicator(
-      value: step * _stepWeight,
+      value: step * (1 / totalSteps),
       color: LinxColors.progressGrey,
       backgroundColor: LinxColors.transparent,
     );
@@ -114,7 +109,11 @@ class OnboardingFlow extends ConsumerWidget {
     return Container(
       width: context.width(),
       padding: padding,
-      child: Text(text, style: _onboardingStepTextStyle),
+      child: Text(text, style: const TextStyle(
+        fontSize: 12.0,
+        fontWeight: FontWeight.w400,
+        color: LinxColors.onboardingStepGrey,
+      )),
     );
   }
 
@@ -139,6 +138,10 @@ class OnboardingFlow extends ConsumerWidget {
     _navigatorKey.currentState?.pushNamed(routeOnboardingBasicInfo);
   }
 
+  void _onBasicInfoComplete() {
+    _navigatorKey.currentState?.pushNamed(routeOnboardingChipClubDescriptor);
+  }
+
   Route _onGenerateRoute(RouteSettings settings) {
     late Widget page;
 
@@ -150,7 +153,18 @@ class OnboardingFlow extends ConsumerWidget {
         page = screen;
         break;
       case routeOnboardingBasicInfo:
-        OnboardingBasicInfoScreen screen = OnboardingBasicInfoScreen();
+        OnboardingBasicInfoScreen screen =
+            OnboardingBasicInfoScreen(onScreenCompleted: _onBasicInfoComplete);
+        currentScreen = screen;
+        page = screen;
+        break;
+      case routeOnboardingChipClubDescriptor:
+      case routeOnboardingChipClubInterest:
+      case routeOnboardingChipBusinessInterest:
+        ChipSelectionScreenType type =
+            _getChipSelectionScreenTypeFromRoute(settings.name);
+        OnboardingChipSelectionScreen screen =
+            OnboardingChipSelectionScreen(type: type);
         currentScreen = screen;
         page = screen;
         break;
@@ -162,5 +176,18 @@ class OnboardingFlow extends ConsumerWidget {
       },
       settings: settings,
     );
+  }
+
+  ChipSelectionScreenType _getChipSelectionScreenTypeFromRoute(String? route) {
+    switch (route) {
+      case routeOnboardingChipClubDescriptor:
+        return ChipSelectionScreenType.clubDescriptors;
+      case routeOnboardingChipClubInterest:
+        return ChipSelectionScreenType.clubInterests;
+      case routeOnboardingChipBusinessInterest:
+        return ChipSelectionScreenType.businessInterests;
+      default:
+        throw Exception("Route not found in onboarding flow: $route");
+    }
   }
 }

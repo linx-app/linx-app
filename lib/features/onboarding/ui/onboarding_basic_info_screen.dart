@@ -13,6 +13,8 @@ class OnboardingBasicInfoScreen extends OnboardingView {
   @override
   final String pageTitle = "Who are you?";
 
+  OnboardingBasicInfoScreen({required this.onScreenCompleted});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     _controller = ref.read(OnboardingBasicInfoController.provider);
@@ -49,5 +51,7 @@ class OnboardingBasicInfoScreen extends OnboardingView {
   void onBackPressed() {}
 
   @override
-  void onNextPressed() {}
+  void onNextPressed() {
+    onScreenCompleted();
+  }
 }
