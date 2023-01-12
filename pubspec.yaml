@@ -41,10 +41,17 @@ dependencies:
   # Riverpod
   flutter_riverpod: ^2.1.1
 
+  # Permissions
+  permission_handler: ^10.2.0
+
+  # Image Picker:
+  image_picker: ^0.8.6
+
   # Firebase
   firebase_auth: ^4.1.2
   cloud_firestore: ^4.0.5
   firebase_core: ^2.4.0
+  firebase_storage: ^11.0.10
 
 dev_dependencies:
   flutter_test:
