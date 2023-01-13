@@ -2,15 +2,15 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/authentication/data/session_repository.dart';
-import 'package:linx/features/image_upload/image_upload_repository.dart';
+import 'package:linx/features/image_upload/data/image_upload_repository.dart';
 
-class CreateProfileService {
-  final ProviderRef<CreateProfileService> _ref;
+class ImageUploadService {
+  final ProviderRef<ImageUploadService> _ref;
 
-  CreateProfileService(this._ref);
+  ImageUploadService(this._ref);
 
   static final provider =
-      Provider<CreateProfileService>((ref) => CreateProfileService(ref));
+      Provider<ImageUploadService>((ref) => ImageUploadService(ref));
 
   ImageUploadRepository imageUploadRepository() =>
       _ref.read(ImageUploadRepository.provider);
