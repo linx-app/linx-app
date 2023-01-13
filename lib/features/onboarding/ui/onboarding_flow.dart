@@ -9,6 +9,7 @@ import 'package:linx/features/authentication/ui/signup_screen.dart';
 import 'package:linx/features/onboarding/presentation/onboarding_flow_controller.dart';
 import 'package:linx/features/onboarding/ui/onboarding_basic_info_screen.dart';
 import 'package:linx/features/onboarding/ui/onboarding_chip_selection_screen.dart';
+import 'package:linx/features/onboarding/ui/onboarding_create_profile_screen.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
@@ -31,36 +32,42 @@ class OnboardingFlow extends ConsumerWidget {
     EdgeInsets padding =
         const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0);
 
-    return BaseScaffold(
-      body: Column(
-        children: [
-          _buildOnboardingAppBar(context, ref),
-          _buildProgressIndicator(step, totalSteps),
-          Expanded(
-            flex: 1,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  _getStepCountText(
-                    context,
-                    padding,
-                    step,
-                    totalSteps,
-                    isStepRequired,
-                  ),
-                  IntrinsicHeight(
-                    child: Navigator(
-                      key: _navigatorKey,
-                      initialRoute: initialRoute,
-                      onGenerateRoute: _onGenerateRoute,
+    return WillPopScope(
+      onWillPop: () async {
+        _onBackPressed(context, ref);
+        return false;
+      },
+      child: BaseScaffold(
+        body: Column(
+          children: [
+            _buildOnboardingAppBar(context, ref),
+            _buildProgressIndicator(step, totalSteps),
+            Expanded(
+              flex: 1,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _getStepCountText(
+                      context,
+                      padding,
+                      step,
+                      totalSteps,
+                      isStepRequired,
                     ),
-                  ),
-                ],
+                    IntrinsicHeight(
+                      child: Navigator(
+                        key: _navigatorKey,
+                        initialRoute: initialRoute,
+                        onGenerateRoute: _onGenerateRoute,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          _buildNextFlowButton(padding, ref)
-        ],
+            _buildNextFlowButton(padding, ref)
+          ],
+        ),
       ),
     );
   }
@@ -109,17 +116,21 @@ class OnboardingFlow extends ConsumerWidget {
     return Container(
       width: context.width(),
       padding: padding,
-      child: Text(text, style: const TextStyle(
-        fontSize: 12.0,
-        fontWeight: FontWeight.w400,
-        color: LinxColors.onboardingStepGrey,
-      )),
+      child: Text(text,
+          style: const TextStyle(
+            fontSize: 12.0,
+            fontWeight: FontWeight.w400,
+            color: LinxColors.onboardingStepGrey,
+          )),
     );
   }
 
-  void _onNextPressed(WidgetRef ref) {
-    currentScreen?.onNextPressed();
-    _controller.onNextPressed();
+  void _onNextPressed(WidgetRef ref) async {
+    var nextReady = currentScreen?.onNextPressed() == true;
+    var nextReadyAsync = await currentScreen?.onNextPressedAsync() == true;
+    if (nextReady || nextReadyAsync) {
+      _controller.onNextPressed();
+    }
   }
 
   void _onBackPressed(BuildContext context, WidgetRef ref) {
@@ -140,6 +151,10 @@ class OnboardingFlow extends ConsumerWidget {
 
   void _onBasicInfoComplete() {
     _navigatorKey.currentState?.pushNamed(routeOnboardingChipClubDescriptor);
+  }
+
+  void _onChipSelectionComplete() {
+    _navigatorKey.currentState?.pushNamed(routeOnboardingCreateProfile);
   }
 
   Route _onGenerateRoute(RouteSettings settings) {
@@ -163,8 +178,15 @@ class OnboardingFlow extends ConsumerWidget {
       case routeOnboardingChipBusinessInterest:
         ChipSelectionScreenType type =
             _getChipSelectionScreenTypeFromRoute(settings.name);
-        OnboardingChipSelectionScreen screen =
-            OnboardingChipSelectionScreen(type: type);
+        OnboardingChipSelectionScreen screen = OnboardingChipSelectionScreen(
+          type: type,
+          onScreenCompleted: _onChipSelectionComplete,
+        );
+        currentScreen = screen;
+        page = screen;
+        break;
+      case routeOnboardingCreateProfile:
+        OnboardingCreateProfileScreen screen = OnboardingCreateProfileScreen();
         currentScreen = screen;
         page = screen;
         break;

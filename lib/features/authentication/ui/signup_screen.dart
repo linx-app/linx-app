@@ -85,12 +85,16 @@ class SignUpScreen extends OnboardingView {
   void onBackPressed() {}
 
   @override
-  void onNextPressed() async {
+  Future<bool> onNextPressedAsync() async {
     bool signUpSuccess = await _controller.initiateSignUp(_selectedUserType);
     onScreenCompleted();
-    // if (signUpSuccess) {
-    //   onScreenComplete();
-    // } else {}
+    return true;
+    if (signUpSuccess) {
+      onScreenCompleted();
+      return true;
+    } else {
+      return false;
+    }
   }
 
   void _onUserToggledPressed(int index, WidgetRef ref) {

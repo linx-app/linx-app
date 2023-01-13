@@ -51,7 +51,8 @@ class OnboardingBasicInfoScreen extends OnboardingView {
   void onBackPressed() {}
 
   @override
-  void onNextPressed() {
+  bool onNextPressed() {
     onScreenCompleted();
+    return true;
   }
 }
