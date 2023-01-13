@@ -7,7 +7,9 @@ abstract class OnboardingView extends ConsumerWidget {
   late String pageTitle;
   late VoidCallback onScreenCompleted;
 
-  void onNextPressed();
+  bool onNextPressed() => true;
+
+  Future<bool> onNextPressedAsync() async => await Future(() => true);
 
   void onBackPressed();
 
