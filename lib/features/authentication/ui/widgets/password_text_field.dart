@@ -21,6 +21,7 @@ class PasswordTextField extends ConsumerWidget {
       controller: controller,
       icon: _passwordVisibilityIcon(ref),
       shouldObscureText: ref.watch(_passwordObscureTextStateProvider),
+      maxLines: 1,
     );
   }
 

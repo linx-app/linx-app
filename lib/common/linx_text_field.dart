@@ -6,6 +6,8 @@ class LinxTextField extends StatelessWidget {
   final double _textFieldCornerRadius = 8.0;
   final double _textFieldInputPadding = 10.0;
   final double _textSize = 17.0;
+  final int? minLines;
+  final int? maxLines;
   final Widget? icon;
   final bool shouldObscureText;
   final TextEditingController controller;
@@ -17,7 +19,9 @@ class LinxTextField extends StatelessWidget {
     required this.controller,
     this.icon,
     this.shouldObscureText = false,
-    this.validator
+    this.validator,
+    this.minLines,
+    this.maxLines
   });
 
   @override
@@ -43,6 +47,8 @@ class LinxTextField extends StatelessWidget {
       cursorColor: LinxColors.grey,
       style: _inputTextStyle(),
       obscureText: shouldObscureText,
+      minLines: minLines,
+      maxLines: maxLines,
     );
   }
 
