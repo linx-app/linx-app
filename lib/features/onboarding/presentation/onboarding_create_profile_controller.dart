@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:linx/features/onboarding/domain/create_profile_service.dart';
+import 'package:linx/features/image_upload/domain/image_upload_service.dart';
 
 class OnboardingCreateProfileController {
   final ProviderRef ref;
@@ -10,7 +10,7 @@ class OnboardingCreateProfileController {
   static final provider =
       Provider((ref) => OnboardingCreateProfileController(ref: ref));
 
-  CreateProfileService service() => ref.read(CreateProfileService.provider);
+  ImageUploadService service() => ref.read(ImageUploadService.provider);
 
   final carouselPagesProvider =
       StateNotifierProvider<_ImageCarouselPagesNotifier, List<String?>>(

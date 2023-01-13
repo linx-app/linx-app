@@ -20,9 +20,11 @@ class ImageUploader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return DottedBorder(
       borderPadding: const EdgeInsets.symmetric(horizontal: 7.5),
-      color: LinxColors.dottedBorderGrey,
+      color: LinxColors.black_30,
       strokeWidth: 2,
-      dashPattern: const [4],
+      dashPattern: [4, 4],
+      strokeCap: StrokeCap.round,
+      borderType: BorderType.RRect,
       radius: const Radius.circular(10),
       child: InkWell(
         onTap: () { onUploadFileClicked(ref); },

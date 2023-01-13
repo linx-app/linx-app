@@ -26,6 +26,7 @@ abstract class LinxColors {
   static const Color black_4 = Color(0x0A000000);
   static const Color black_5 = Color(0x0D000000);
   static const Color black_8 = Color(0x14000000);
+  static const Color black_30 = Color(0x4D000000);
   static const Color black_60 = Color(0x99000000);
   static const Color black_80 = Color(0xCC000000);
 
@@ -38,7 +39,6 @@ abstract class LinxColors {
 
   static const Color chipTextGrey = Color(0xFF4F4F4F);
   static const Color chipBackground = Color(0xFFF1F1F1);
-  static const Color dottedBorderGrey = Color(0x4DC4C4C4);
 
   static const Color transparent = Colors.transparent;
 }
