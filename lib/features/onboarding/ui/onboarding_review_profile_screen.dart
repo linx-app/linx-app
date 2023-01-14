@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/linx_chip.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/text.dart';
+import 'package:linx/features/onboarding/ui/widgets/onboarding_profile_image.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
 
 class OnboardingReviewProfileScreen extends OnboardingView {
@@ -44,16 +45,9 @@ class OnboardingReviewProfileScreen extends OnboardingView {
               "https://picsum.photos/200/300",
               "https://picsum.photos/200/300"
             ].map((url) {
-              return Container(
+              return OnboardingProfileImage(
+                url: url,
                 alignment: Alignment.topRight,
-                margin: const EdgeInsets.symmetric(horizontal: 7.5),
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(url),
-                    fit: BoxFit.cover,
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                ),
                 child: IconButton(
                   iconSize: 22,
                   icon: const Icon(

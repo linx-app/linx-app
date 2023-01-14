@@ -7,6 +7,7 @@ import 'package:linx/common/linx_text_field.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/image_upload/ui/image_uploader.dart';
 import 'package:linx/features/onboarding/presentation/onboarding_create_profile_controller.dart';
+import 'package:linx/features/onboarding/ui/widgets/onboarding_profile_image.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
@@ -96,15 +97,6 @@ class OnboardingCreateProfileScreen extends OnboardingView {
     );
   }
 
-  Container _buildNetworkImagePage(String url) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 7.5),
-      decoration: BoxDecoration(
-          image: DecorationImage(image: NetworkImage(url), fit: BoxFit.cover),
-          borderRadius: BorderRadius.circular(10)),
-    );
-  }
-
   List<Widget> _mapUrlsToPages(List<String?> urls) {
     return urls.map((url) {
       if (url == null) {
@@ -112,7 +104,7 @@ class OnboardingCreateProfileScreen extends OnboardingView {
       } else if (url == "Loading") {
         return _buildLoadingPage();
       } else {
-        return _buildNetworkImagePage(url);
+        return OnboardingProfileImage(url: url);
       }
     }).toList();
   }
