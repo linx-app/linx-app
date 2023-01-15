@@ -5,6 +5,7 @@ import 'package:linx/common/linx_chip.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/text.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_profile_image.dart';
+import 'package:linx/features/onboarding/ui/widgets/onboarding_profile_image_carousel.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
 
 class OnboardingReviewProfileScreen extends OnboardingView {
@@ -18,7 +19,7 @@ class OnboardingReviewProfileScreen extends OnboardingView {
     return Column(
       children: [
         buildOnboardingStepTitle(context),
-        ..._buildProfileImageSection(ref),
+        _buildProfileImageSection(ref),
         ..._buildWhoAreYouSection(),
         ..._buildChipsSection(),
         ..._buildBiographySection()
@@ -31,41 +32,34 @@ class OnboardingReviewProfileScreen extends OnboardingView {
     // TODO: implement onBackPressed
   }
 
-  List<Widget> _buildProfileImageSection(WidgetRef ref) {
-    var pages = ref.read(imageCarouselPageProvider.notifier);
-    return [
-      Container(
-        height: 250,
-        child: PageView(
-          controller: PageController(viewportFraction: 0.925),
-          onPageChanged: (page) => pages.state = page.toDouble(),
-          children: [
-            ...[
-              "https://picsum.photos/200/300",
-              "https://picsum.photos/200/300",
-              "https://picsum.photos/200/300"
-            ].map((url) {
-              return OnboardingProfileImage(
-                url: url,
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  iconSize: 22,
-                  icon: const Icon(
-                    Icons.edit,
-                    color: LinxColors.white,
-                  ),
-                  onPressed: _onEditPhotoOrBiographyPressed,
-                ),
-              );
-            })
-          ],
+  OnboardingProfileImageCarousel _buildProfileImageSection(WidgetRef ref) {
+    var dotPosition = ref.read(imageCarouselPageProvider.notifier);
+    List<Widget> pages = [
+      "https://picsum.photos/200/300",
+      "https://picsum.photos/200/300",
+      "https://picsum.photos/200/300"
+    ].map((url)
+    {
+      return OnboardingProfileImage(
+        url: url,
+        alignment: Alignment.topRight,
+        child: IconButton(
+          iconSize: 22,
+          icon: const Icon(
+            Icons.edit,
+            color: LinxColors.white,
+          ),
+          onPressed: _onEditPhotoOrBiographyPressed,
         ),
-      ),
-      DotsIndicator(
-        dotsCount: 3,
-        position: ref.watch(imageCarouselPageProvider),
-      ),
-    ];
+      );
+    }).toList();
+
+    return OnboardingProfileImageCarousel(
+      onPageChanged: (page) { dotPosition.state = page.toDouble(); },
+      dotPosition: ref.watch(imageCarouselPageProvider).toInt(),
+      pages: pages,
+      controller: PageController(viewportFraction: 0.925),
+    );
   }
 
   List<Widget> _buildWhoAreYouSection() {
