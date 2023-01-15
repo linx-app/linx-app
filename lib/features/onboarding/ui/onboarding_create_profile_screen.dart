@@ -1,12 +1,13 @@
 import 'dart:io';
 
-import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/linx_text_field.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/image_upload/ui/image_uploader.dart';
 import 'package:linx/features/onboarding/presentation/onboarding_create_profile_controller.dart';
+import 'package:linx/features/onboarding/ui/widgets/onboarding_profile_image.dart';
+import 'package:linx/features/onboarding/ui/widgets/onboarding_profile_image_carousel.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
@@ -30,26 +31,7 @@ class OnboardingCreateProfileScreen extends OnboardingView {
       children: [
         buildOnboardingStepTitle(context),
         _buildSectionTitle("Add photos"),
-        Container(
-          padding: EdgeInsets.symmetric(vertical: 12),
-          height: 250,
-          child: PageView(
-            padEnds: true,
-            controller: _controller!.carouselController,
-            children: [...pages],
-            onPageChanged: (page) {
-              ref.read(_controller!.carouselCurrentPage.notifier).state = page;
-            },
-          ),
-        ),
-        if (pages.length > 1)
-          Center(
-            child: DotsIndicator(
-              dotsCount: pages.
-              length,
-              position: ref.watch(_controller!.carouselCurrentPage).toDouble(),
-            ),
-          ),
+        _buildProfileImageSection(pages, ref),
         _buildSectionTitle("Biography"),
         _buildBiographyForm(),
         _buildSectionTitle("Social media"),
@@ -96,15 +78,6 @@ class OnboardingCreateProfileScreen extends OnboardingView {
     );
   }
 
-  Container _buildNetworkImagePage(String url) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 7.5),
-      decoration: BoxDecoration(
-          image: DecorationImage(image: NetworkImage(url), fit: BoxFit.cover),
-          borderRadius: BorderRadius.circular(10)),
-    );
-  }
-
   List<Widget> _mapUrlsToPages(List<String?> urls) {
     return urls.map((url) {
       if (url == null) {
@@ -112,7 +85,7 @@ class OnboardingCreateProfileScreen extends OnboardingView {
       } else if (url == "Loading") {
         return _buildLoadingPage();
       } else {
-        return _buildNetworkImagePage(url);
+        return OnboardingProfileImage(url: url);
       }
     }).toList();
   }
@@ -126,6 +99,19 @@ class OnboardingCreateProfileScreen extends OnboardingView {
         minLines: 4,
         maxLines: 4,
       ),
+    );
+  }
+
+  OnboardingProfileImageCarousel _buildProfileImageSection(
+    List<Widget> pages,
+    WidgetRef ref,
+  ) {
+    return OnboardingProfileImageCarousel(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      onPageChanged: (page) {},
+      pages: pages,
+      controller: _controller!.carouselController,
+      dotPosition: ref.watch(_controller!.carouselCurrentPage),
     );
   }
 }
