@@ -18,10 +18,22 @@ class UserRepository {
     String? phoneNumber,
     String? location
   }) async {
-    _firestore.collection(FirestorePaths.USERS).doc(uid).set({
+    _firestore.collection(FirestorePaths.USERS).doc(uid).update({
       FirestorePaths.NAME: name,
       FirestorePaths.PHONE_NUMBER: phoneNumber,
       FirestorePaths.LOCATION: location
+    });
+  }
+
+  Future<void> updateUserInterests(String uid, Set<String> chips) async {
+    _firestore.collection(FirestorePaths.USERS).doc(uid).update({
+      FirestorePaths.INTERESTS: chips.toList()
+    });
+  }
+
+  Future<void> updateUserDescriptors(String uid, Set<String> chips) async {
+    _firestore.collection(FirestorePaths.USERS).doc(uid).update({
+      FirestorePaths.DESCRIPTORS: chips.toList()
     });
   }
 }

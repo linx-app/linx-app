@@ -1,48 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/constants/colors.dart';
+import 'package:linx/utils/ui_extensions.dart';
 
-class LinxChip extends ConsumerWidget {
+class LinxChip extends StatelessWidget {
   final TextStyle _chipTextStyle = const TextStyle(
     color: LinxColors.chipTextGrey,
     fontWeight: FontWeight.w400,
     fontSize: 12.0,
   );
   final String label;
-  final Function(bool, String) onChipSelected;
-  final _isSelectedProvider = StateProvider((ref) => false);
+  final Function(String) onChipSelected;
+  final bool isSelected;
 
-  LinxChip({super.key, required this.label, required this.onChipSelected});
+  LinxChip({super.key, required this.label, required this.onChipSelected, required this.isSelected});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    bool isSelected = ref.watch(_isSelectedProvider);
+  Widget build(BuildContext context) {
     return FilterChip(
       label: _getChipLabel(),
       labelStyle: _chipTextStyle,
       backgroundColor: LinxColors.chipBackground,
       shape: StadiumBorder(
           side: BorderSide(
-              color: _getSelectedColor(isSelected),
-              width: _getSelectedWidth(isSelected),
+              color: _getSelectedColor(),
+              width: _getSelectedWidth(),
           )
       ),
-      onSelected: (selected) => _onSelected(selected, ref),
+      onSelected: _onSelected,
       labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
     );
   }
 
-  void _onSelected(bool selected, WidgetRef ref) {
-    bool wasSelected = ref.read(_isSelectedProvider);
-    ref.read(_isSelectedProvider.notifier).state = !wasSelected;
-    onChipSelected(!wasSelected, label);
-  }
+  void _onSelected(bool selected) => onChipSelected(label);
 
-  Text _getChipLabel() {
-    return Text(label, style: _chipTextStyle);
-  }
+  Text _getChipLabel() => Text(label.capitalize(), style: _chipTextStyle);
 
-  Color _getSelectedColor(bool isSelected) {
+  Color _getSelectedColor() {
     if (isSelected) {
       return LinxColors.green;
     } else {
@@ -50,7 +43,7 @@ class LinxChip extends ConsumerWidget {
     }
   }
 
-  double _getSelectedWidth(bool isSelected) {
+  double _getSelectedWidth() {
     if (isSelected) {
       return 1.5;
     } else {

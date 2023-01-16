@@ -32,13 +32,11 @@ class OnboardingChipSelectionScreen extends OnboardingView {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.read(onboardingChipSelectionController.notifier).fetchCategories(type);
-    Map<String, List<String>> categories =
-        ref.watch(onboardingChipSelectionController);
-
+    var state = ref.watch(onboardingChipSelectionController);
     return Column(
       children: [
         buildOnboardingStepTitle(context),
-        ..._buildSections(context, categories)
+        ..._buildSections(context, state, ref)
       ],
     );
   }
@@ -48,27 +46,40 @@ class OnboardingChipSelectionScreen extends OnboardingView {
 
   @override
   bool onNextPressed(WidgetRef ref) {
+    ref.read(onboardingChipSelectionController.notifier).updateUserChips(type);
     onScreenCompleted();
     return true;
   }
 
-  void _onChipSelected(bool selected, String label) {}
+  void _onChipSelected(String label, WidgetRef ref) {
+    var notifier = ref.read(onboardingChipSelectionController.notifier);
+    notifier.onChipSelected(label);
+  }
 
   List<Container> _buildSections(
-      BuildContext context, Map<String, List<String>> categories) {
+    BuildContext context,
+    OnboardingChipSelectionUiState state,
+    WidgetRef ref,
+  ) {
     List<Container> sections = [];
-    categories.forEach((key, value) {
-      sections.add(_buildSection(context, key, value));
+    state.chips.forEach((key, value) {
+      sections.add(_buildSection(context, key, value, ref));
     });
     return sections;
   }
 
   Container _buildSection(
-      BuildContext context, String category, List<String> values) {
+    BuildContext context,
+    String category,
+    List<String> values,
+    WidgetRef ref,
+  ) {
+    var selected = ref.watch(onboardingChipSelectionController).selectedChips;
     Iterable<LinxChip> chips = values.map(
-      (e) => LinxChip(
-        label: e.capitalize(),
-        onChipSelected: _onChipSelected,
+      (label) => LinxChip(
+        label: label,
+        onChipSelected: (label) => _onChipSelected(label, ref),
+        isSelected: selected.contains(label),
       ),
     );
 

@@ -18,4 +18,6 @@ class FirestorePaths {
   static const String TYPE = "type";
   static const String CREATED_AT = "created_at";
   static const String EMAIL = "email";
+  static const String INTERESTS = "interests";
+  static const String DESCRIPTORS = "descriptors";
 }
