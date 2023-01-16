@@ -5,6 +5,7 @@ import 'package:linx/common/buttons/back_button.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/routes.dart';
+import 'package:linx/features/authentication/domain/models/user_type.dart';
 import 'package:linx/features/authentication/ui/signup_screen.dart';
 import 'package:linx/features/onboarding/presentation/onboarding_flow_controller.dart';
 import 'package:linx/features/onboarding/ui/onboarding_basic_info_screen.dart';
@@ -17,6 +18,7 @@ class OnboardingFlow extends ConsumerWidget {
   final _navigatorKey = GlobalKey<NavigatorState>();
   final String initialRoute;
   OnboardingView? _currentScreen;
+  UserType? _userType;
 
   OnboardingFlow({super.key, required this.initialRoute});
 
@@ -35,7 +37,7 @@ class OnboardingFlow extends ConsumerWidget {
       child: BaseScaffold(
         body: Column(
           children: [
-            _buildOnboardingAppBar(context, ref),
+            _buildOnboardingAppBar(context, ref, state.isStepRequired),
             _buildProgressIndicator(state),
             Expanded(
               flex: 1,
@@ -61,7 +63,11 @@ class OnboardingFlow extends ConsumerWidget {
     );
   }
 
-  SizedBox _buildOnboardingAppBar(BuildContext context, WidgetRef ref) {
+  SizedBox _buildOnboardingAppBar(
+    BuildContext context,
+    WidgetRef ref,
+    bool isStepRequired,
+  ) {
     return SizedBox(
       width: context.width(),
       height: 56.0,
@@ -94,10 +100,7 @@ class OnboardingFlow extends ConsumerWidget {
   }
 
   Container _getStepCountText(
-    BuildContext context,
-    EdgeInsets padding,
-    OnboardingFlowUiState state
-  ) {
+      BuildContext context, EdgeInsets padding, OnboardingFlowUiState state) {
     String text;
 
     if (state.isStepRequired) {
@@ -139,16 +142,37 @@ class OnboardingFlow extends ConsumerWidget {
     }
   }
 
-  void _onSignUpComplete() {
+  void _onSignUpComplete(UserType type) {
+    _userType = type;
     _navigatorKey.currentState?.pushNamed(routeOnboardingBasicInfo);
   }
 
   void _onBasicInfoComplete() {
-    _navigatorKey.currentState?.pushNamed(routeOnboardingChipClubDescriptor);
+    if (_userType == null) return;
+    var route = _userType == UserType.club
+        ? routeOnboardingChipClubDescriptor
+        : routeOnboardingCreateProfile;
+    _navigatorKey.currentState?.pushNamed(route);
   }
 
   void _onChipSelectionComplete() {
-    _navigatorKey.currentState?.pushNamed(routeOnboardingCreateProfile);
+    if (_userType == null) return;
+    var route = _userType == UserType.club
+        ? routeOnboardingCreateProfile
+        : routeOnboardingSponsorshipPackage;
+    _navigatorKey.currentState?.pushNamed(route);
+  }
+
+  void _onCreateProfileComplete() {
+    if (_userType == null) return;
+    var route = _userType == UserType.club
+        ? routeOnboardingSponsorshipPackage
+        : routeOnboardingChipBusinessInterest;
+    _navigatorKey.currentState?.pushNamed(route);
+  }
+
+  void _onSponsorshipPackageComplete() {
+    _navigatorKey.currentState?.pushNamed(routeOnboardingReviewProfile);
   }
 
   Route _onGenerateRoute(RouteSettings settings) {
@@ -157,7 +181,7 @@ class OnboardingFlow extends ConsumerWidget {
     switch (settings.name) {
       case routeOnboardingSignUp:
         SignUpScreen screen =
-            SignUpScreen(onScreenCompleted: _onSignUpComplete);
+            SignUpScreen(onSignUpCompleted: _onSignUpComplete);
         _currentScreen = screen;
         page = screen;
         break;

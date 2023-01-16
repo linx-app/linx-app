@@ -7,7 +7,9 @@ final onboardingControllerProvider = StateNotifierProvider<OnboardingController,
 });
 
 class OnboardingController extends StateNotifier<OnboardingFlowUiState> {
-  OnboardingController(UserType type): super(OnboardingFlowUiState()) {
+  final UserType type;
+
+  OnboardingController(this.type): super(OnboardingFlowUiState(type: type)) {
     if (type == UserType.club) {
       state = OnboardingFlowUiState(totalSteps: 7);
     } else {
@@ -40,10 +42,12 @@ class OnboardingFlowUiState {
   final int step;
   final bool isStepRequired;
   final int totalSteps;
+  final UserType? type;
 
   OnboardingFlowUiState({
     this.step = 1,
     this.isStepRequired = true,
     this.totalSteps = 7,
+    this.type,
   });
 }
