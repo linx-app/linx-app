@@ -4,17 +4,16 @@ import 'package:linx/firebase/firebase_providers.dart';
 import 'package:linx/firebase/firestore_paths.dart';
 
 class CategoryRepository {
-  final ProviderRef<CategoryRepository> _ref;
+  static final provider = Provider((ref) {
+    return CategoryRepository(ref.read(firestoreProvider));
+  });
 
-  CategoryRepository(this._ref);
+  final FirebaseFirestore _firestore;
 
-  static final provider =
-  Provider<CategoryRepository>((ref) => CategoryRepository(ref));
-
-  FirebaseFirestore _store() => _ref.read(firestoreProvider);
+  CategoryRepository(this._firestore);
 
   Future<Map<String, List<String>>?> fetchCategories(List<String> categories) {
-    return _store().collection(FirestorePaths.MISC)
+    return _firestore.collection(FirestorePaths.MISC)
         .doc(FirestorePaths.CATEGORIES)
         .get()
         .then((DocumentSnapshot doc) {

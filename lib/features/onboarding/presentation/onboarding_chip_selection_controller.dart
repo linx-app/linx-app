@@ -2,25 +2,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/onboarding/domain/category_service.dart';
 import 'package:linx/features/onboarding/ui/onboarding_chip_selection_screen.dart';
 
-class OnboardingChipSelectionController {
-  final ProviderRef ref;
+final onboardingChipSelectionController = StateNotifierProvider<OnboardingChipSelectionController, Map<String, List<String>>>((ref) {
+  return OnboardingChipSelectionController(
+    ref.read(CategoryService.provider),
+  );
+});
 
-  static final provider =
-      Provider((ref) => OnboardingChipSelectionController(ref: ref));
+class OnboardingChipSelectionController
+    extends StateNotifier<Map<String, List<String>>> {
+  final CategoryService _categoryService;
 
-  final categoriesProvider =
-      StateProvider<Map<String, List<String>>>((ref) => {});
-
-  ChipSelectionScreenType? _lastType;
-
-  OnboardingChipSelectionController({required this.ref});
+  OnboardingChipSelectionController(this._categoryService) : super({});
 
   Future<void> fetchCategories(ChipSelectionScreenType type) async {
-    if (_lastType != type || ref.read(categoriesProvider).isEmpty) {
-      CategoryService service = ref.read(CategoryService.provider);
-      Map<String, List<String>> categories =
-          await service.fetchCategories(type);
-      ref.read(categoriesProvider.notifier).state = categories;
+    if (state.isEmpty == true) {
+      var categories = await _categoryService.fetchCategories(type);
+      state = categories;
     }
   }
 }

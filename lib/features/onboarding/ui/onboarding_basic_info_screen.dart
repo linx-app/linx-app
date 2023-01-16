@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/linx_text_field.dart';
-import 'package:linx/features/onboarding/presentation/onboarding_basic_info_controller.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
 
 class OnboardingBasicInfoScreen extends OnboardingView {
-  late OnboardingBasicInfoController _controller;
+  final _nameController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
+  final _locationController = TextEditingController();
 
   @override
   late final VoidCallback onScreenCompleted;
@@ -17,32 +18,12 @@ class OnboardingBasicInfoScreen extends OnboardingView {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    _controller = ref.read(OnboardingBasicInfoController.provider);
-
     return Column(
       children: [
         buildOnboardingStepTitle(context),
-        Container(
-          padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 10.0),
-          child: LinxTextField(
-            label: "Name",
-            controller: _controller.nameController,
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 10.0),
-          child: LinxTextField(
-            label: "Phone number",
-            controller: _controller.phoneNumberController,
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 10.0),
-          child: LinxTextField(
-            label: "Location",
-            controller: _controller.locationController,
-          ),
-        ),
+        _buildTextField("Name", _nameController),
+        _buildTextField("Phone number", _phoneNumberController),
+        _buildTextField('Location', _locationController)
       ],
     );
   }
@@ -51,8 +32,18 @@ class OnboardingBasicInfoScreen extends OnboardingView {
   void onBackPressed() {}
 
   @override
-  bool onNextPressed() {
+  bool onNextPressed(WidgetRef ref) {
     onScreenCompleted();
     return true;
+  }
+
+  Container _buildTextField(String label, TextEditingController controller) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 10.0),
+      child: LinxTextField(
+        label: label,
+        controller: controller,
+      ),
+    );
   }
 }

@@ -6,22 +6,23 @@ import 'package:linx/firebase/firebase_providers.dart';
 import 'package:linx/firebase/firestore_paths.dart';
 
 class AuthRepository {
-  final ProviderRef<AuthRepository> _ref;
+  static final provider = Provider<AuthRepository>((ref) {
+    return AuthRepository(
+        ref.read(firebaseAuthProvider),
+        ref.read(firestoreProvider)
+    );
+  });
 
-  AuthRepository(this._ref);
+  final FirebaseAuth _auth;
+  final FirebaseFirestore _firestore;
 
-  static final provider =
-      Provider<AuthRepository>((ref) => AuthRepository(ref));
+  AuthRepository(this._auth, this._firestore);
 
-  FirebaseAuth _auth() => _ref.read(firebaseAuthProvider);
-
-  FirebaseFirestore _store() => _ref.read(firestoreProvider);
-
-  Stream<User?> authStateChange() => _auth().authStateChanges();
+  Stream<User?> authStateChange() => _auth.authStateChanges();
 
   Future<AuthResponse> signInWithEmailAndPassword(
       String email, String password) async {
-    UserCredential creds = await _auth().signInWithEmailAndPassword(
+    UserCredential creds = await _auth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
@@ -40,7 +41,7 @@ class AuthRepository {
     String password,
     String type,
   ) async {
-    UserCredential creds = await _auth().createUserWithEmailAndPassword(
+    UserCredential creds = await _auth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
@@ -50,7 +51,7 @@ class AuthRepository {
     if (userId == null) {
       return AuthFailure();
     } else {
-      _store().collection(FirestorePaths.USERS).doc(userId).set({
+      _firestore.collection(FirestorePaths.USERS).doc(userId).set({
         FirestorePaths.TYPE: type,
         FirestorePaths.CREATED_AT: DateTime.now().millisecondsSinceEpoch,
         FirestorePaths.EMAIL: email,

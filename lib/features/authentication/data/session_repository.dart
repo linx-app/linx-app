@@ -2,14 +2,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionRepository {
+  static final provider = Provider((ref) => SessionRepository());
+
   final String _uid = "user_id";
   final String _userType = "user_type";
-  final ProviderRef<SessionRepository> _ref;
-
-  SessionRepository(this._ref);
-
-  static final provider =
-      Provider<SessionRepository>((ref) => SessionRepository(ref));
 
   Future<void> setUserId(String uid) async {
     var prefs = await SharedPreferences.getInstance();

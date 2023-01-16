@@ -5,17 +5,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/firebase/firebase_providers.dart';
 
 class ImageUploadRepository {
-  final ProviderRef<ImageUploadRepository> _ref;
+  static final provider = Provider<ImageUploadRepository>((ref) {
+    return ImageUploadRepository(ref.read(firebaseStorageProvider));
+  });
 
-  ImageUploadRepository(this._ref);
+  final FirebaseStorage _storage;
 
-  static final provider =
-      Provider<ImageUploadRepository>((ref) => ImageUploadRepository(ref));
-
-  FirebaseStorage storage() => _ref.read(firebaseStorageProvider);
+  ImageUploadRepository(this._storage);
 
   Future<String> uploadImage(String uid, File image, String imageName) async {
-    var snapshot = await storage().ref().child("images/$uid/$imageName").putFile(image);
+    var snapshot = await _storage.ref().child("images/$uid/$imageName").putFile(image);
     var downloadUrl = await snapshot.ref.getDownloadURL();
     return downloadUrl;
   }
