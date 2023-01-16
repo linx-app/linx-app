@@ -20,4 +20,5 @@ class FirestorePaths {
   static const String EMAIL = "email";
   static const String INTERESTS = "interests";
   static const String DESCRIPTORS = "descriptors";
+  static const String PROFILE_IMAGES = "profile_images";
 }

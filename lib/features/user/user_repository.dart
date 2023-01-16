@@ -36,4 +36,10 @@ class UserRepository {
       FirestorePaths.DESCRIPTORS: chips.toList()
     });
   }
+  
+  Future<void> updateProfileImages(String uid, String url) async {
+    _firestore.collection(FirestorePaths.USERS).doc(uid).update({
+      FirestorePaths.PROFILE_IMAGES: FieldValue.arrayUnion([url])
+    });
+  }
 }
