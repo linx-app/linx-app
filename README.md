@@ -4,13 +4,11 @@ A new way to connect local businesses and organizations.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Use VSCode or Android Studio as your IDE and clone the repository.
 
-A few resources to get you started if this is your first Flutter project:
+From `main`, create your own branch in the format:
+```
+{ISSUE#}-{INITIALS}-{TITLE}
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+For the love of all things good, please do NOT push to main. I can't restrict this unless I give Github some $$. 
