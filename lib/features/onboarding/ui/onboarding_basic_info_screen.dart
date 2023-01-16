@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/linx_text_field.dart';
+import 'package:linx/features/onboarding/presentation/onboarding_basic_info_controller.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
 
 class OnboardingBasicInfoScreen extends OnboardingView {
@@ -33,6 +34,12 @@ class OnboardingBasicInfoScreen extends OnboardingView {
 
   @override
   bool onNextPressed(WidgetRef ref) {
+    var notifier = ref.read(onboardingBasicInfoControllerProvider.notifier);
+    notifier.onPageComplete(
+      _nameController.text,
+      _phoneNumberController.text,
+      _locationController.text,
+    );
     onScreenCompleted();
     return true;
   }

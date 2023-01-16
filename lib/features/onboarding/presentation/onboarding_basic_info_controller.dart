@@ -1,9 +1,39 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:linx/features/onboarding/domain/user_info_service.dart';
 
-class OnboardingBasicInfoController {
-  final ProviderRef ref;
+final onboardingBasicInfoControllerProvider = StateNotifierProvider<OnboardingBasicInfoController, OnboardingBasicInfoUiState>((ref) {
+  var service = ref.watch(OnboardingUserInfoService.provider);
+  return OnboardingBasicInfoController(service);
+});
 
-  static final provider = Provider((ref) => OnboardingBasicInfoController(ref: ref));
+class OnboardingBasicInfoController
+    extends StateNotifier<OnboardingBasicInfoUiState> {
+  final OnboardingUserInfoService _onboardingUserInfoService;
 
-  OnboardingBasicInfoController({required this.ref});
+  OnboardingBasicInfoController(this._onboardingUserInfoService)
+      : super(OnboardingBasicInfoUiState());
+
+  Future<void> onPageComplete(
+    String name,
+    String phoneNumber,
+    String location,
+  ) async {
+    await _onboardingUserInfoService.updateUserInfo(
+      name: name,
+      phoneNumber: phoneNumber,
+      location: location,
+    );
+  }
+}
+
+class OnboardingBasicInfoUiState {
+  final String name;
+  final String phoneNumber;
+  final String location;
+
+  OnboardingBasicInfoUiState({
+    this.name = "",
+    this.phoneNumber = "",
+    this.location = "",
+  });
 }
