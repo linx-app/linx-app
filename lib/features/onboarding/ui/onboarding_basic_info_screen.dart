@@ -10,7 +10,7 @@ class OnboardingBasicInfoScreen extends OnboardingView {
   final _locationController = TextEditingController();
 
   @override
-  late final VoidCallback onScreenCompleted;
+  final VoidCallback onScreenCompleted;
 
   @override
   final String pageTitle = "Who are you?";

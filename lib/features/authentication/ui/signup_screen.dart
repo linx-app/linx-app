@@ -13,18 +13,16 @@ class SignUpScreen extends OnboardingView {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmController = TextEditingController();
+  final Function(UserType) onSignUpCompleted;
   final List<Widget> _userTypeTexts = <Widget>[
     const UserTypeToggleButton(label: "Club/Team", index: 0),
     const UserTypeToggleButton(label: "Business", index: 1),
   ];
 
   @override
-  late final VoidCallback onScreenCompleted;
-
-  @override
   late String pageTitle = "Create Account";
 
-  SignUpScreen({required this.onScreenCompleted});
+  SignUpScreen({required this.onSignUpCompleted});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,7 +50,7 @@ class SignUpScreen extends OnboardingView {
     var signUpSuccess =
         await notifier.initiateSignUp(email, password, confirm, userType);
 
-    onScreenCompleted();
+    onSignUpCompleted(userType);
     return true;
     if (signUpSuccess) {
       onScreenCompleted();
