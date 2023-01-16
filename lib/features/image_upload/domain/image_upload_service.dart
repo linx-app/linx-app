@@ -5,21 +5,20 @@ import 'package:linx/features/authentication/data/session_repository.dart';
 import 'package:linx/features/image_upload/data/image_upload_repository.dart';
 
 class ImageUploadService {
-  final ProviderRef<ImageUploadService> _ref;
+  static final provider = Provider<ImageUploadService>((ref) {
+    return ImageUploadService(
+        ref.read(ImageUploadRepository.provider),
+        ref.read(SessionRepository.provider)
+    );
+  });
 
-  ImageUploadService(this._ref);
+  final ImageUploadRepository _imageUploadRepository;
+  final SessionRepository _sessionRepository;
 
-  static final provider =
-      Provider<ImageUploadService>((ref) => ImageUploadService(ref));
-
-  ImageUploadRepository imageUploadRepository() =>
-      _ref.read(ImageUploadRepository.provider);
-
-  SessionRepository sessionRepository() =>
-      _ref.read(SessionRepository.provider);
+  ImageUploadService(this._imageUploadRepository, this._sessionRepository);
 
   Future<String?> uploadImage(File image, String imageName) async {
-    var uid = await sessionRepository().getUserId();
-    return await imageUploadRepository().uploadImage(uid, image, imageName);
+    var uid = await _sessionRepository.getUserId();
+    return await _imageUploadRepository.uploadImage(uid, image, imageName);
   }
 }

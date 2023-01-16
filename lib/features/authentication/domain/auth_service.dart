@@ -5,20 +5,24 @@ import 'package:linx/features/authentication/domain/models/auth_response.dart';
 import 'package:linx/features/authentication/domain/models/user_type.dart';
 
 class AuthService {
-  final ProviderRef ref;
-  late AuthRepository authRepo = ref.watch(AuthRepository.provider);
-  late SessionRepository sessionManager = ref.read(SessionRepository.provider);
+  static final provider = Provider((ref) {
+    return AuthService(
+        ref.read(AuthRepository.provider),
+        ref.read(SessionRepository.provider)
+    );
+  });
 
-  AuthService({required this.ref});
+  final AuthRepository _authRepository;
+  final SessionRepository _sessionRepository;
 
-  static final provider = Provider<AuthService>((ref) => AuthService(ref: ref));
+  AuthService(this._authRepository, this._sessionRepository);
 
   Future<void> createUserWithEmailAndPassword(
     String email,
     String password,
     UserType userType,
   ) async {
-    AuthResponse res = await authRepo.createUserWithEmailAndPassword(
+    AuthResponse res = await _authRepository.createUserWithEmailAndPassword(
       email,
       password,
       userType.name,
@@ -26,8 +30,8 @@ class AuthService {
 
     if (res.type() == AuthResponseType.SUCCESS) {
       AuthSuccess success = res as AuthSuccess;
-      sessionManager.setUserId(success.userId);
-      sessionManager.setUserType(userType.name);
+      _sessionRepository.setUserId(success.userId);
+      _sessionRepository.setUserType(userType.name);
     } else {
       print("User sign up failed!!");
     }

@@ -12,19 +12,17 @@ import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class OnboardingCreateProfileScreen extends OnboardingView {
-  OnboardingCreateProfileController? _controller;
-
   @override
   late final VoidCallback onScreenCompleted;
 
   @override
   final String pageTitle = "Create your profile";
+  final _carouselCurrentPage = StateProvider((ref) => 0);
+  final TextEditingController _bioController = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    _controller = ref.read(OnboardingCreateProfileController.provider);
-    List<Widget> pages =
-        _mapUrlsToPages(ref.watch(_controller!.carouselPagesProvider));
+    List<Widget> pages = _mapUrlsToPages(ref);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,12 +43,12 @@ class OnboardingCreateProfileScreen extends OnboardingView {
   }
 
   @override
-  bool onNextPressed() {
+  bool onNextPressed(WidgetRef ref) {
     return true;
   }
 
-  void _onFileSelected(File file) {
-    _controller!.onFileSelected(file);
+  void _onFileSelected(File file, WidgetRef ref) {
+    ref.read(onboardingCreateProfileController.notifier).onFileSelected(file);
   }
 
   Container _buildSectionTitle(String title) {
@@ -78,10 +76,10 @@ class OnboardingCreateProfileScreen extends OnboardingView {
     );
   }
 
-  List<Widget> _mapUrlsToPages(List<String?> urls) {
-    return urls.map((url) {
+  List<Widget> _mapUrlsToPages(WidgetRef ref) {
+    return ref.watch(onboardingCreateProfileController).map((url) {
       if (url == null) {
-        return ImageUploader(_onFileSelected);
+        return ImageUploader((file) => _onFileSelected(file, ref));
       } else if (url == "Loading") {
         return _buildLoadingPage();
       } else {
@@ -95,7 +93,7 @@ class OnboardingCreateProfileScreen extends OnboardingView {
       padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
       child: LinxTextField(
         label: "Biography",
-        controller: _controller!.bioController,
+        controller: _bioController,
         minLines: 4,
         maxLines: 4,
       ),
@@ -110,8 +108,8 @@ class OnboardingCreateProfileScreen extends OnboardingView {
       padding: const EdgeInsets.symmetric(vertical: 12),
       onPageChanged: (page) {},
       pages: pages,
-      controller: _controller!.carouselController,
-      dotPosition: ref.watch(_controller!.carouselCurrentPage),
+      controller: PageController(viewportFraction: 0.90),
+      dotPosition: ref.watch(_carouselCurrentPage),
     );
   }
 }

@@ -8,13 +8,14 @@ import 'package:linx/utils/ui_extensions.dart';
 
 class OnboardingChipSelectionScreen extends OnboardingView {
   final ChipSelectionScreenType type;
-  late OnboardingChipSelectionController _controller;
 
   @override
   late VoidCallback onScreenCompleted;
 
-  OnboardingChipSelectionScreen(
-      {required this.type, required this.onScreenCompleted,}) {
+  OnboardingChipSelectionScreen({
+    required this.type,
+    required this.onScreenCompleted,
+  }) {
     switch (type) {
       case ChipSelectionScreenType.clubDescriptors:
         pageTitle = "What type of\ngroup are you?";
@@ -30,10 +31,9 @@ class OnboardingChipSelectionScreen extends OnboardingView {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    _controller = ref.read(OnboardingChipSelectionController.provider);
+    ref.read(onboardingChipSelectionController.notifier).fetchCategories(type);
     Map<String, List<String>> categories =
-    ref.watch(_controller.categoriesProvider);
-    _controller.fetchCategories(type);
+        ref.watch(onboardingChipSelectionController);
 
     return Column(
       children: [
@@ -47,15 +47,15 @@ class OnboardingChipSelectionScreen extends OnboardingView {
   void onBackPressed() {}
 
   @override
-  bool onNextPressed() {
+  bool onNextPressed(WidgetRef ref) {
     onScreenCompleted();
     return true;
   }
 
   void _onChipSelected(bool selected, String label) {}
 
-  List<Container> _buildSections(BuildContext context,
-      Map<String, List<String>> categories) {
+  List<Container> _buildSections(
+      BuildContext context, Map<String, List<String>> categories) {
     List<Container> sections = [];
     categories.forEach((key, value) {
       sections.add(_buildSection(context, key, value));
@@ -63,14 +63,13 @@ class OnboardingChipSelectionScreen extends OnboardingView {
     return sections;
   }
 
-  Container _buildSection(BuildContext context, String category,
-      List<String> values) {
+  Container _buildSection(
+      BuildContext context, String category, List<String> values) {
     Iterable<LinxChip> chips = values.map(
-          (e) =>
-          LinxChip(
-            label: e.capitalize(),
-            onChipSelected: _onChipSelected,
-          ),
+      (e) => LinxChip(
+        label: e.capitalize(),
+        onChipSelected: _onChipSelected,
+      ),
     );
 
     return Container(

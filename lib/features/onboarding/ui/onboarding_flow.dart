@@ -16,18 +16,13 @@ import 'package:linx/utils/ui_extensions.dart';
 class OnboardingFlow extends ConsumerWidget {
   final _navigatorKey = GlobalKey<NavigatorState>();
   final String initialRoute;
-  OnboardingView? currentScreen;
+  OnboardingView? _currentScreen;
 
   OnboardingFlow({super.key, required this.initialRoute});
 
-  late OnboardingController _controller;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    _controller = ref.read(OnboardingController.provider);
-    int step = ref.watch(_controller.stepProvider);
-    int totalSteps = ref.watch(_controller.totalStepsProvider);
-    bool isStepRequired = ref.watch(_controller.stepRequiredProvider);
+    var state = ref.watch(onboardingControllerProvider);
 
     EdgeInsets padding =
         const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0);
@@ -41,19 +36,13 @@ class OnboardingFlow extends ConsumerWidget {
         body: Column(
           children: [
             _buildOnboardingAppBar(context, ref),
-            _buildProgressIndicator(step, totalSteps),
+            _buildProgressIndicator(state),
             Expanded(
               flex: 1,
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    _getStepCountText(
-                      context,
-                      padding,
-                      step,
-                      totalSteps,
-                      isStepRequired,
-                    ),
+                    _getStepCountText(context, padding, state),
                     IntrinsicHeight(
                       child: Navigator(
                         key: _navigatorKey,
@@ -85,9 +74,9 @@ class OnboardingFlow extends ConsumerWidget {
     );
   }
 
-  LinearProgressIndicator _buildProgressIndicator(int step, int totalSteps) {
+  LinearProgressIndicator _buildProgressIndicator(OnboardingFlowUiState state) {
     return LinearProgressIndicator(
-      value: step * (1 / totalSteps),
+      value: state.step * (1 / state.totalSteps),
       color: LinxColors.progressGrey,
       backgroundColor: LinxColors.transparent,
     );
@@ -107,12 +96,16 @@ class OnboardingFlow extends ConsumerWidget {
   Container _getStepCountText(
     BuildContext context,
     EdgeInsets padding,
-    int step,
-    int totalSteps,
-    bool isStepRequired,
+    OnboardingFlowUiState state
   ) {
-    String text =
-        _controller.getStepCountText(step, totalSteps, isStepRequired);
+    String text;
+
+    if (state.isStepRequired) {
+      text = "STEP ${state.step} OF ${state.totalSteps}";
+    } else {
+      text = "STEP ${state.step} OF ${state.totalSteps} (OPTIONAL)";
+    }
+
     return Container(
       width: context.width(),
       padding: padding,
@@ -126,22 +119,23 @@ class OnboardingFlow extends ConsumerWidget {
   }
 
   void _onNextPressed(WidgetRef ref) async {
-    var nextReady = currentScreen?.onNextPressed() == true;
-    var nextReadyAsync = await currentScreen?.onNextPressedAsync() == true;
+    var nextReady = _currentScreen?.onNextPressed(ref) == true;
+    var nextReadyAsync = await _currentScreen?.onNextPressedAsync(ref) == true;
     if (nextReady || nextReadyAsync) {
-      _controller.onNextPressed();
+      ref.read(onboardingControllerProvider.notifier).onNextPressed();
     }
   }
 
   void _onBackPressed(BuildContext context, WidgetRef ref) {
-    currentScreen?.onBackPressed();
-
-    if (ref.read(_controller.stepProvider) == 1) {
+    _currentScreen?.onBackPressed();
+    var state = ref.watch(onboardingControllerProvider);
+    var notifier = ref.read(onboardingControllerProvider.notifier);
+    if (state.step == 1) {
       Navigator.of(context).pop();
-      _controller.reset();
+      notifier.reset();
     } else {
       _navigatorKey.currentState?.pop();
-      _controller.onBackPressed();
+      notifier.onBackPressed();
     }
   }
 
@@ -164,13 +158,13 @@ class OnboardingFlow extends ConsumerWidget {
       case routeOnboardingSignUp:
         SignUpScreen screen =
             SignUpScreen(onScreenCompleted: _onSignUpComplete);
-        currentScreen = screen;
+        _currentScreen = screen;
         page = screen;
         break;
       case routeOnboardingBasicInfo:
         OnboardingBasicInfoScreen screen =
             OnboardingBasicInfoScreen(onScreenCompleted: _onBasicInfoComplete);
-        currentScreen = screen;
+        _currentScreen = screen;
         page = screen;
         break;
       case routeOnboardingChipClubDescriptor:
@@ -182,12 +176,12 @@ class OnboardingFlow extends ConsumerWidget {
           type: type,
           onScreenCompleted: _onChipSelectionComplete,
         );
-        currentScreen = screen;
+        _currentScreen = screen;
         page = screen;
         break;
       case routeOnboardingCreateProfile:
         OnboardingCreateProfileScreen screen = OnboardingCreateProfileScreen();
-        currentScreen = screen;
+        _currentScreen = screen;
         page = screen;
         break;
     }

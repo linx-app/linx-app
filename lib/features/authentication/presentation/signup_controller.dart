@@ -1,46 +1,45 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/authentication/domain/auth_service.dart';
 import 'package:linx/features/authentication/domain/models/user_type.dart';
 import 'package:linx/utils/validators.dart';
 
-class SignUpController {
-  final ProviderRef ref;
-  late AuthService authService = ref.watch(AuthService.provider);
+final signUpControllerProvider = StateNotifierProvider<SignUpController, SignUpUiState>((ref) {
+  return SignUpController(
+    ref.read(AuthService.provider)
+  );
+});
 
-  static final provider = Provider((ref) => SignUpController(ref: ref));
-  
-  final TextEditingController emailController = TextEditingController();
+class SignUpController extends StateNotifier<SignUpUiState> {
+  final AuthService _authService;
+
+  SignUpController(this._authService): super(SignUpUiState());
+
   final emailErrorProvider = StateProvider<String?>((ref) => null);
-
-  final TextEditingController passwordController = TextEditingController();
   final passwordErrorProvider = StateProvider<String?>((ref) => null);
 
-  final TextEditingController confirmController = TextEditingController();
-
-  SignUpController({required this.ref});
-
-  Future<bool> initiateSignUp(UserType userType) async {
-    String email = emailController.value.text;
-    String password = passwordController.value.text;
-    String confirm = confirmController.value.text;
-
+  Future<bool> initiateSignUp(
+    String email,
+    String password,
+    String confirm,
+    UserType userType,
+  ) async {
     String? emailError = TextValidation.validateEmail(email);
     String? passwordError = TextValidation.validatePassword(password, confirm);
 
-    if (emailError != null) {
-      ref.read(emailErrorProvider.notifier).state = emailError;
-    }
-
-    if (passwordError != null) {
-      ref.read(passwordErrorProvider.notifier).state = passwordError;
-    }
-
     if (emailError == null && passwordError == null) {
-      await authService.createUserWithEmailAndPassword(email, password, userType);
+      await _authService.createUserWithEmailAndPassword(email, password, userType);
       return true;
     } else {
+      // TODO: Implement validation display (https://github.com/linx-app/linx-app/issues/14)
+      state = SignUpUiState(emailError: emailError, passwordError: passwordError);
       return false;
     }
   }
+}
+
+class SignUpUiState {
+  final String? emailError;
+  final String? passwordError;
+
+  SignUpUiState({this.emailError, this.passwordError});
 }

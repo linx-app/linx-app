@@ -1,5 +1,6 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:linx/constants/colors.dart';
 
 class OnboardingProfileImageCarousel extends StatelessWidget {
   final EdgeInsets? padding;
@@ -31,13 +32,20 @@ class OnboardingProfileImageCarousel extends StatelessWidget {
             children: [...pages],
           ),
         ),
-        Center(
-          child: DotsIndicator(
-            dotsCount: length,
-            position: dotPosition.toDouble(),
-          ),
-        ),
+        if (length > 1) _buildDotsIndicator(length),
       ],
+    );
+  }
+  
+  Center _buildDotsIndicator(int count) {
+    return Center(
+      child: DotsIndicator(
+        dotsCount: count,
+        position: dotPosition.toDouble(),
+        decorator: DotsDecorator(
+          activeColor: LinxColors.green
+        ),
+      ),
     );
   }
 }
