@@ -6,6 +6,7 @@ import 'package:linx/utils/ui_extensions.dart';
 abstract class OnboardingView extends ConsumerWidget {
   late String pageTitle;
   late VoidCallback onScreenCompleted;
+  bool isStepRequired = true;
 
   bool onNextPressed(WidgetRef ref) => true;
 

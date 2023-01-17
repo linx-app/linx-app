@@ -5,7 +5,7 @@ import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/routes.dart';
 import 'package:linx/constants/text.dart';
 import 'package:linx/features/authentication/ui/landing_screen.dart';
-import 'package:linx/features/onboarding/ui/onboarding_flow.dart';
+import 'package:linx/features/onboarding/ui/onboarding_flow_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +37,7 @@ class LinxApp extends ConsumerWidget {
           page = const LandingScreen();
         } else if (settings.name!.startsWith(routeOnboardingRoot)) {
           final subRoute = settings.name!.substring(routeOnboardingRoot.length);
-          page = OnboardingFlow(initialRoute: subRoute);
+          page = OnboardingFlowScreen(initialRoute: subRoute);
         } else {
           throw Exception("Unknown route: ${settings.name}");
         }
