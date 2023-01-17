@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
-import 'package:linx/common/buttons/back_button.dart';
+import 'package:linx/common/buttons/linx_text_button.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/routes.dart';
@@ -63,18 +63,17 @@ class OnboardingFlow extends ConsumerWidget {
     );
   }
 
-  SizedBox _buildOnboardingAppBar(
-    BuildContext context,
-    WidgetRef ref,
-    bool isStepRequired,
-  ) {
+  SizedBox _buildOnboardingAppBar(BuildContext context,
+      WidgetRef ref,
+      bool isStepRequired,) {
     return SizedBox(
       width: context.width(),
       height: 56.0,
       child: Material(
         elevation: 2.5,
         child: Row(children: [
-          LinxBackButton(onPressed: () => _onBackPressed(context, ref))
+          _buildBackButton(context, ref),
+          if (!isStepRequired) _buildSkipButton()
         ]),
       ),
     );
@@ -99,8 +98,23 @@ class OnboardingFlow extends ConsumerWidget {
     );
   }
 
-  Container _getStepCountText(
-      BuildContext context, EdgeInsets padding, OnboardingFlowUiState state) {
+  LinxTextButton _buildBackButton(BuildContext context, WidgetRef ref) {
+    return LinxTextButton(
+      label: "Back",
+      onPressed: () => _onBackPressed(context, ref),
+      iconData: Icons.chevron_left,
+    );
+  }
+
+  LinxTextButton _buildSkipButton() {
+    return LinxTextButton(
+      label: "SKIP",
+      onPressed: () => {},
+    );
+  }
+
+  Container _getStepCountText(BuildContext context, EdgeInsets padding,
+      OnboardingFlowUiState state) {
     String text;
 
     if (state.isStepRequired) {
