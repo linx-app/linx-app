@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/linx_text_field.dart';
 import 'package:linx/constants/colors.dart';
-import 'package:linx/features/authentication/domain/models/user_type.dart';
+import 'package:linx/features/user/domain/model/user_type.dart';
 import 'package:linx/features/authentication/presentation/signup_controller.dart';
 import 'package:linx/features/authentication/ui/widgets/password_text_field.dart';
 import 'package:linx/features/authentication/ui/widgets/user_type_toggle_button.dart';

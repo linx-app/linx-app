@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:linx/features/authentication/data/session_repository.dart';
+import 'package:linx/features/user/data/session_repository.dart';
 import 'package:linx/features/image_upload/data/image_upload_repository.dart';
 
 class ImageUploadService {

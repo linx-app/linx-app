@@ -25,15 +25,15 @@ class UserRepository {
     });
   }
 
-  Future<void> updateUserInterests(String uid, Set<String> chips) async {
+  Future<void> updateUserInterests(String uid, Set<String> interests) async {
     _firestore.collection(FirestorePaths.USERS).doc(uid).update({
-      FirestorePaths.INTERESTS: chips.toList()
+      FirestorePaths.INTERESTS: interests.toList()
     });
   }
 
-  Future<void> updateUserDescriptors(String uid, Set<String> chips) async {
+  Future<void> updateUserDescriptors(String uid, Set<String> descriptors) async {
     _firestore.collection(FirestorePaths.USERS).doc(uid).update({
-      FirestorePaths.DESCRIPTORS: chips.toList()
+      FirestorePaths.DESCRIPTORS: descriptors.toList()
     });
   }
   
@@ -41,5 +41,15 @@ class UserRepository {
     _firestore.collection(FirestorePaths.USERS).doc(uid).update({
       FirestorePaths.PROFILE_IMAGES: FieldValue.arrayUnion([url])
     });
+  }
+
+  Future<Map<String, dynamic>> fetchUserProfile(String uid) async {
+    return await _firestore
+        .collection(FirestorePaths.USERS)
+        .doc(uid)
+        .get()
+        .then((DocumentSnapshot snapshot) {
+          return snapshot.data() as Map<String, dynamic>;
+        });
   }
 }

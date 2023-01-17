@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/authentication/data/auth_repository.dart';
-import 'package:linx/features/authentication/data/session_repository.dart';
+import 'package:linx/features/user/data/session_repository.dart';
 import 'package:linx/features/authentication/domain/models/auth_response.dart';
-import 'package:linx/features/authentication/domain/models/user_type.dart';
+import 'package:linx/features/user/domain/model/user_type.dart';
 
 class AuthService {
   static final provider = Provider((ref) {

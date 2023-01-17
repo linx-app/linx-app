@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/authentication/domain/auth_service.dart';
-import 'package:linx/features/authentication/domain/models/user_type.dart';
+import 'package:linx/features/user/domain/model/user_type.dart';
 import 'package:linx/utils/validators.dart';
 
 final signUpControllerProvider = StateNotifierProvider<SignUpController, SignUpUiState>((ref) {

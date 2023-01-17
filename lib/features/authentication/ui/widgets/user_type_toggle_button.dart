@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/constants/colors.dart';
-import 'package:linx/features/authentication/domain/models/user_type.dart';
+import 'package:linx/features/user/domain/model/user_type.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 final userTypeToggleStateProvider = StateProvider((ref) => UserType.club);
