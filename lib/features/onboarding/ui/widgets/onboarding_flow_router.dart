@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/constants/routes.dart';
-import 'package:linx/features/authentication/domain/models/user_type.dart';
+import 'package:linx/features/onboarding/ui/model/chip_selection_screen_type.dart';
+import 'package:linx/features/user/domain/model/user_type.dart';
 import 'package:linx/features/authentication/ui/signup_screen.dart';
 import 'package:linx/features/onboarding/presentation/onboarding_flow_controller.dart';
 import 'package:linx/features/onboarding/ui/onboarding_basic_info_screen.dart';

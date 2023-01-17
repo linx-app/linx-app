@@ -1,14 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:linx/features/onboarding/domain/user_info_service.dart';
+import 'package:linx/features/user/domain/user_info_service.dart';
 
 final onboardingBasicInfoControllerProvider = StateNotifierProvider<OnboardingBasicInfoController, OnboardingBasicInfoUiState>((ref) {
-  var service = ref.watch(OnboardingUserInfoService.provider);
+  var service = ref.watch(UserInfoService.provider);
   return OnboardingBasicInfoController(service);
 });
 
 class OnboardingBasicInfoController
     extends StateNotifier<OnboardingBasicInfoUiState> {
-  final OnboardingUserInfoService _onboardingUserInfoService;
+  final UserInfoService _onboardingUserInfoService;
 
   OnboardingBasicInfoController(this._onboardingUserInfoService)
       : super(OnboardingBasicInfoUiState());

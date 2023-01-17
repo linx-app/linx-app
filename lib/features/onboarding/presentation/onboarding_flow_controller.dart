@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:linx/features/authentication/domain/models/user_type.dart';
+import 'package:linx/features/user/domain/model/user_type.dart';
 import 'package:linx/features/authentication/ui/widgets/user_type_toggle_button.dart';
 
 final onboardingControllerProvider = StateNotifierProvider<OnboardingController, OnboardingFlowUiState>((ref) {

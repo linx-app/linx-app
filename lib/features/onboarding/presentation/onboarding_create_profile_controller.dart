@@ -2,23 +2,23 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/image_upload/domain/image_upload_service.dart';
-import 'package:linx/features/onboarding/domain/profile_image_upload_service.dart';
+import 'package:linx/features/user/domain/user_profile_image_service.dart';
 
 final onboardingCreateProfileController =
     StateNotifierProvider<OnboardingCreateProfileController, List<String?>>(
         (ref) {
   return OnboardingCreateProfileController(
     ref.read(ImageUploadService.provider),
-    ref.read(OnboardingProfileImageUploadService.provider),
+    ref.read(UserProfileImageService.provider),
   );
 });
 
 class OnboardingCreateProfileController extends StateNotifier<List<String?>> {
   final ImageUploadService _imageUploadService;
-  final OnboardingProfileImageUploadService _profileImageUploadService;
+  final UserProfileImageService _userProfileImageService;
 
   OnboardingCreateProfileController(
-      this._imageUploadService, this._profileImageUploadService)
+      this._imageUploadService, this._userProfileImageService)
       : super([null]);
 
   Future<void> onFileSelected(File file) async {
@@ -27,7 +27,7 @@ class OnboardingCreateProfileController extends StateNotifier<List<String?>> {
     _addLoading();
     var url = await _imageUploadService.uploadImage(file, imageName);
     if (url != null) {
-      await _profileImageUploadService.uploadProfileImage(url);
+      await _userProfileImageService.uploadProfileImage(url);
       _replaceLoading(url);
     }
   }

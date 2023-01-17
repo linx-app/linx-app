@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/linx_chip.dart';
 import 'package:linx/constants/colors.dart';
+import 'package:linx/features/onboarding/ui/model/chip_selection_screen_type.dart';
 import 'package:linx/features/onboarding/presentation/onboarding_chip_selection_controller.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
 import 'package:linx/utils/ui_extensions.dart';
@@ -106,10 +107,4 @@ class OnboardingChipSelectionScreen extends OnboardingView {
       ),
     );
   }
-}
-
-enum ChipSelectionScreenType {
-  clubDescriptors,
-  clubInterests,
-  businessInterests
 }
