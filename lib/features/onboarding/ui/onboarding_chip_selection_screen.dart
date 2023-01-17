@@ -9,12 +9,11 @@ import 'package:linx/utils/ui_extensions.dart';
 class OnboardingChipSelectionScreen extends OnboardingView {
   final ChipSelectionScreenType type;
 
-  @override
-  late VoidCallback onScreenCompleted;
+  final Function(ChipSelectionScreenType) onChipSelectionComplete;
 
   OnboardingChipSelectionScreen({
     required this.type,
-    required this.onScreenCompleted,
+    required this.onChipSelectionComplete,
   }) {
     switch (type) {
       case ChipSelectionScreenType.clubDescriptors:
@@ -47,7 +46,7 @@ class OnboardingChipSelectionScreen extends OnboardingView {
   @override
   bool onNextPressed(WidgetRef ref) {
     ref.read(onboardingChipSelectionController.notifier).updateUserChips(type);
-    onScreenCompleted();
+    onChipSelectionComplete(type);
     return true;
   }
 

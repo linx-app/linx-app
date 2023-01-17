@@ -19,10 +19,15 @@ class OnboardingSponsorshipPackageScreen extends OnboardingView {
   ];
 
   @override
+  final VoidCallback onScreenCompleted;
+
+  @override
   final String pageTitle = "Create custom packages";
 
   @override
   bool isStepRequired = false;
+
+  OnboardingSponsorshipPackageScreen(this.onScreenCompleted);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -40,6 +45,12 @@ class OnboardingSponsorshipPackageScreen extends OnboardingView {
   @override
   void onBackPressed() {
     // TODO: implement onBackPressed
+  }
+
+  @override
+  bool onNextPressed(WidgetRef ref) {
+    onScreenCompleted();
+    return super.onNextPressed(ref);
   }
 
   Container _buildAddAnotherButton(WidgetRef ref, int numberOfPackages) {

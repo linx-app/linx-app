@@ -1,4 +1,3 @@
-import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/linx_chip.dart';
@@ -111,7 +110,8 @@ class OnboardingReviewProfileScreen extends OnboardingView {
           children: [
             LinxChip(
               label: "Chip 1",
-              onChipSelected: (bool, str) {},
+              onChipSelected: (str) {},
+              isSelected: false,
             ),
           ],
         ),

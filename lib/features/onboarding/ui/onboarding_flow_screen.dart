@@ -10,15 +10,13 @@ import 'package:linx/utils/ui_extensions.dart';
 
 class OnboardingFlowScreen extends OnboardingFlowRouter {
   final String initialRoute;
+  final _padding = const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0);
 
   OnboardingFlowScreen({required this.initialRoute});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var state = ref.watch(onboardingControllerProvider);
-
-    EdgeInsets padding =
-        const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0);
 
     return WillPopScope(
       onWillPop: () async {
@@ -35,7 +33,7 @@ class OnboardingFlowScreen extends OnboardingFlowRouter {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    _getStepCountText(context, padding, state),
+                    _getStepCountText(context, state),
                     IntrinsicHeight(
                       child: Navigator(
                         key: navigatorKey,
@@ -47,7 +45,7 @@ class OnboardingFlowScreen extends OnboardingFlowRouter {
                 ),
               ),
             ),
-            _buildNextFlowButton(padding, ref)
+            _buildNextFlowButton(state, ref)
           ],
         ),
       ),
@@ -66,7 +64,7 @@ class OnboardingFlowScreen extends OnboardingFlowRouter {
         elevation: 2.5,
         child: Row(children: [
           _buildBackButton(context, ref),
-          if (!isStepRequired) _buildSkipButton(context)
+          if (!isStepRequired) _buildSkipButton(context, ref)
         ]),
       ),
     );
@@ -80,13 +78,14 @@ class OnboardingFlowScreen extends OnboardingFlowRouter {
     );
   }
 
-  Container _buildNextFlowButton(EdgeInsets padding, WidgetRef ref) {
+  Container _buildNextFlowButton(OnboardingFlowUiState state, WidgetRef ref) {
+    var text = state.step == state.totalSteps ? "Confirm" : "Next";
     return Container(
-      padding: padding,
+      padding: _padding,
       child: RoundedButton(
         style: greenButtonStyle(),
         onPressed: () => onNextPressed(ref),
-        text: "Next",
+        text: text,
       ),
     );
   }
@@ -104,13 +103,13 @@ class OnboardingFlowScreen extends OnboardingFlowRouter {
     );
   }
 
-  Container _buildSkipButton(BuildContext context) {
+  Container _buildSkipButton(BuildContext context, WidgetRef ref) {
     return Container(
       alignment: Alignment.centerRight,
       width: context.width() / 2,
       child: LinxTextButton(
         label: "SKIP",
-        onPressed: () => onSkipPressed(context),
+        onPressed: () => onNextPressed(ref),
         tint: LinxColors.backButtonGrey,
       ),
     );
@@ -118,7 +117,6 @@ class OnboardingFlowScreen extends OnboardingFlowRouter {
 
   Container _getStepCountText(
     BuildContext context,
-    EdgeInsets padding,
     OnboardingFlowUiState state,
   ) {
     String text;
@@ -131,7 +129,7 @@ class OnboardingFlowScreen extends OnboardingFlowRouter {
 
     return Container(
       width: context.width(),
-      padding: padding,
+      padding: _padding,
       child: Text(text,
           style: const TextStyle(
             fontSize: 12.0,
