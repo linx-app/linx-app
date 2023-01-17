@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/linx_chip.dart';
+import 'package:linx/common/sponsorship_package_card.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/text.dart';
+import 'package:linx/features/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_profile_image.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_profile_image_carousel.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
@@ -20,8 +22,13 @@ class OnboardingReviewProfileScreen extends OnboardingView {
         buildOnboardingStepTitle(context),
         _buildProfileImageSection(ref),
         ..._buildWhoAreYouSection(),
-        ..._buildChipsSection(),
-        ..._buildBiographySection()
+        _buildChipsSection(),
+        _buildBiographySection(),
+        _buildSectionTitle("Looking for"),
+        _buildChipsSection(),
+        _buildSectionTitle("Packages"),
+        _buildPackagesSection(),
+        SizedBox(height: 32)
       ],
     );
   }
@@ -37,8 +44,7 @@ class OnboardingReviewProfileScreen extends OnboardingView {
       "https://picsum.photos/200/300",
       "https://picsum.photos/200/300",
       "https://picsum.photos/200/300"
-    ].map((url)
-    {
+    ].map((url) {
       return OnboardingProfileImage(
         url: url,
         alignment: Alignment.topRight,
@@ -54,7 +60,9 @@ class OnboardingReviewProfileScreen extends OnboardingView {
     }).toList();
 
     return OnboardingProfileImageCarousel(
-      onPageChanged: (page) { dotPosition.state = page.toDouble(); },
+      onPageChanged: (page) {
+        dotPosition.state = page.toDouble();
+      },
       dotPosition: ref.watch(imageCarouselPageProvider).toInt(),
       pages: pages,
       controller: PageController(viewportFraction: 0.925),
@@ -67,7 +75,7 @@ class OnboardingReviewProfileScreen extends OnboardingView {
         padding: EdgeInsets.symmetric(horizontal: 24),
         child: Row(
           children: [
-            Expanded(
+            const Expanded(
               flex: 1,
               child: Text(
                 "User display name",
@@ -101,40 +109,89 @@ class OnboardingReviewProfileScreen extends OnboardingView {
     ];
   }
 
-  List<Widget> _buildChipsSection() {
-    return [
-      Container(
-        padding: EdgeInsets.symmetric(horizontal: 24),
-        alignment: Alignment.centerLeft,
-        child: Wrap(
-          children: [
-            LinxChip(
-              label: "Chip 1",
-              onChipSelected: (str) {},
-              isSelected: false,
-            ),
-          ],
-        ),
+  Container _buildChipsSection() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 24),
+      alignment: Alignment.centerLeft,
+      child: Wrap(
+        children: [
+          LinxChip(
+            label: "Chip 1",
+            onChipSelected: (str) {},
+            isSelected: false,
+          ),
+        ],
       ),
-    ];
+    );
   }
 
-  List<Widget> _buildBiographySection() {
-    return [
-      Container(
-        padding: EdgeInsets.symmetric(horizontal: 24),
+  Container _buildBiographySection() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 24),
+      child: Row(
+        children: const [
+          Flexible(
+            child: Text(
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ",
+              style: LinxTextStyles.regular,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container _buildSectionTitle(String title) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Text(
+              title,
+              style: const TextStyle(
+                  color: LinxColors.subtitleGrey,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 17),
+            ),
+          ),
+          IconButton(
+            iconSize: 22,
+            icon: const Icon(
+              Icons.edit,
+              color: LinxColors.editIconButtonGrey,
+            ),
+            onPressed: _onEditWhoAreYouPressed,
+          )
+        ],
+      ),
+    );
+  }
+
+  Container _buildPackagesSection() {
+    return Container(
+      child: SingleChildScrollView(
+        clipBehavior: Clip.none,
+        scrollDirection: Axis.horizontal,
         child: Row(
-          children: const [
-            Flexible(
-              child: Text(
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ",
-                style: LinxTextStyles.regular,
-              ),
+          children: [
+            SponsorshipPackageCard(
+              package: SponsorshipPackage(
+                  name: "Gold Tier",
+                  ownBenefit: "\$1000",
+                  partnerBenefit: "Logo"),
+            ),
+            SponsorshipPackageCard(
+              package: SponsorshipPackage(
+                  name: "Gold Tier",
+                  ownBenefit: "\$1000",
+                  partnerBenefit: "Logo"),
             ),
           ],
         ),
       ),
-    ];
+    );
   }
 
   void _onEditWhoAreYouPressed() {}

@@ -10,13 +10,28 @@ class SponsorshipPackageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Column(children: [
-        _buildTitleText(),
-        _buildSubtitleText("What you get"),
-        _buildDescriptionText(package.ownBenefit),
-        _buildSubtitleText("What your partner get"),
-        _buildDescriptionText(package.partnerBenefit),
-      ]),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      margin: EdgeInsets.only(left: 24),
+      elevation: 10,
+      child: Container(
+        height: 250,
+        width: 200,
+        padding: EdgeInsets.all(17),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildTitleText(),
+            SizedBox(height: 17),
+            _buildSubtitleText("What you get"),
+            SizedBox(height: 12),
+            _buildDescriptionText(package.ownBenefit),
+            SizedBox(height: 32),
+            _buildSubtitleText("What your partner get"),
+            SizedBox(height: 12),
+            _buildDescriptionText(package.partnerBenefit),
+          ],
+        ),
+      ),
     );
   }
 
