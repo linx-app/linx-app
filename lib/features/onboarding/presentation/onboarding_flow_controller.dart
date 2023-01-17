@@ -17,18 +17,18 @@ class OnboardingController extends StateNotifier<OnboardingFlowUiState> {
     }
   }
 
-  void onNextPressed() {
+  void onNextPressed(bool isStepRequired) {
     state = OnboardingFlowUiState(
         step: state.step + 1,
-        isStepRequired: state.isStepRequired,
+        isStepRequired: isStepRequired,
         totalSteps: state.totalSteps
     );
   }
 
-  void onBackPressed() {
+  void onBackPressed(bool isStepRequired) {
     state = OnboardingFlowUiState(
       step: state.step - 1,
-      isStepRequired: state.isStepRequired,
+      isStepRequired: isStepRequired,
       totalSteps: state.totalSteps
     );
   }

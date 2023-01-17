@@ -32,9 +32,12 @@ abstract class LinxTextStyles {
     fontSize: 15.0,
   );
 
-  static TextStyle textButton({required Color color}) => TextStyle(
+  static TextStyle textButton({
+    required Color color,
+    FontWeight? weight = FontWeight.w400
+  }) => TextStyle(
     color: color,
-    fontWeight: FontWeight.w400,
+    fontWeight: weight,
     fontSize: 15.0
   );
 }

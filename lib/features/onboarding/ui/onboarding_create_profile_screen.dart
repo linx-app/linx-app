@@ -13,12 +13,14 @@ import 'package:linx/utils/ui_extensions.dart';
 
 class OnboardingCreateProfileScreen extends OnboardingView {
   @override
-  late final VoidCallback onScreenCompleted;
+  final VoidCallback onScreenCompleted;
 
   @override
   final String pageTitle = "Create your profile";
   final _carouselCurrentPage = StateProvider((ref) => 0);
   final TextEditingController _bioController = TextEditingController();
+
+  OnboardingCreateProfileScreen(this.onScreenCompleted);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,6 +46,7 @@ class OnboardingCreateProfileScreen extends OnboardingView {
 
   @override
   bool onNextPressed(WidgetRef ref) {
+    onScreenCompleted();
     return true;
   }
 
