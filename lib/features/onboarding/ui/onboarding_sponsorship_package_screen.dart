@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/buttons/linx_text_button.dart';
 import 'package:linx/common/linx_text_field.dart';
 import 'package:linx/constants/colors.dart';
+import 'package:linx/features/onboarding/presentation/onboarding_sponsorship_package_controller.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
 
 final _numberOfPackagesProvider = StateProvider((ref) => 1);
@@ -48,9 +49,25 @@ class OnboardingSponsorshipPackageScreen extends OnboardingView {
   }
 
   @override
-  bool onNextPressed(WidgetRef ref) {
+  Future<bool> onNextPressedAsync(WidgetRef ref) async {
+    var notifier =
+        ref.read(onboardingSponsorshipPackageControllerProvider.notifier);
+    var numberOfPackages = ref.read(_numberOfPackagesProvider);
+    var packageNames =
+        _packageNameControllers.map((e) => e.value.text).toList();
+    var ownBenefits = _ownBenefitsControllers.map((e) => e.value.text).toList();
+    var partnerBenefits =
+        _partnerBenefitsControllers.map((e) => e.value.text).toList();
+
+    await notifier.updateSponsorshipPackages(
+      numberOfPackages,
+      packageNames,
+      ownBenefits,
+      partnerBenefits,
+    );
+
     onScreenCompleted();
-    return super.onNextPressed(ref);
+    return super.onNextPressedAsync(ref);
   }
 
   Container _buildAddAnotherButton(WidgetRef ref, int numberOfPackages) {
@@ -59,7 +76,7 @@ class OnboardingSponsorshipPackageScreen extends OnboardingView {
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: LinxTextButton(
         label: "Add another",
-        onPressed: () => { _onAddAnotherPressed(ref, numberOfPackages) },
+        onPressed: () => {_onAddAnotherPressed(ref, numberOfPackages)},
         tint: LinxColors.green,
         iconData: Icons.add,
         weight: FontWeight.w600,

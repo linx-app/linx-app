@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:linx/features/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/user/data/session_repository.dart';
 import 'package:linx/features/user/data/user_repository.dart';
 
@@ -27,5 +28,10 @@ class UserInfoService {
       phoneNumber: phoneNumber,
       location: location,
     );
+  }
+
+  Future<void> updateSponsorshipPackages(List<SponsorshipPackage> packages) async {
+    var uid = await _sessionRepository.getUserId();
+    await _userRepository.updateUserSponsorshipPackages(uid, packages);
   }
 }
