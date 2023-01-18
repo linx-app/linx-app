@@ -1,5 +1,11 @@
 class FirestorePaths {
 
+  /// PACKAGES COLLECTION ///
+  static const String OWN_BENEFITS = "own_benefits";
+  static const String PARTNER_BENEFITS = "partner_benefits";
+  static const String USER_ID = "user_id";
+
+
   /// MISC COLLECTION ///
   static const String MISC = "misc";
 
@@ -22,4 +28,5 @@ class FirestorePaths {
   static const String DESCRIPTORS = "descriptors";
   static const String PROFILE_IMAGES = "profile_images";
   static const String PACKAGES = "packages";
+  static const String BIOGRAPHY = "biography";
 }

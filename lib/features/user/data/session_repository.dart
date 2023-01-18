@@ -1,21 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:linx/firebase/firebase_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionRepository {
-  static final provider = Provider((ref) => SessionRepository());
+  static final provider = Provider((ref) => SessionRepository(ref.read(firebaseAuthProvider)));
 
-  final String _uid = "user_id";
+  final FirebaseAuth _auth;
   final String _userType = "user_type";
 
-  Future<void> setUserId(String uid) async {
-    var prefs = await SharedPreferences.getInstance();
-    prefs.setString(_uid, uid);
-  }
+  SessionRepository(this._auth);
 
   Future<String> getUserId() async {
-    var prefs = await SharedPreferences.getInstance();
-    var uid = prefs.getString(_uid);
-
+    var uid = _auth.currentUser?.uid;
     if (uid == null) {
       throw Exception("User id not found");
     } else {

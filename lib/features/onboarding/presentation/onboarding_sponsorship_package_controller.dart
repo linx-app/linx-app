@@ -25,10 +25,13 @@ class OnboardingSponsorshipPackageController
   ) async {
     List<SponsorshipPackage> packages = [];
     for (var i = 0; i < numberOfPackages; i++) {
-      packages.add(SponsorshipPackage(
+      packages.add(
+        SponsorshipPackage(
           name: packageNames[i],
           ownBenefit: ownBenefits[i],
-          partnerBenefit: partnerBenefits[i]));
+          partnerBenefit: partnerBenefits[i],
+        ),
+      );
     }
     await _userInfoService.updateSponsorshipPackages(packages);
   }
