@@ -1,0 +1,4 @@
+enum OnboardingNav {
+  next,
+  back
+}

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/user/data/model/firestore_user.dart';
 import 'package:linx/firebase/firebase_providers.dart';
 import 'package:linx/firebase/firestore_paths.dart';
+import 'package:linx/firebase/firebase_extensions.dart';
 
 class UserRepository {
   static final provider = Provider((ref) {
@@ -13,16 +14,19 @@ class UserRepository {
 
   UserRepository(this._firestore);
 
-  Future<void> updateUserInfo(
-      {required String uid,
-      String? name,
-      String? phoneNumber,
-      String? location}) async {
-    _firestore.collection(FirestorePaths.USERS).doc(uid).update({
-      FirestorePaths.NAME: name,
-      FirestorePaths.PHONE_NUMBER: phoneNumber,
-      FirestorePaths.LOCATION: location
-    });
+  Future<void> updateUserInfo({
+    required String uid,
+    String? name,
+    String? phoneNumber,
+    String? location,
+  }) async {
+    _firestore.collection(FirestorePaths.USERS).doc(uid).update(
+      {
+        FirestorePaths.NAME: name,
+        FirestorePaths.PHONE_NUMBER: phoneNumber,
+        FirestorePaths.LOCATION: location,
+      },
+    );
   }
 
   Future<void> updateUserInterests(String uid, Set<String> interests) async {
@@ -56,14 +60,15 @@ class UserRepository {
         var obj = snapshot.data() as Map<String, dynamic>;
         return FirestoreUser(
           uid: uid,
-          displayName: obj[FirestorePaths.NAME] as String,
-          type: obj[FirestorePaths.TYPE] as String,
-          location: obj[FirestorePaths.LOCATION] as String,
-          phoneNumber: obj[FirestorePaths.PHONE_NUMBER] as String,
-          biography: obj[FirestorePaths.BIOGRAPHY] as String,
-          interests: obj[FirestorePaths.INTERESTS] as List<String>,
-          descriptors: obj[FirestorePaths.DESCRIPTORS] as List<String>,
-          packages: obj[FirestorePaths.PACKAGES] as List<String>,
+          displayName: obj[FirestorePaths.NAME] ?? "",
+          type: obj[FirestorePaths.TYPE] ?? "",
+          location: obj[FirestorePaths.LOCATION] ?? "",
+          phoneNumber: obj[FirestorePaths.PHONE_NUMBER] ?? "",
+          biography: obj[FirestorePaths.BIOGRAPHY] ?? "",
+          interests: ((obj[FirestorePaths.INTERESTS] ?? []) as List<dynamic>).toStrList(),
+          descriptors: ((obj[FirestorePaths.DESCRIPTORS] ?? []) as List<dynamic>).toStrList(),
+          packages: ((obj[FirestorePaths.PACKAGES] ?? []) as List<dynamic>).toStrList(),
+          profileImageUrls: ((obj[FirestorePaths.PROFILE_IMAGES] ?? []) as List<dynamic>).toStrList(),
         );
       },
     );

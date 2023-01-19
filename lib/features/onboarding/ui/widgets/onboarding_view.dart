@@ -1,18 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/constants/text.dart';
+import 'package:linx/features/onboarding/ui/model/onboarding_nav.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 abstract class OnboardingView extends ConsumerWidget {
-  late String pageTitle;
-  late VoidCallback onScreenCompleted;
+  final String pageTitle;
+  final Function(OnboardingNav) onScreenCompleted;
+
   bool isStepRequired = true;
 
-  bool onNextPressed(WidgetRef ref) => true;
+  bool onNextPressed(WidgetRef ref) {
+    return true;
+  }
 
-  Future<bool> onNextPressedAsync(WidgetRef ref) async => await Future(() => true);
+  Future<bool> onNextPressedAsync(WidgetRef ref) async {
+    return await Future(() => true);
+  }
 
-  void onBackPressed();
+  void onScreenPushed(WidgetRef ref);
+
+  void onBackPressed() {
+    onScreenCompleted(OnboardingNav.back);
+  }
+
+  OnboardingView({
+    required this.onScreenCompleted,
+    required this.pageTitle,
+  });
 
   @protected
   Container buildOnboardingStepTitle(BuildContext context) {

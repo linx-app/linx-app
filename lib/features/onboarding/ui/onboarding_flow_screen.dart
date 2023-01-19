@@ -38,7 +38,7 @@ class OnboardingFlowScreen extends OnboardingFlowRouter {
                       child: Navigator(
                         key: navigatorKey,
                         initialRoute: initialRoute,
-                        onGenerateRoute: onGenerateRoute,
+                        onGenerateRoute: (settings) => onGenerateRoute(settings, ref),
                       ),
                     ),
                   ],

@@ -9,6 +9,7 @@ class FirestoreUser {
   final List<String> descriptors;
   final String type;
   final List<String> packages;
+  final List<String> profileImageUrls;
 
   FirestoreUser({
     required this.uid,
@@ -20,6 +21,7 @@ class FirestoreUser {
     this.biography = "",
     this.interests = const [],
     this.descriptors = const [],
-    this.packages = const []
+    this.packages = const [],
+    this.profileImageUrls = const [],
   });
 }

@@ -6,25 +6,25 @@ import 'package:linx/common/linx_text_field.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/image_upload/ui/image_uploader.dart';
 import 'package:linx/features/onboarding/presentation/onboarding_create_profile_controller.dart';
+import 'package:linx/features/onboarding/ui/model/onboarding_nav.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_profile_image.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_profile_image_carousel.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class OnboardingCreateProfileScreen extends OnboardingView {
-  @override
-  final VoidCallback onScreenCompleted;
-
-  @override
-  final String pageTitle = "Create your profile";
   final _carouselCurrentPage = StateProvider((ref) => 0);
   final TextEditingController _bioController = TextEditingController();
 
-  OnboardingCreateProfileScreen(this.onScreenCompleted);
+  OnboardingCreateProfileScreen({
+    required super.onScreenCompleted,
+  }): super(pageTitle: "Create profile");
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    List<Widget> pages = _mapUrlsToPages(ref);
+    var state = ref.watch(onboardingCreateProfileController);
+    List<Widget> pages = _mapUrlsToPages(state.profileImageUrls, ref);
+    _bioController.text = state.biography;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,17 +37,6 @@ class OnboardingCreateProfileScreen extends OnboardingView {
         _buildSectionTitle("Social media"),
       ],
     );
-  }
-
-  @override
-  void onBackPressed() {
-    // TODO: implement onBackPressed
-  }
-
-  @override
-  bool onNextPressed(WidgetRef ref) {
-    onScreenCompleted();
-    return true;
   }
 
   void _onFileSelected(File file, WidgetRef ref) {
@@ -79,8 +68,8 @@ class OnboardingCreateProfileScreen extends OnboardingView {
     );
   }
 
-  List<Widget> _mapUrlsToPages(WidgetRef ref) {
-    return ref.watch(onboardingCreateProfileController).map((url) {
+  List<Widget> _mapUrlsToPages(List<String?> profileImageUrls, WidgetRef ref) {
+    return profileImageUrls.map((url) {
       if (url == null) {
         return ImageUploader((file) => _onFileSelected(file, ref));
       } else if (url == "Loading") {
@@ -114,5 +103,16 @@ class OnboardingCreateProfileScreen extends OnboardingView {
       controller: PageController(viewportFraction: 0.90),
       dotPosition: ref.watch(_carouselCurrentPage),
     );
+  }
+
+  @override
+  void onScreenPushed(WidgetRef ref) {
+    ref.read(onboardingCreateProfileController.notifier).fetchUserInfo();
+  }
+
+  @override
+  bool onNextPressed(WidgetRef ref) {
+    onScreenCompleted(OnboardingNav.next);
+    return true;
   }
 }

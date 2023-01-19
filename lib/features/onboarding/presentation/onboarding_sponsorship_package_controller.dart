@@ -24,6 +24,7 @@ class OnboardingSponsorshipPackageController
     List<String> partnerBenefits,
   ) async {
     List<SponsorshipPackage> packages = [];
+
     for (var i = 0; i < numberOfPackages; i++) {
       packages.add(
         SponsorshipPackage(
@@ -33,6 +34,7 @@ class OnboardingSponsorshipPackageController
         ),
       );
     }
+
     await _userInfoService.updateSponsorshipPackages(packages);
   }
 }

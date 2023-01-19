@@ -35,6 +35,7 @@ class UserService {
       interests: networkUser.interests.toSet(),
       descriptors: networkUser.descriptors.toSet(),
       packages: await _sponsorshipPackageRepository.fetchSponsorshipPackages(networkUser.packages),
+      profileImageUrls: networkUser.profileImageUrls,
     );
     return domainUser;
   }

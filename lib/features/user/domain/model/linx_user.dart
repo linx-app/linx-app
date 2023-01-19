@@ -12,6 +12,7 @@ class LinxUser {
   final Set<String> descriptors;
   final UserType type;
   final List<SponsorshipPackage> packages;
+  final List<String> profileImageUrls;
 
   LinxUser({
     required this.uid,
@@ -23,6 +24,7 @@ class LinxUser {
     this.biography = "",
     this.interests = const {},
     this.descriptors = const {},
-    this.packages = const []
+    this.packages = const [],
+    this.profileImageUrls = const [],
   });
 }

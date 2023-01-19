@@ -4,6 +4,7 @@ import 'package:linx/common/buttons/linx_text_button.dart';
 import 'package:linx/common/linx_text_field.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/onboarding/presentation/onboarding_sponsorship_package_controller.dart';
+import 'package:linx/features/onboarding/ui/model/onboarding_nav.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
 
 final _numberOfPackagesProvider = StateProvider((ref) => 1);
@@ -20,15 +21,11 @@ class OnboardingSponsorshipPackageScreen extends OnboardingView {
   ];
 
   @override
-  final VoidCallback onScreenCompleted;
-
-  @override
-  final String pageTitle = "Create custom packages";
-
-  @override
   bool isStepRequired = false;
 
-  OnboardingSponsorshipPackageScreen(this.onScreenCompleted);
+  OnboardingSponsorshipPackageScreen({
+    required super.onScreenCompleted,
+  }) : super(pageTitle: "Create custom packages");
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,12 +41,7 @@ class OnboardingSponsorshipPackageScreen extends OnboardingView {
   }
 
   @override
-  void onBackPressed() {
-    // TODO: implement onBackPressed
-  }
-
-  @override
-  Future<bool> onNextPressedAsync(WidgetRef ref) async {
+  bool onNextPressed(WidgetRef ref) {
     var notifier =
         ref.read(onboardingSponsorshipPackageControllerProvider.notifier);
     var numberOfPackages = ref.read(_numberOfPackagesProvider);
@@ -59,15 +51,16 @@ class OnboardingSponsorshipPackageScreen extends OnboardingView {
     var partnerBenefits =
         _partnerBenefitsControllers.map((e) => e.value.text).toList();
 
-    await notifier.updateSponsorshipPackages(
+    notifier.updateSponsorshipPackages(
       numberOfPackages,
       packageNames,
       ownBenefits,
       partnerBenefits,
     );
 
-    onScreenCompleted();
-    return super.onNextPressedAsync(ref);
+    onScreenCompleted(OnboardingNav.next);
+
+    return true;
   }
 
   Container _buildAddAnotherButton(WidgetRef ref, int numberOfPackages) {
@@ -145,5 +138,10 @@ class OnboardingSponsorshipPackageScreen extends OnboardingView {
         ],
       ),
     );
+  }
+
+  @override
+  void onScreenPushed(WidgetRef ref) {
+    // TODO: implement onScreenPushed
   }
 }

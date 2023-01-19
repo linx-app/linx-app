@@ -5,46 +5,61 @@ import 'package:linx/common/sponsorship_package_card.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/text.dart';
 import 'package:linx/features/core/domain/model/sponsorship_package.dart';
+import 'package:linx/features/onboarding/presentation/onboarding_review_profile_controller.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_profile_image.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_profile_image_carousel.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 
 class OnboardingReviewProfileScreen extends OnboardingView {
-  @override
-  final pageTitle = "Review profile";
+  final _imageCarouselPageProvider = StateProvider((ref) => 0.0);
 
-  final imageCarouselPageProvider = StateProvider((ref) => 0.0);
+  OnboardingReviewProfileScreen({
+    required super.onScreenCompleted,
+  }) : super(pageTitle: "Review profile");
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    var state = ref.watch(onboardingReviewProfileControllerProvider);
+
+    var descriptorChips = state.descriptors.map((e) {
+      return LinxChip(
+        label: e,
+        onChipSelected: (str) {},
+        isSelected: false,
+      );
+    });
+
+    var interestChips = state.interests.map((e) {
+      return LinxChip(
+        label: e,
+        onChipSelected: (str) {},
+        isSelected: false,
+      );
+    });
+
     return Column(
       children: [
         buildOnboardingStepTitle(context),
-        _buildProfileImageSection(ref),
-        ..._buildWhoAreYouSection(),
-        _buildChipsSection(),
-        _buildBiographySection(),
+        _buildProfileImageSection(ref, state),
+        ..._buildWhoAreYouSection(state),
+        _buildChipsSection(descriptorChips),
+        _buildBiographySection(state.biography),
         _buildSectionTitle("Looking for"),
-        _buildChipsSection(),
+        _buildChipsSection(interestChips),
         _buildSectionTitle("Packages"),
-        _buildPackagesSection(),
+        _buildPackagesSection(state.packages),
         SizedBox(height: 32)
       ],
     );
   }
 
-  @override
-  void onBackPressed() {
-    // TODO: implement onBackPressed
-  }
-
-  OnboardingProfileImageCarousel _buildProfileImageSection(WidgetRef ref) {
-    var dotPosition = ref.read(imageCarouselPageProvider.notifier);
-    List<Widget> pages = [
-      "https://picsum.photos/200/300",
-      "https://picsum.photos/200/300",
-      "https://picsum.photos/200/300"
-    ].map((url) {
+  OnboardingProfileImageCarousel _buildProfileImageSection(
+    WidgetRef ref,
+    LinxUser user,
+  ) {
+    var dotPosition = ref.read(_imageCarouselPageProvider.notifier);
+    List<Widget> pages = user.profileImageUrls.map((url) {
       return OnboardingProfileImage(
         url: url,
         alignment: Alignment.topRight,
@@ -63,22 +78,22 @@ class OnboardingReviewProfileScreen extends OnboardingView {
       onPageChanged: (page) {
         dotPosition.state = page.toDouble();
       },
-      dotPosition: ref.watch(imageCarouselPageProvider).toInt(),
+      dotPosition: ref.watch(_imageCarouselPageProvider).toInt(),
       pages: pages,
       controller: PageController(viewportFraction: 0.925),
     );
   }
 
-  List<Widget> _buildWhoAreYouSection() {
+  List<Widget> _buildWhoAreYouSection(LinxUser user) {
     return [
       Container(
-        padding: EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Row(
           children: [
-            const Expanded(
+            Expanded(
               flex: 1,
               child: Text(
-                "User display name",
+                user.displayName,
                 style: LinxTextStyles.subtitle,
               ),
             ),
@@ -95,10 +110,10 @@ class OnboardingReviewProfileScreen extends OnboardingView {
       ),
       Container(
         alignment: Alignment.centerLeft,
-        padding: EdgeInsets.symmetric(horizontal: 24),
-        child: const Text(
-          "User location",
-          style: TextStyle(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Text(
+          user.location,
+          style: const TextStyle(
             color: LinxColors.locationTextGrey,
             fontWeight: FontWeight.w400,
             fontSize: 16,
@@ -109,30 +124,22 @@ class OnboardingReviewProfileScreen extends OnboardingView {
     ];
   }
 
-  Container _buildChipsSection() {
+  Container _buildChipsSection(Iterable<LinxChip> chips) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       alignment: Alignment.centerLeft,
-      child: Wrap(
-        children: [
-          LinxChip(
-            label: "Chip 1",
-            onChipSelected: (str) {},
-            isSelected: false,
-          ),
-        ],
-      ),
+      child: Wrap(children: [...chips]),
     );
   }
 
-  Container _buildBiographySection() {
+  Container _buildBiographySection(String biography) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24),
       child: Row(
-        children: const [
+        children: [
           Flexible(
             child: Text(
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ",
+              biography,
               style: LinxTextStyles.regular,
             ),
           ),
@@ -169,32 +176,23 @@ class OnboardingReviewProfileScreen extends OnboardingView {
     );
   }
 
-  Container _buildPackagesSection() {
-    return Container(
-      child: SingleChildScrollView(
-        clipBehavior: Clip.none,
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            SponsorshipPackageCard(
-              package: SponsorshipPackage(
-                  name: "Gold Tier",
-                  ownBenefit: "\$1000",
-                  partnerBenefit: "Logo"),
-            ),
-            SponsorshipPackageCard(
-              package: SponsorshipPackage(
-                  name: "Gold Tier",
-                  ownBenefit: "\$1000",
-                  partnerBenefit: "Logo"),
-            ),
-          ],
-        ),
-      ),
+  SingleChildScrollView _buildPackagesSection(
+      List<SponsorshipPackage> packages) {
+    var packageCards = packages.map((e) => SponsorshipPackageCard(package: e));
+
+    return SingleChildScrollView(
+      clipBehavior: Clip.none,
+      scrollDirection: Axis.horizontal,
+      child: Row(children: [...packageCards]),
     );
   }
 
   void _onEditWhoAreYouPressed() {}
 
   void _onEditPhotoOrBiographyPressed() {}
+
+  @override
+  void onScreenPushed(WidgetRef ref) {
+    ref.read(onboardingReviewProfileControllerProvider.notifier).fetchUser();
+  }
 }
