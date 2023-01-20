@@ -18,6 +18,7 @@ class CategoryService {
     if (result == null) {
       return {};
     } else {
+      print(result);
       return result;
     }
   }

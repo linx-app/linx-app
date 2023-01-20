@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/linx_text_field.dart';
 import 'package:linx/features/onboarding/presentation/onboarding_basic_info_controller.dart';
+import 'package:linx/features/onboarding/ui/model/onboarding_nav.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
 
 class OnboardingBasicInfoScreen extends OnboardingView {
@@ -9,16 +10,17 @@ class OnboardingBasicInfoScreen extends OnboardingView {
   final _phoneNumberController = TextEditingController();
   final _locationController = TextEditingController();
 
-  @override
-  final VoidCallback onScreenCompleted;
-
-  @override
-  final String pageTitle = "Who are you?";
-
-  OnboardingBasicInfoScreen({required this.onScreenCompleted});
+  OnboardingBasicInfoScreen({
+    required super.onScreenCompleted,
+  }) : super(pageTitle: "Who are you?");
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    var state = ref.watch(onboardingBasicInfoControllerProvider);
+    _nameController.text = state.name;
+    _locationController.text = state.location;
+    _phoneNumberController.text = state.phoneNumber;
+
     return Column(
       children: [
         buildOnboardingStepTitle(context),
@@ -30,9 +32,6 @@ class OnboardingBasicInfoScreen extends OnboardingView {
   }
 
   @override
-  void onBackPressed() {}
-
-  @override
   bool onNextPressed(WidgetRef ref) {
     var notifier = ref.read(onboardingBasicInfoControllerProvider.notifier);
     notifier.onPageComplete(
@@ -40,7 +39,7 @@ class OnboardingBasicInfoScreen extends OnboardingView {
       _phoneNumberController.text,
       _locationController.text,
     );
-    onScreenCompleted();
+    onScreenCompleted(OnboardingNav.next);
     return true;
   }
 
@@ -52,5 +51,10 @@ class OnboardingBasicInfoScreen extends OnboardingView {
         controller: controller,
       ),
     );
+  }
+
+  @override
+  void onScreenPushed(WidgetRef ref) {
+    ref.read(onboardingBasicInfoControllerProvider.notifier).fetchBasicInfo();
   }
 }

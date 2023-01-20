@@ -29,8 +29,6 @@ class AuthService {
     );
 
     if (res.type() == AuthResponseType.SUCCESS) {
-      AuthSuccess success = res as AuthSuccess;
-      await _sessionRepository.setUserId(success.userId);
       await _sessionRepository.setUserType(userType.name);
     } else {
       print("User sign up failed!!");

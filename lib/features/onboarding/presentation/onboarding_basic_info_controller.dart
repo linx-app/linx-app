@@ -1,27 +1,41 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/user/domain/user_info_service.dart';
+import 'package:linx/features/user/domain/user_service.dart';
 
-final onboardingBasicInfoControllerProvider = StateNotifierProvider<OnboardingBasicInfoController, OnboardingBasicInfoUiState>((ref) {
-  var service = ref.watch(UserInfoService.provider);
-  return OnboardingBasicInfoController(service);
+final onboardingBasicInfoControllerProvider = StateNotifierProvider<
+    OnboardingBasicInfoController,
+    OnboardingBasicInfoUiState>((ref) {
+  var userInfoService = ref.watch(UserInfoService.provider);
+  var userService = ref.watch(UserService.provider);
+  return OnboardingBasicInfoController(userInfoService, userService);
 });
 
 class OnboardingBasicInfoController
     extends StateNotifier<OnboardingBasicInfoUiState> {
   final UserInfoService _onboardingUserInfoService;
+  final UserService _userService;
 
-  OnboardingBasicInfoController(this._onboardingUserInfoService)
-      : super(OnboardingBasicInfoUiState());
+  OnboardingBasicInfoController(
+      this._onboardingUserInfoService,
+      this._userService,
+  ) : super(OnboardingBasicInfoUiState());
 
-  Future<void> onPageComplete(
-    String name,
-    String phoneNumber,
-    String location,
-  ) async {
+  Future<void> onPageComplete(String name,
+      String phoneNumber,
+      String location,) async {
     await _onboardingUserInfoService.updateUserInfo(
       name: name,
       phoneNumber: phoneNumber,
       location: location,
+    );
+  }
+
+  Future<void> fetchBasicInfo() async {
+    var user = await _userService.fetchUserProfile();
+    state = OnboardingBasicInfoUiState(
+      name: user.displayName,
+      phoneNumber: user.phoneNumber,
+      location: user.location
     );
   }
 }

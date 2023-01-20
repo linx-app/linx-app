@@ -1,4 +1,8 @@
 enum UserType {
   club,
-  business
+  business;
+
+  UserType fromString(String s) {
+    return values.firstWhere((element) => s == element.name);
+  }
 }

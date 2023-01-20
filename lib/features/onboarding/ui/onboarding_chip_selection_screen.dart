@@ -4,30 +4,18 @@ import 'package:linx/common/linx_chip.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/onboarding/ui/model/chip_selection_screen_type.dart';
 import 'package:linx/features/onboarding/presentation/onboarding_chip_selection_controller.dart';
+import 'package:linx/features/onboarding/ui/model/onboarding_nav.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class OnboardingChipSelectionScreen extends OnboardingView {
   final ChipSelectionScreenType type;
 
-  final Function(ChipSelectionScreenType) onChipSelectionComplete;
-
   OnboardingChipSelectionScreen({
     required this.type,
-    required this.onChipSelectionComplete,
-  }) {
-    switch (type) {
-      case ChipSelectionScreenType.clubDescriptors:
-        pageTitle = "What type of\ngroup are you?";
-        break;
-      case ChipSelectionScreenType.clubInterests:
-        pageTitle = "What are you\nlooking for?";
-        break;
-      case ChipSelectionScreenType.businessInterests:
-        pageTitle = "How do you\nwant to help?";
-        break;
-    }
-  }
+    required super.onScreenCompleted,
+    required super.pageTitle,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,12 +30,9 @@ class OnboardingChipSelectionScreen extends OnboardingView {
   }
 
   @override
-  void onBackPressed() {}
-
-  @override
   bool onNextPressed(WidgetRef ref) {
     ref.read(onboardingChipSelectionController.notifier).updateUserChips(type);
-    onChipSelectionComplete(type);
+    onScreenCompleted(OnboardingNav.next);
     return true;
   }
 
@@ -106,5 +91,11 @@ class OnboardingChipSelectionScreen extends OnboardingView {
         fontWeight: FontWeight.w600,
       ),
     );
+  }
+
+  @override
+  void onScreenPushed(WidgetRef ref) {
+    print(type);
+    ref.read(onboardingChipSelectionController.notifier).fetchCategories(type);
   }
 }

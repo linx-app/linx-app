@@ -2,13 +2,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/onboarding/domain/category_service.dart';
 import 'package:linx/features/onboarding/ui/model/chip_selection_screen_type.dart';
 import 'package:linx/features/user/domain/user_interests_descriptors_service.dart';
+import 'package:linx/features/user/domain/user_service.dart';
 
 final onboardingChipSelectionController = StateNotifierProvider<
-    OnboardingChipSelectionController,
-    OnboardingChipSelectionUiState>((ref) {
+    OnboardingChipSelectionController, OnboardingChipSelectionUiState>((ref) {
   return OnboardingChipSelectionController(
     ref.read(CategoryService.provider),
     ref.read(UserInterestDescriptorService.provider),
+    ref.read(UserService.provider),
   );
 });
 
@@ -16,30 +17,41 @@ class OnboardingChipSelectionController
     extends StateNotifier<OnboardingChipSelectionUiState> {
   final CategoryService _categoryService;
   final UserInterestDescriptorService _userInterestDescriptorService;
+  final UserService _userService;
 
-  OnboardingChipSelectionController(this._categoryService,
-      this._userInterestDescriptorService)
-      : super(OnboardingChipSelectionUiState());
+  OnboardingChipSelectionController(
+    this._categoryService,
+    this._userInterestDescriptorService,
+    this._userService,
+  ) : super(OnboardingChipSelectionUiState(
+          type: ChipSelectionScreenType.clubInterests,
+        ));
 
   Future<void> fetchCategories(ChipSelectionScreenType type) async {
-    if (state.isEmpty() == true) {
+    if (type != state.type) {
       Map<String, List<String>> categories;
+      var user = await _userService.fetchUserProfile();
+      Set<String> selected;
 
       switch (type) {
         case ChipSelectionScreenType.clubDescriptors:
           categories = await _categoryService.fetchClubDescriptorCategories();
+          selected = user.descriptors;
           break;
         case ChipSelectionScreenType.clubInterests:
           categories = await _categoryService.fetchClubInterestCategories();
+          selected = user.interests;
           break;
         case ChipSelectionScreenType.businessInterests:
           categories = await _categoryService.fetchBusinessInterestCategories();
+          selected = user.interests;
           break;
       }
 
       state = OnboardingChipSelectionUiState(
+        type: type,
         chips: categories,
-        selectedChips: state.selectedChips,
+        selectedChips: selected,
       );
     }
   }
@@ -54,6 +66,7 @@ class OnboardingChipSelectionController
     }
 
     state = OnboardingChipSelectionUiState(
+      type: state.type,
       chips: state.chips,
       selectedChips: selected,
     );
@@ -63,21 +76,27 @@ class OnboardingChipSelectionController
     switch (type) {
       case ChipSelectionScreenType.clubInterests:
       case ChipSelectionScreenType.businessInterests:
-        await _userInterestDescriptorService.updateUserInterests(interests: state.selectedChips);
+        await _userInterestDescriptorService.updateUserInterests(
+            interests: state.selectedChips);
         break;
       case ChipSelectionScreenType.clubDescriptors:
-        await _userInterestDescriptorService.updateUserDescriptors(descriptors: state.selectedChips);
+        await _userInterestDescriptorService.updateUserDescriptors(
+            descriptors: state.selectedChips);
         break;
     }
   }
 }
 
 class OnboardingChipSelectionUiState {
+  final ChipSelectionScreenType type;
   final Map<String, List<String>> chips;
   final Set<String> selectedChips;
 
-  OnboardingChipSelectionUiState(
-      {this.chips = const {}, this.selectedChips = const {}});
+  OnboardingChipSelectionUiState({
+    required this.type,
+    this.chips = const {},
+    this.selectedChips = const {},
+  });
 
   bool isEmpty() => chips.isEmpty;
 }

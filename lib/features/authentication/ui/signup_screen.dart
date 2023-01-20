@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/linx_text_field.dart';
 import 'package:linx/constants/colors.dart';
-import 'package:linx/features/user/domain/model/user_type.dart';
 import 'package:linx/features/authentication/presentation/signup_controller.dart';
 import 'package:linx/features/authentication/ui/widgets/password_text_field.dart';
 import 'package:linx/features/authentication/ui/widgets/user_type_toggle_button.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
+import 'package:linx/features/user/domain/model/user_type.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class SignUpScreen extends OnboardingView {
@@ -19,10 +19,10 @@ class SignUpScreen extends OnboardingView {
     const UserTypeToggleButton(label: "Business", index: 1),
   ];
 
-  @override
-  late String pageTitle = "Create Account";
-
-  SignUpScreen({required this.onSignUpCompleted});
+  SignUpScreen({
+    required super.onScreenCompleted,
+    required this.onSignUpCompleted,
+  }): super(pageTitle: "Create account");
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,9 +38,6 @@ class SignUpScreen extends OnboardingView {
   }
 
   @override
-  void onBackPressed() {}
-
-  @override
   Future<bool> onNextPressedAsync(WidgetRef ref) async {
     var notifier = ref.read(signUpControllerProvider.notifier);
     var userType = ref.read(userTypeToggleStateProvider);
@@ -50,10 +47,8 @@ class SignUpScreen extends OnboardingView {
     var signUpSuccess =
         await notifier.initiateSignUp(email, password, confirm, userType);
 
-    onSignUpCompleted(userType);
-    return true;
     if (signUpSuccess) {
-      onScreenCompleted();
+      onSignUpCompleted(userType);
       return true;
     } else {
       return false;
@@ -96,7 +91,8 @@ class SignUpScreen extends OnboardingView {
     );
   }
 
-  Container _buildPasswordTextField(String label, TextEditingController controller) {
+  Container _buildPasswordTextField(
+      String label, TextEditingController controller) {
     return Container(
       padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 10.0),
       child: PasswordTextField(
@@ -109,5 +105,15 @@ class SignUpScreen extends OnboardingView {
   void _onUserToggledPressed(int index, WidgetRef ref) {
     ref.read(userTypeToggleStateProvider.notifier).state =
         UserType.values[index];
+  }
+
+  @override
+  void onScreenPopped() {
+    // No-op
+  }
+
+  @override
+  void onScreenPushed(WidgetRef ref) {
+    // No-op
   }
 }
