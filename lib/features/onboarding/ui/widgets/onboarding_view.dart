@@ -7,8 +7,7 @@ import 'package:linx/utils/ui_extensions.dart';
 abstract class OnboardingView extends ConsumerWidget {
   final String pageTitle;
   final Function(OnboardingNav) onScreenCompleted;
-
-  bool isStepRequired = true;
+  final bool isStepRequired;
 
   bool onNextPressed(WidgetRef ref) {
     return true;
@@ -27,6 +26,7 @@ abstract class OnboardingView extends ConsumerWidget {
   OnboardingView({
     required this.onScreenCompleted,
     required this.pageTitle,
+    this.isStepRequired = true
   });
 
   @protected

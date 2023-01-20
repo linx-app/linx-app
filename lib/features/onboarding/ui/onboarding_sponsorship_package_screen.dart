@@ -7,8 +7,6 @@ import 'package:linx/features/onboarding/presentation/onboarding_sponsorship_pac
 import 'package:linx/features/onboarding/ui/model/onboarding_nav.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
 
-final _numberOfPackagesProvider = StateProvider((ref) => 1);
-
 class OnboardingSponsorshipPackageScreen extends OnboardingView {
   final List<TextEditingController> _packageNameControllers = [
     TextEditingController()
@@ -20,22 +18,28 @@ class OnboardingSponsorshipPackageScreen extends OnboardingView {
     TextEditingController()
   ];
 
-  @override
-  bool isStepRequired = false;
-
   OnboardingSponsorshipPackageScreen({
     required super.onScreenCompleted,
-  }) : super(pageTitle: "Create custom packages");
+  }) : super(pageTitle: "Create custom packages", isStepRequired: false);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    int numberOfPackages = ref.watch(_numberOfPackagesProvider);
+    var state = ref.watch(onboardingSponsorshipPackageControllerProvider);
+    var length = state.packages.length;
+
+    for (var i = 0; i < length; i++) {
+      var package = state.packages[i];
+      _packageNameControllers[i].text = package.name;
+      _ownBenefitsControllers[i].text = package.ownBenefit;
+      _partnerBenefitsControllers[i].text = package.partnerBenefit;
+    }
+
     return Column(
       children: [
         buildOnboardingStepTitle(context),
-        for (var i = 0; i < numberOfPackages; i++)
-          _buildPackageForm(i, numberOfPackages),
-        _buildAddAnotherButton(ref, numberOfPackages),
+        for (var i = 0; i < length; i++)
+          _buildPackageForm(i, length),
+        _buildAddAnotherButton(ref, length),
       ],
     );
   }
@@ -44,7 +48,6 @@ class OnboardingSponsorshipPackageScreen extends OnboardingView {
   bool onNextPressed(WidgetRef ref) {
     var notifier =
         ref.read(onboardingSponsorshipPackageControllerProvider.notifier);
-    var numberOfPackages = ref.read(_numberOfPackagesProvider);
     var packageNames =
         _packageNameControllers.map((e) => e.value.text).toList();
     var ownBenefits = _ownBenefitsControllers.map((e) => e.value.text).toList();
@@ -52,7 +55,6 @@ class OnboardingSponsorshipPackageScreen extends OnboardingView {
         _partnerBenefitsControllers.map((e) => e.value.text).toList();
 
     notifier.updateSponsorshipPackages(
-      numberOfPackages,
       packageNames,
       ownBenefits,
       partnerBenefits,
@@ -63,13 +65,13 @@ class OnboardingSponsorshipPackageScreen extends OnboardingView {
     return true;
   }
 
-  Container _buildAddAnotherButton(WidgetRef ref, int numberOfPackages) {
+  Container _buildAddAnotherButton(WidgetRef ref, int length) {
     return Container(
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: LinxTextButton(
         label: "Add another",
-        onPressed: () => {_onAddAnotherPressed(ref, numberOfPackages)},
+        onPressed: () => { _onAddAnotherPressed(ref, length) },
         tint: LinxColors.green,
         iconData: Icons.add,
         weight: FontWeight.w600,
@@ -77,8 +79,9 @@ class OnboardingSponsorshipPackageScreen extends OnboardingView {
     );
   }
 
-  void _onAddAnotherPressed(WidgetRef ref, int numberOfPackages) {
-    ref.read(_numberOfPackagesProvider.notifier).state = numberOfPackages + 1;
+  void _onAddAnotherPressed(WidgetRef ref, int length) {
+    ref.read(onboardingSponsorshipPackageControllerProvider.notifier)
+        .onAddAnotherPressed();
     _packageNameControllers.add(TextEditingController());
     _ownBenefitsControllers.add(TextEditingController());
     _partnerBenefitsControllers.add(TextEditingController());
@@ -142,6 +145,6 @@ class OnboardingSponsorshipPackageScreen extends OnboardingView {
 
   @override
   void onScreenPushed(WidgetRef ref) {
-    // TODO: implement onScreenPushed
+    ref.read(onboardingSponsorshipPackageControllerProvider.notifier).fetchSponsorshipPackages();
   }
 }

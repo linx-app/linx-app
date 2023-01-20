@@ -33,6 +33,11 @@ class UserInfoService {
     );
   }
 
+  Future<void> updateUserBiography(String biography) async {
+    var uid = await _sessionRepository.getUserId();
+    await _userRepository.updateUserBiography(uid, biography);
+  }
+
   Future<void> updateSponsorshipPackages(List<SponsorshipPackage> packages) async {
     var uid = await _sessionRepository.getUserId();
     var ids = await _sponsorshipPackageRepository.addSponsorshipPackages(packages);

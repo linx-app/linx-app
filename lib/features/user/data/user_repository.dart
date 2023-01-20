@@ -29,6 +29,12 @@ class UserRepository {
     );
   }
 
+  Future<void> updateUserBiography(String uid, String biography) async {
+    _firestore.collection(FirestorePaths.USERS).doc(uid).update({
+      FirestorePaths.BIOGRAPHY: biography
+    });
+  }
+
   Future<void> updateUserInterests(String uid, Set<String> interests) async {
     _firestore
         .collection(FirestorePaths.USERS)

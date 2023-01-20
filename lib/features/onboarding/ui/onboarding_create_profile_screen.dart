@@ -112,6 +112,9 @@ class OnboardingCreateProfileScreen extends OnboardingView {
 
   @override
   bool onNextPressed(WidgetRef ref) {
+    ref.read(onboardingCreateProfileController.notifier).updateUserInfo(
+        _bioController.text
+    );
     onScreenCompleted(OnboardingNav.next);
     return true;
   }
