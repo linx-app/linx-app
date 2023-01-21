@@ -5,61 +5,63 @@ import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/routes.dart';
 import 'package:linx/constants/text.dart';
+import 'package:linx/features/authentication/ui/widgets/linx_logo.dart';
 
 class LandingScreen extends ConsumerWidget {
   const LandingScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-
     return BaseScaffold(
-      key: super.key,
-      body: Center(
-        child: SizedBox(
-          width: width - 28.0,
-          height: height,
-          child: Column(
-            children: [
-              const Spacer(flex: 3),
-              Image.asset(
-                "assets/logo_with_name.png",
-                height: 102.0,
-                width: 78.0,
-              ),
-              const Spacer(),
-              Image.asset("assets/landing_graphic.png"),
-              const Spacer(),
-              const Text(
-                "Connect with clubs or businesses in your area.",
-                style: LinxTextStyles.subtitle,
-                textAlign: TextAlign.center,
-              ),
-              const Spacer(flex: 3),
-              RoundedButton(
-                style: greenButtonStyle(),
-                onPressed: () {
-                  onLogInPressed(context);
-                },
-                text: "Log In",
-              ),
-              RoundedButton(
-                style: greyButtonStyle(),
-                onPressed: () => onSignUpPressed(context),
-                text: "Sign Up",
-              ),
-              const Spacer(flex: 3),
-            ],
-          ),
-        ),
-      ),
       backgroundColor: LinxColors.white,
+      body: Column(
+        children: [
+          Container(
+            alignment: Alignment.bottomCenter,
+            height: 185,
+            child: const LinxLogo(),
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                Image.asset("assets/landing_graphic.png"),
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  child: const Text(
+                    "Connect with clubs or businesses in your area.",
+                    style: LinxTextStyles.subtitle,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              children: [
+                RoundedButton(
+                  style: greenButtonStyle(),
+                  onPressed: () {
+                    onLogInPressed(context);
+                  },
+                  text: "Log In",
+                ),
+                RoundedButton(
+                  style: greyButtonStyle(),
+                  onPressed: () => onSignUpPressed(context),
+                  text: "Sign Up",
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   void onLogInPressed(BuildContext context) {
-    print("Log In Pressed");
+    Navigator.pushNamed(context, routeLogIn);
   }
 
   void onSignUpPressed(BuildContext context) {
