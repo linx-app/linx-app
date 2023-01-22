@@ -5,7 +5,9 @@ import 'package:linx/common/buttons/linx_text_button.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/common/linx_text_field.dart';
 import 'package:linx/constants/colors.dart';
+import 'package:linx/constants/routes.dart';
 import 'package:linx/constants/text.dart';
+import 'package:linx/features/authentication/presentation/login_controller.dart';
 import 'package:linx/features/authentication/ui/widgets/linx_logo.dart';
 import 'package:linx/features/authentication/ui/widgets/password_text_field.dart';
 import 'package:linx/utils/ui_extensions.dart';
@@ -16,6 +18,7 @@ class LogInScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    var state = ref.watch(logInControllerProvider);
     return BaseScaffold(
       backgroundColor: LinxColors.white,
       body: SingleChildScrollView(
@@ -37,7 +40,7 @@ class LogInScreen extends ConsumerWidget {
                     _buildSubtitle(),
                     _buildEmailTextField(),
                     _buildPasswordTextField(),
-                    _buildLogInButton(context),
+                    _buildLogInButton(context, ref),
                     _buildForgotPasswordButton(context),
                   ],
                 ),
@@ -50,9 +53,17 @@ class LogInScreen extends ConsumerWidget {
     );
   }
 
-  void _onSignUpPressed(BuildContext context) {}
+  void _onSignUpPressed(BuildContext context) {
+    Navigator.of(context).popAndPushNamed(routeOnboardingStart);
+  }
 
-  void _onLogInPressed(BuildContext context) {}
+  void _onLogInPressed(BuildContext context, WidgetRef ref) async {
+    var email = _emailController.text;
+    var password = _passwordController.text;
+
+    var notifier = ref.read(logInControllerProvider.notifier);
+    await notifier.onLogInPressed(email, password);
+  }
 
   void _onForgetPasswordPressed(BuildContext context) {}
 
@@ -93,12 +104,12 @@ class LogInScreen extends ConsumerWidget {
     );
   }
 
-  Container _buildLogInButton(BuildContext context) {
+  Container _buildLogInButton(BuildContext context, WidgetRef ref) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 6),
       child: RoundedButton(
         style: greenButtonStyle(),
-        onPressed: () => _onLogInPressed(context),
+        onPressed: () => _onLogInPressed(context, ref),
         text: "Log In",
       ),
     );
