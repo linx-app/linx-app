@@ -16,7 +16,7 @@ class UserProfileImageService {
   UserProfileImageService(this._sessionRepository, this._userRepository);
 
   Future<void> uploadProfileImage(String url) async {
-    var uid = await _sessionRepository.getUserId();
+    var uid = await _sessionRepository.userId;
     await _userRepository.updateProfileImages(uid, url);
   }
 }

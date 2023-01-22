@@ -18,7 +18,7 @@ class ImageUploadService {
   ImageUploadService(this._imageUploadRepository, this._sessionRepository);
 
   Future<String?> uploadImage(File image, String imageName) async {
-    var uid = await _sessionRepository.getUserId();
+    var uid = await _sessionRepository.userId;
     return await _imageUploadRepository.uploadImage(uid, image, imageName);
   }
 }

@@ -24,7 +24,7 @@ class UserInfoService {
     String? phoneNumber,
     String? location,
   }) async {
-    var uid = await _sessionRepository.getUserId();
+    var uid = await _sessionRepository.userId;
     await _userRepository.updateUserInfo(
       uid: uid,
       name: name,
@@ -34,12 +34,12 @@ class UserInfoService {
   }
 
   Future<void> updateUserBiography(String biography) async {
-    var uid = await _sessionRepository.getUserId();
+    var uid = await _sessionRepository.userId;
     await _userRepository.updateUserBiography(uid, biography);
   }
 
   Future<void> updateSponsorshipPackages(List<SponsorshipPackage> packages) async {
-    var uid = await _sessionRepository.getUserId();
+    var uid = await _sessionRepository.userId;
     var ids = await _sponsorshipPackageRepository.addSponsorshipPackages(packages);
     await _userRepository.updateUserSponsorshipPackages(uid, ids);
   }
