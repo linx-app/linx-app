@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/linx_text_field.dart';
 import 'package:linx/constants/colors.dart';
+import 'package:linx/features/authentication/presentation/signup_controller.dart';
 
 class PasswordTextField extends ConsumerWidget {
   final _passwordObscureTextStateProvider = StateProvider((ref) => true);
   final String label;
   final TextEditingController controller;
+  final String? errorText;
 
   PasswordTextField({
     super.key,
     required this.label,
     required this.controller,
+    this.errorText,
   });
 
   @override
@@ -22,6 +25,7 @@ class PasswordTextField extends ConsumerWidget {
       icon: _passwordVisibilityIcon(ref),
       shouldObscureText: ref.watch(_passwordObscureTextStateProvider),
       maxLines: 1,
+      errorText: errorText,
     );
   }
 

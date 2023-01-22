@@ -18,7 +18,7 @@ class LogInScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var state = ref.watch(logInControllerProvider);
+    final state = ref.watch(logInControllerProvider);
     return BaseScaffold(
       backgroundColor: LinxColors.white,
       body: SingleChildScrollView(
@@ -38,8 +38,8 @@ class LogInScreen extends ConsumerWidget {
                   children: [
                     _buildTitle(),
                     _buildSubtitle(),
-                    _buildEmailTextField(),
-                    _buildPasswordTextField(),
+                    _buildEmailTextField(state.emailError),
+                    _buildPasswordTextField(state.logInError),
                     _buildLogInButton(context, ref),
                     _buildForgotPasswordButton(context),
                   ],
@@ -87,19 +87,20 @@ class LogInScreen extends ConsumerWidget {
     );
   }
 
-  Container _buildEmailTextField() {
+  Container _buildEmailTextField(String? error) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      child: LinxTextField(label: "Email", controller: _emailController),
+      child: LinxTextField(label: "Email", controller: _emailController, errorText: error,),
     );
   }
 
-  Container _buildPasswordTextField() {
+  Container _buildPasswordTextField(String? error) {
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 24, vertical: 6),
         child: PasswordTextField(
             label: "Password",
             controller: _passwordController,
+            errorText: error,
         ),
     );
   }

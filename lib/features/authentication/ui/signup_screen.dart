@@ -22,17 +22,26 @@ class SignUpScreen extends OnboardingView {
   SignUpScreen({
     required super.onScreenCompleted,
     required this.onSignUpCompleted,
-  }): super(pageTitle: "Create account");
+  }) : super(pageTitle: "Create account");
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(signUpControllerProvider);
     return Column(
       children: [
         buildOnboardingStepTitle(context),
         _buildUserTypeToggle(context, ref),
-        _buildEmailTextField(),
-        _buildPasswordTextField("Password", _passwordController),
-        _buildPasswordTextField("Confirm password", _confirmController)
+        _buildEmailTextField(state.emailError ?? state.signUpError),
+        _buildPasswordTextField(
+          "Password",
+          _passwordController,
+          state.passwordError,
+        ),
+        _buildPasswordTextField(
+          "Confirm password",
+          _confirmController,
+          state.passwordError,
+        )
       ],
     );
   }
@@ -81,23 +90,28 @@ class SignUpScreen extends OnboardingView {
     );
   }
 
-  Container _buildEmailTextField() {
+  Container _buildEmailTextField(String? error) {
     return Container(
       padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 10.0),
       child: LinxTextField(
         label: "Email",
         controller: _emailController,
+        errorText: error,
       ),
     );
   }
 
   Container _buildPasswordTextField(
-      String label, TextEditingController controller) {
+    String label,
+    TextEditingController controller,
+    String? error,
+  ) {
     return Container(
       padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 10.0),
       child: PasswordTextField(
         label: label,
         controller: controller,
+        errorText: error,
       ),
     );
   }
