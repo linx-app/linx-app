@@ -44,4 +44,6 @@ abstract class LinxColors {
   static const Color editIconButtonGrey = Color(0xFF929292);
 
   static const Color transparent = Colors.transparent;
+
+  static const Color red = Color(0xFFBE3030);
 }

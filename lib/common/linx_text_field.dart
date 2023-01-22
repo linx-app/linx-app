@@ -3,15 +3,18 @@ import 'package:linx/constants/colors.dart';
 
 class LinxTextField extends StatelessWidget {
   final String label;
-  final double _textFieldCornerRadius = 8.0;
   final double _textFieldInputPadding = 10.0;
   final double _textSize = 17.0;
+  final double _helperTextSize = 12.0;
   final int? minLines;
   final int? maxLines;
   final Widget? icon;
   final bool shouldObscureText;
   final TextEditingController controller;
   final String? Function(String?)? validator;
+  final String? errorText;
+
+  final borderRadius = const BorderRadius.all(Radius.circular(8.0));
 
   const LinxTextField({
     super.key,
@@ -21,7 +24,8 @@ class LinxTextField extends StatelessWidget {
     this.shouldObscureText = false,
     this.validator,
     this.minLines,
-    this.maxLines
+    this.maxLines,
+    this.errorText,
   });
 
   @override
@@ -32,35 +36,45 @@ class LinxTextField extends StatelessWidget {
       decoration: InputDecoration(
         suffixIcon: icon,
         hintText: label,
-        hintStyle: _hintTextStyle(),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: LinxColors.transparent),
-          borderRadius:
-              BorderRadius.all(Radius.circular(_textFieldCornerRadius)),
-        ),
+        hintStyle: _inputTextStyle(LinxColors.black_60),
+        enabledBorder: _border(LinxColors.transparent),
         focusColor: LinxColors.black_5,
+        focusedBorder: _border(LinxColors.black_80),
         fillColor: LinxColors.black_5,
         filled: true,
         contentPadding: EdgeInsets.all(_textFieldInputPadding),
+        errorText: errorText,
+        errorBorder: _border(LinxColors.red),
+        focusedErrorBorder: _border(LinxColors.red),
+        errorStyle: _errorTextStyle(),
+        errorMaxLines: 3,
       ),
       showCursor: true,
       cursorColor: LinxColors.grey,
-      style: _inputTextStyle(),
+      style: _inputTextStyle(LinxColors.black_80),
       obscureText: shouldObscureText,
       minLines: minLines,
       maxLines: maxLines,
     );
   }
 
-  TextStyle _hintTextStyle() => TextStyle(
-        fontWeight: FontWeight.w400,
-        fontSize: _textSize,
-        color: LinxColors.black_60,
+  OutlineInputBorder _border(Color color) =>
+      OutlineInputBorder(
+        borderSide: BorderSide(color: color),
+        borderRadius: borderRadius,
       );
 
-  TextStyle _inputTextStyle() => TextStyle(
+  TextStyle _errorTextStyle() =>
+      TextStyle(
+        fontWeight: FontWeight.w400,
+        fontSize: _helperTextSize,
+        color: LinxColors.red,
+      );
+
+  TextStyle _inputTextStyle(Color color) =>
+      TextStyle(
         fontWeight: FontWeight.w400,
         fontSize: _textSize,
-        color: LinxColors.black_80, // Todo: consult color with Kiera
+        color: color,
       );
 }
