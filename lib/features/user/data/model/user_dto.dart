@@ -1,4 +1,4 @@
-class FirestoreUser {
+class UserDTO {
   final String uid;
   final String displayName;
   final String email;
@@ -11,7 +11,7 @@ class FirestoreUser {
   final List<String> packages;
   final List<String> profileImageUrls;
 
-  FirestoreUser({
+  UserDTO({
     required this.uid,
     this.displayName = "",
     this.email = "",

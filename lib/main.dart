@@ -5,7 +5,9 @@ import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/routes.dart';
 import 'package:linx/constants/text.dart';
 import 'package:linx/features/authentication/ui/landing_screen.dart';
+import 'package:linx/features/authentication/ui/login_screen.dart';
 import 'package:linx/features/onboarding/ui/onboarding_flow_screen.dart';
+import 'package:linx/main_controller.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +25,17 @@ class LinxApp extends ConsumerWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.read(mainControllerProvider);
+    String initialRoute;
+
+    if (state.isFirstTimeInApp) {
+      initialRoute = routeLanding;
+    } else if (state.isUserFound) {
+      initialRoute = routeLogIn; // TODO: Change to redirect to home
+    } else {
+      initialRoute = routeLogIn;
+    }
+
     return MaterialApp(
       title: 'LINX application',
       theme: ThemeData(
@@ -33,22 +46,29 @@ class LinxApp extends ConsumerWidget {
       onGenerateRoute: (settings) {
         late Widget page;
 
-        if (settings.name == routeLanding) {
-          page = const LandingScreen();
-        } else if (settings.name!.startsWith(routeOnboardingRoot)) {
-          final subRoute = settings.name!.substring(routeOnboardingRoot.length);
-          page = OnboardingFlowScreen(initialRoute: subRoute);
-        } else {
-          throw Exception("Unknown route: ${settings.name}");
+        switch (settings.name) {
+          case routeLanding:
+            page = const LandingScreen();
+            break;
+          case routeLogIn:
+            page = LogInScreen();
+            break;
+          default:
+            if (settings.name!.startsWith(routeOnboardingRoot)) {
+              final subRoute = settings.name!.substring(
+                  routeOnboardingRoot.length);
+              page = OnboardingFlowScreen(initialRoute: subRoute);
+            } else {
+              throw Exception("Unknown route: ${settings.name}");
+            }
         }
 
         return MaterialPageRoute(
-          builder: (context) {
-            return page;
-          },
+          builder: (context) => page,
           settings: settings,
         );
       },
+      initialRoute: initialRoute,
     );
   }
 }
