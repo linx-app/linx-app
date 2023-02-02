@@ -62,7 +62,9 @@ class LogInScreen extends ConsumerWidget {
     var password = _passwordController.text;
 
     var notifier = ref.read(logInControllerProvider.notifier);
-    await notifier.onLogInPressed(email, password);
+    if (await notifier.onLogInPressed(email, password)) {
+      Navigator.of(context).popAndPushNamed(routeHome);
+    }
   }
 
   void _onForgetPasswordPressed(BuildContext context) {}

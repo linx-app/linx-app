@@ -65,6 +65,7 @@ class UserLocalDataSource {
             $_userId TEXT PRIMARY KEY NOT NULL,
             $_name TEXT,
             $_type TEXT,
+            $_email TEXT,
             $_location TEXT,
             $_phoneNumber TEXT,
             $_biography TEXT,
@@ -74,7 +75,8 @@ class UserLocalDataSource {
             $_profileImages TEXT
           )
         """);
-      }
+      },
+      version: _dbVersion,
     );
   }
 

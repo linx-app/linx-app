@@ -1,6 +1,7 @@
 const routeLanding = "/";
 
 const routeLogIn = "/log_in";
+const routeHome= "/home";
 
 const routeOnboardingRoot = "/onboarding/";
 const routeOnboardingStart = "/onboarding/$routeOnboardingSignUp";
