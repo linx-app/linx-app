@@ -7,6 +7,7 @@ import 'package:linx/constants/text.dart';
 import 'package:linx/features/authentication/ui/landing_screen.dart';
 import 'package:linx/features/authentication/ui/login_screen.dart';
 import 'package:linx/features/home/home_screen.dart';
+import 'package:linx/features/debug/widget_testing_screen.dart';
 import 'package:linx/features/onboarding/ui/onboarding_flow_screen.dart';
 import 'package:linx/main_controller.dart';
 
@@ -56,6 +57,9 @@ class LinxApp extends ConsumerWidget {
             break;
           case routeHome:
             page = HomeScreen();
+            break;
+          case routeDebugWidgetTesting:
+            page = WidgetTestingScreen();
             break;
           default:
             if (settings.name!.startsWith(routeOnboardingRoot)) {

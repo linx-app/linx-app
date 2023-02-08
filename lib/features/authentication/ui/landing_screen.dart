@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
@@ -52,6 +53,12 @@ class LandingScreen extends ConsumerWidget {
                   onPressed: () => onSignUpPressed(context),
                   text: "Sign Up",
                 ),
+                if (kDebugMode)
+                  RoundedButton(
+                    style: greyButtonStyle(),
+                    onPressed: () => _onWidgetTestingPressed(context),
+                    text: "Widget Testing Page"
+                  )
               ],
             ),
           ),
@@ -66,5 +73,9 @@ class LandingScreen extends ConsumerWidget {
 
   void onSignUpPressed(BuildContext context) {
     Navigator.pushNamed(context, routeOnboardingStart);
+  }
+
+  void _onWidgetTestingPressed(BuildContext context) {
+    Navigator.pushNamed(context, routeDebugWidgetTesting);
   }
 }
