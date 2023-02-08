@@ -3,6 +3,8 @@ const routeLanding = "/";
 const routeLogIn = "/log_in";
 const routeHome= "/home";
 
+const routeDebugWidgetTesting = "/debug_widget_testing";
+
 const routeOnboardingRoot = "/onboarding/";
 const routeOnboardingStart = "/onboarding/$routeOnboardingSignUp";
 const routeOnboardingSignUp = "sign_up";
