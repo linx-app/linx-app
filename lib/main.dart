@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/routes.dart';
 import 'package:linx/constants/text.dart';
+import 'package:linx/features/app/app_bottom_navigation_screen.dart';
 import 'package:linx/features/authentication/ui/landing_screen.dart';
 import 'package:linx/features/authentication/ui/login_screen.dart';
-import 'package:linx/features/home/home_screen.dart';
 import 'package:linx/features/debug/widget_testing_screen.dart';
 import 'package:linx/features/onboarding/ui/onboarding_flow_screen.dart';
 import 'package:linx/main_controller.dart';
@@ -56,7 +56,7 @@ class LinxApp extends ConsumerWidget {
             page = LogInScreen();
             break;
           case routeHome:
-            page = HomeScreen();
+            page = AppBottomNavigationScreen();
             break;
           case routeDebugWidgetTesting:
             page = WidgetTestingScreen();
