@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class BaseScaffold extends StatelessWidget {
   final Widget body;
   final Color? backgroundColor;
+  final BottomNavigationBar? bottomNav;
 
-  const BaseScaffold({super.key, required this.body, this.backgroundColor});
+  const BaseScaffold({super.key, required this.body, this.backgroundColor, this.bottomNav});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +24,7 @@ class BaseScaffold extends StatelessWidget {
         ),
         body: body,
         backgroundColor: backgroundColor,
+        bottomNavigationBar: bottomNav,
     );
   }
 }
