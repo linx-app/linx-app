@@ -3,11 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/text.dart';
+import 'package:linx/features/app/home/presentation/home_screen_controller.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    var uiState = ref.watch(homeScreenControllerProvider);
     return BaseScaffold(
       body: SingleChildScrollView(
         child: Column(

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/chat/chat_home_screen.dart';
-import 'package:linx/features/app/home/home_screen.dart';
+import 'package:linx/features/app/home/ui/home_screen.dart';
 import 'package:linx/features/app/pitches/pitches_screen.dart';
 import 'package:linx/features/app/search/search_home_sreen.dart';
 
