@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/routes.dart';
 import 'package:linx/constants/text.dart';
-import 'package:linx/features/app/app_bottom_navigation_screen.dart';
+import 'package:linx/features/app/core/app_bottom_navigation_screen.dart';
 import 'package:linx/features/authentication/ui/landing_screen.dart';
 import 'package:linx/features/authentication/ui/login_screen.dart';
 import 'package:linx/features/debug/widget_testing_screen.dart';
