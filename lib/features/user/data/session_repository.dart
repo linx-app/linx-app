@@ -26,7 +26,7 @@ class SessionRepository {
 
   Stream<bool> isUserLoggedIn() => _auth.authStateChanges().map((e) => e != null);
 
-  Future<String> get userId async {
+  String get userId {
     var uid = _auth.currentUser?.uid;
     if (uid == null) {
       throw Exception("User id not found");

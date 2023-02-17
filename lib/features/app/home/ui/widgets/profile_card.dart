@@ -89,9 +89,9 @@ class ProfileCard extends StatelessWidget {
   Container _biographyText() {
     return Container(
         alignment: Alignment.centerLeft,
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Text(
-          user.biography,
+          "${user.biography}\n\n\n\n",
           style: const TextStyle(color: LinxColors.chipTextGrey, fontSize: 12),
           maxLines: 4,
           overflow: TextOverflow.ellipsis,

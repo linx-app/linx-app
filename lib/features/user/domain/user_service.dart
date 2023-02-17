@@ -22,7 +22,7 @@ class UserService {
   UserService(this._userRepository, this._sessionRepository, this._sponsorshipPackageRepository);
 
   Future<LinxUser> fetchUserProfile() async {
-    var uid = await _sessionRepository.userId;
+    var uid = _sessionRepository.userId;
     UserDTO networkUser = await _userRepository.fetchUserProfile(uid);
     LinxUser domainUser = LinxUser(
       uid: networkUser.uid,

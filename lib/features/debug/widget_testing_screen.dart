@@ -4,7 +4,7 @@ import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/common/buttons/linx_text_button.dart';
 import 'package:linx/common/linx_chip.dart';
 import 'package:linx/constants/colors.dart';
-import 'package:linx/features/app/home/widgets/profile_card.dart';
+import 'package:linx/features/app/home/ui/widgets/profile_card.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 
 class WidgetTestingScreen extends ConsumerWidget {
