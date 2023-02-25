@@ -4,6 +4,7 @@ import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/text.dart';
 import 'package:linx/features/app/home/presentation/home_screen_controller.dart';
+import 'package:linx/features/app/home/ui/profile_modal_screen.dart';
 import 'package:linx/features/app/home/ui/widgets/profile_card.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_type.dart';
@@ -14,7 +15,8 @@ class HomeScreen extends ConsumerWidget {
   final TextStyle _subtitleStyle = const TextStyle(
       fontWeight: FontWeight.w600,
       fontSize: 17.0,
-      color: LinxColors.subtitleGrey);
+      color: LinxColors.subtitleGrey,
+  );
 
   const HomeScreen(this.currentUser, {super.key});
 
@@ -30,7 +32,11 @@ class HomeScreen extends ConsumerWidget {
             _buildHomeTitle(context, ref),
             if (uiState.matches.isNotEmpty &&
                 uiState.matchPercentages.isNotEmpty)
-              _buildMatchesCarousel(uiState.matches, uiState.matchPercentages)
+              _buildMatchesCarousel(
+                context,
+                uiState.matches,
+                uiState.matchPercentages,
+              )
           ],
         ),
       ),
@@ -77,23 +83,51 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Column _buildMatchesCarousel(List<LinxUser> users, List<double> percentages) {
+  Column _buildMatchesCarousel(
+    BuildContext context,
+    List<LinxUser> users,
+    List<double> percentages,
+  ) {
     List<ProfileCard> pages = [];
+
     for (int i = 0; i < users.length; i++) {
       pages.add(
-          ProfileCard(matchPercentage: percentages[i].toInt(), user: users[i]));
+        ProfileCard(
+          matchPercentage: percentages[i].toInt(),
+          user: users[i],
+          onSeeDetailsPressed: (selectedUser) =>
+              _onProfileCardSeeDetailsPressed(context, selectedUser, users, percentages),
+        ),
+      );
     }
+
     return Column(
       children: [
         SizedBox(
-            height: 360,
-            child: PageView(
-              padEnds: false,
-              clipBehavior: Clip.none,
-              controller: PageController(viewportFraction: 0.70),
-              children: pages,
-            ))
+          height: 360,
+          child: PageView(
+            padEnds: false,
+            clipBehavior: Clip.none,
+            controller: PageController(viewportFraction: 0.70),
+            children: pages,
+          ),
+        )
       ],
     );
+  }
+
+  void _onProfileCardSeeDetailsPressed(
+    BuildContext context,
+    LinxUser selectedUser,
+    List<LinxUser> allUsers,
+    List<double> matchPercentages,
+  ) {
+    var index = allUsers.indexOf(selectedUser);
+    var screen = ProfileModalScreen(index, allUsers, matchPercentages);
+    var builder = PageRouteBuilder(
+      pageBuilder: (_, __, ___) => screen,
+      opaque: false,
+    );
+    Navigator.of(context).push(builder);
   }
 }

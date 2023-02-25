@@ -9,10 +9,15 @@ class LinxChip extends StatelessWidget {
     fontSize: 12.0,
   );
   final String label;
-  final Function(String) onChipSelected;
+  final Function(String)? onChipSelected;
   final bool isSelected;
 
-  LinxChip({super.key, required this.label, required this.onChipSelected, required this.isSelected});
+  const LinxChip({
+    super.key,
+    required this.label,
+    this.onChipSelected,
+    this.isSelected = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,32 +27,20 @@ class LinxChip extends StatelessWidget {
       backgroundColor: LinxColors.chipBackground,
       shape: StadiumBorder(
           side: BorderSide(
-              color: _getSelectedColor(),
-              width: _getSelectedWidth(),
-          )
-      ),
+        color: _getSelectedColor(),
+        width: _getSelectedWidth(),
+      )),
       onSelected: _onSelected,
       labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
     );
   }
 
-  void _onSelected(bool selected) => onChipSelected(label);
+  void _onSelected(bool selected) => (onChipSelected ?? () {}).call(label);
 
   Text _getChipLabel() => Text(label.capitalize(), style: _chipTextStyle);
 
-  Color _getSelectedColor() {
-    if (isSelected) {
-      return LinxColors.green;
-    } else {
-      return LinxColors.stroke;
-    }
-  }
+  Color _getSelectedColor() =>
+      isSelected ? LinxColors.green : LinxColors.stroke;
 
-  double _getSelectedWidth() {
-    if (isSelected) {
-      return 1.5;
-    } else {
-      return 1.0;
-    }
-  }
+  double _getSelectedWidth() => isSelected ? 1.5 : 1.0;
 }

@@ -1,7 +1,8 @@
 const routeLanding = "/";
 
 const routeLogIn = "/log_in";
-const routeHome= "/home";
+const routeApp= "/app";
+const routeProfileModal = "/profile_modal";
 
 const routeDebugWidgetTesting = "/debug_widget_testing";
 
