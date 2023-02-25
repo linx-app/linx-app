@@ -6,16 +6,22 @@ import 'package:linx/features/user/domain/model/linx_user.dart';
 class ProfileCard extends StatelessWidget {
   final int matchPercentage;
   final LinxUser user;
+  final void Function(LinxUser)? onSeeDetailsPressed;
 
-  ProfileCard({required this.matchPercentage, required this.user});
+  const ProfileCard({
+    super.key,
+    required this.matchPercentage,
+    required this.user,
+    this.onSeeDetailsPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      margin: EdgeInsets.only(left: 24),
+      margin: const EdgeInsets.only(left: 24),
       elevation: 10,
-      child: Container(
+      child: SizedBox(
         width: 270,
         child: Column(
           children: [
@@ -50,7 +56,7 @@ class ProfileCard extends StatelessWidget {
   Container _matchText() {
     return Container(
       alignment: Alignment.centerLeft,
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Text(
         "$matchPercentage% match",
         style: const TextStyle(
@@ -64,7 +70,7 @@ class ProfileCard extends StatelessWidget {
   Container _nameText() {
     return Container(
       alignment: Alignment.centerLeft,
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Text(
         user.displayName,
         style: const TextStyle(
@@ -78,7 +84,7 @@ class ProfileCard extends StatelessWidget {
   Container _locationText() {
     return Container(
         alignment: Alignment.centerLeft,
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Text(
           user.location,
           style:
@@ -100,11 +106,14 @@ class ProfileCard extends StatelessWidget {
 
   Container _buttonRow() {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: RoundedButton(
-          style: greenButtonStyle(),
-          onPressed: () {},
-          text: "See details",
-        ));
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: RoundedButton(
+        style: greenButtonStyle(),
+        onPressed: _onSeeDetailsPressed,
+        text: "See details",
+      ),
+    );
   }
+
+  void _onSeeDetailsPressed() => (onSeeDetailsPressed ?? () {}).call(user);
 }
