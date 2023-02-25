@@ -5,6 +5,7 @@ import 'package:linx/common/buttons/linx_text_button.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/common/linx_chip.dart';
 import 'package:linx/constants/colors.dart';
+import 'package:linx/features/app/core/ui/widgets/small_profile_card.dart';
 import 'package:linx/features/app/home/ui/profile_modal_screen.dart';
 import 'package:linx/features/app/home/ui/widgets/profile_card.dart';
 import 'package:linx/features/app/home/ui/widgets/profile_modal_card.dart';
@@ -95,6 +96,7 @@ class WidgetTestingScreen extends ConsumerWidget {
                 matchPercentage: 10,
               ),
             ),
+            _widgetContainer(SmallProfileCard(user: _testUser, matchPercentage: 70,))
           ],
         ),
       ),
