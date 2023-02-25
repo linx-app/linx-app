@@ -8,7 +8,7 @@ import 'package:linx/features/app/core/ui/app_bottom_navigation_screen.dart';
 import 'package:linx/features/app/home/ui/profile_modal_screen.dart';
 import 'package:linx/features/authentication/ui/landing_screen.dart';
 import 'package:linx/features/authentication/ui/login_screen.dart';
-import 'package:linx/debug/widget_testing_screen.dart';
+import 'package:linx/features/debug/widget_testing_screen.dart';
 import 'package:linx/features/onboarding/ui/onboarding_flow_screen.dart';
 import 'package:linx/main_controller.dart';
 
