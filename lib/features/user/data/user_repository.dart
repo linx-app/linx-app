@@ -14,11 +14,11 @@ class UserRepository {
 
   UserRepository(this._firestore);
 
-  Future<void> initializeUser(
-    String uid,
-    String type,
-    String email,
-  ) async {
+  Future<void> initializeUser({
+    required String uid,
+    required String type,
+    required String email,
+  }) async {
     _firestore.collection(FirestorePaths.USERS).doc(uid).set({
       FirestorePaths.TYPE: type,
       FirestorePaths.CREATED_AT: DateTime.now().millisecondsSinceEpoch,
@@ -89,8 +89,7 @@ class UserRepository {
           descriptors:
               ((obj[FirestorePaths.DESCRIPTORS] ?? []) as List<dynamic>)
                   .toStrList(),
-          packages: ((obj[FirestorePaths.PACKAGES] ?? []) as List<dynamic>)
-              .toStrList(),
+          numberOfPackages: obj[FirestorePaths.NUMBER_OF_PACKAGES] ?? 0,
           profileImageUrls:
               ((obj[FirestorePaths.PROFILE_IMAGES] ?? []) as List<dynamic>)
                   .toStrList(),
@@ -99,13 +98,13 @@ class UserRepository {
     );
   }
 
-  Future<void> updateUserSponsorshipPackages(
+  Future<void> updateUserSponsorshipPackageCount(
     String uid,
-    List<String> packages,
+    int count,
   ) async {
     _firestore
         .collection(FirestorePaths.USERS)
         .doc(uid)
-        .update({FirestorePaths.PACKAGES: FieldValue.arrayUnion(packages)});
+        .update({FirestorePaths.NUMBER_OF_PACKAGES: count});
   }
 }

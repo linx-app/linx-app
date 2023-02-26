@@ -1,4 +1,3 @@
-import 'package:linx/features/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/user/domain/model/user_type.dart';
 
 class LinxUser {
@@ -10,11 +9,11 @@ class LinxUser {
   final String biography;
   final Set<String> interests;
   final Set<String> descriptors;
+  final int numberOfPackages;
   final UserType type;
-  final List<SponsorshipPackage> packages;
   final List<String> profileImageUrls;
 
-  LinxUser({
+  const LinxUser({
     required this.uid,
     this.displayName = "",
     this.email = "",
@@ -24,7 +23,7 @@ class LinxUser {
     this.biography = "",
     this.interests = const {},
     this.descriptors = const {},
-    this.packages = const [],
+    this.numberOfPackages = 0,
     this.profileImageUrls = const [],
   });
 }

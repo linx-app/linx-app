@@ -27,6 +27,18 @@ class FirestorePaths {
   static const String INTERESTS = "interests";
   static const String DESCRIPTORS = "descriptors";
   static const String PROFILE_IMAGES = "profile_images";
-  static const String PACKAGES = "packages";
+  static const String NUMBER_OF_PACKAGES = "number_of_packages";
   static const String BIOGRAPHY = "biography";
+  static const String REQUESTS = "requests";
+
+  /// PITCH COLLECTION ///
+  static const String PITCHES = "pitches";
+  static const String MESSAGE = "message";
+  static const String RECEIVER = "receiver_id";
+  static const String SENDER = "sender_id";
+
+
+  /// PACKAGE COLLECTION ///
+  static const String PACKAGES = "packages";
+
 }

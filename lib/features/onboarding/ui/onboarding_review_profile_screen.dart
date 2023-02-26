@@ -22,7 +22,7 @@ class OnboardingReviewProfileScreen extends OnboardingView {
   Widget build(BuildContext context, WidgetRef ref) {
     var state = ref.watch(onboardingReviewProfileControllerProvider);
 
-    var descriptorChips = state.descriptors.map((e) {
+    var descriptorChips = state.user.descriptors.map((e) {
       return LinxChip(
         label: e,
         onChipSelected: (str) {},
@@ -30,7 +30,7 @@ class OnboardingReviewProfileScreen extends OnboardingView {
       );
     });
 
-    var interestChips = state.interests.map((e) {
+    var interestChips = state.user.interests.map((e) {
       return LinxChip(
         label: e,
         onChipSelected: (str) {},
@@ -41,10 +41,10 @@ class OnboardingReviewProfileScreen extends OnboardingView {
     return Column(
       children: [
         buildOnboardingStepTitle(context),
-        _buildProfileImageSection(ref, state),
-        ..._buildWhoAreYouSection(state),
+        _buildProfileImageSection(ref, state.user),
+        ..._buildWhoAreYouSection(state.user),
         _buildChipsSection(descriptorChips),
-        _buildBiographySection(state.biography),
+        _buildBiographySection(state.user.biography),
         _buildSectionTitle("Looking for"),
         _buildChipsSection(interestChips),
         _buildSectionTitle("Packages"),

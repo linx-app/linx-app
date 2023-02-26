@@ -26,6 +26,14 @@ class OnboardingSponsorshipPackageScreen extends OnboardingView {
   Widget build(BuildContext context, WidgetRef ref) {
     var state = ref.watch(onboardingSponsorshipPackageControllerProvider);
     var length = state.packages.length;
+    var currentLength = _packageNameControllers.length;
+
+    while (currentLength < length) {
+      _packageNameControllers.add(TextEditingController());
+      _ownBenefitsControllers.add(TextEditingController());
+      _partnerBenefitsControllers.add(TextEditingController());
+      currentLength++;
+    }
 
     for (var i = 0; i < length; i++) {
       var package = state.packages[i];

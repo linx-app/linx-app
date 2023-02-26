@@ -41,8 +41,7 @@ class MatchRepository {
             .toStrList(),
         descriptors: ((obj[FirestorePaths.DESCRIPTORS] ?? []) as List<dynamic>)
             .toStrList(),
-        packages:
-            ((obj[FirestorePaths.PACKAGES] ?? []) as List<dynamic>).toStrList(),
+        numberOfPackages: obj[FirestorePaths.NUMBER_OF_PACKAGES] ?? 0,
         profileImageUrls:
             ((obj[FirestorePaths.PROFILE_IMAGES] ?? []) as List<dynamic>)
                 .toStrList(),
