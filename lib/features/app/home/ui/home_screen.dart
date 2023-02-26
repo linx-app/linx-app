@@ -205,7 +205,11 @@ class HomeScreen extends ConsumerWidget {
   ) {
     var bottomSheet = SizedBox(
       height: context.height() * 0.80,
-      child: ProfileBottomSheet(user: user, matchPercentage: matchPercentage),
+      child: ProfileBottomSheet(
+        user: user,
+        matchPercentage: matchPercentage,
+        onXPressed: () => Navigator.maybePop(context),
+      ),
     );
 
     showModalBottomSheet(
