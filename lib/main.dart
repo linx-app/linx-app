@@ -10,6 +10,7 @@ import 'package:linx/features/authentication/ui/landing_screen.dart';
 import 'package:linx/features/authentication/ui/login_screen.dart';
 import 'package:linx/features/debug/widget_testing_screen.dart';
 import 'package:linx/features/onboarding/ui/onboarding_flow_screen.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/main_controller.dart';
 
 Future<void> main() async {
@@ -63,12 +64,19 @@ class LinxApp extends ConsumerWidget {
             page = WidgetTestingScreen();
             break;
           case routeProfileModal:
-            page = ProfileModalScreen(0, [], []);
+            page = ProfileModalScreen(
+              initialIndex: 0,
+              users: [],
+              requests: [],
+              matchPercentages: [],
+              packages: [],
+              currentUser: LinxUser(uid: "id"),
+            );
             break;
           default:
             if (settings.name!.startsWith(routeOnboardingRoot)) {
-              final subRoute = settings.name!.substring(
-                  routeOnboardingRoot.length);
+              final subRoute =
+                  settings.name!.substring(routeOnboardingRoot.length);
               page = OnboardingFlowScreen(initialRoute: subRoute);
             } else {
               throw Exception("Unknown route: ${settings.name}");

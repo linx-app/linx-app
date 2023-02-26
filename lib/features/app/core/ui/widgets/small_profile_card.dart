@@ -6,7 +6,7 @@ import 'package:linx/features/user/domain/model/linx_user.dart';
 class SmallProfileCard extends StatelessWidget {
   final LinxUser user;
   final int matchPercentage;
-  final Function(LinxUser, int)? onPressed;
+  final VoidCallback? onPressed;
 
   const SmallProfileCard({
     super.key,
@@ -21,7 +21,7 @@ class SmallProfileCard extends StatelessWidget {
       shape: RoundedBorder.all(10),
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
-        onTap: () { onPressed?.call(user, matchPercentage); },
+        onTap: () => onPressed?.call() ,
         child: Row(
           children: [
             _buildProfileImage(),

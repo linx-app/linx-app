@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/linx_chip.dart';
-import 'package:linx/common/sponsorship_package_card.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/text.dart';
-import 'package:linx/features/core/domain/model/sponsorship_package.dart';
+import 'package:linx/features/core/ui/sponsorship_package_carousel.dart';
 import 'package:linx/features/onboarding/presentation/onboarding_review_profile_controller.dart';
 import 'package:linx/features/onboarding/ui/model/onboarding_nav.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_profile_image.dart';
@@ -49,7 +48,7 @@ class OnboardingReviewProfileScreen extends OnboardingView {
         _buildSectionTitle("Looking for"),
         _buildChipsSection(interestChips),
         _buildSectionTitle("Packages"),
-        _buildPackagesSection(state.packages),
+        SponsorshipPackageCarousel(packages: state.packages),
         SizedBox(height: 32)
       ],
     );
@@ -174,17 +173,6 @@ class OnboardingReviewProfileScreen extends OnboardingView {
           )
         ],
       ),
-    );
-  }
-
-  SingleChildScrollView _buildPackagesSection(
-      List<SponsorshipPackage> packages) {
-    var packageCards = packages.map((e) => SponsorshipPackageCard(package: e));
-
-    return SingleChildScrollView(
-      clipBehavior: Clip.none,
-      scrollDirection: Axis.horizontal,
-      child: Row(children: [...packageCards]),
     );
   }
 
