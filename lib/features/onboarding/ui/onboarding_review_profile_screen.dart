@@ -6,6 +6,7 @@ import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/text.dart';
 import 'package:linx/features/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/onboarding/presentation/onboarding_review_profile_controller.dart';
+import 'package:linx/features/onboarding/ui/model/onboarding_nav.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_profile_image.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_profile_image_carousel.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
@@ -194,5 +195,11 @@ class OnboardingReviewProfileScreen extends OnboardingView {
   @override
   void onScreenPushed(WidgetRef ref) {
     ref.read(onboardingReviewProfileControllerProvider.notifier).fetchUser();
+  }
+
+  @override
+  bool onNextPressed(WidgetRef ref) {
+    onScreenCompleted(OnboardingNav.next);
+    return super.onNextPressed(ref);
   }
 }
