@@ -137,6 +137,7 @@ class WidgetTestingScreen extends ConsumerWidget {
         child: ProfileBottomSheet(
           user: user,
           matchPercentage: matchPercentage.toInt(),
+          onXPressed: () => Navigator.maybePop(context),
         ),
       ),
       barrierColor: Colors.black.withOpacity(0.60),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linx/common/buttons/linx_close_button.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/common/linx_chip.dart';
 import 'package:linx/common/rounded_border.dart';
@@ -9,9 +10,14 @@ import 'package:linx/utils/ui_extensions.dart';
 class ProfileModalCard extends StatelessWidget {
   final LinxUser user;
   final int matchPercentage;
+  final VoidCallback? onXPressed;
 
-  const ProfileModalCard(
-      {super.key, required this.user, required this.matchPercentage});
+  const ProfileModalCard({
+    super.key,
+    required this.user,
+    required this.matchPercentage,
+    this.onXPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +55,9 @@ class ProfileModalCard extends StatelessWidget {
   Container _profileImage() {
     return Container(
       height: 210,
+      width: double.infinity,
+      padding: const EdgeInsets.all(10),
+      alignment: Alignment.topRight,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: NetworkImage(user.profileImageUrls.first),
@@ -59,10 +68,15 @@ class ProfileModalCard extends StatelessWidget {
           topRight: Radius.circular(10),
         ),
       ),
+      child: LinxCloseButton(
+        size: 24,
+        color: LinxColors.grey6,
+        onXPressed: onXPressed,
+      ),
     );
   }
 
-  Container _matchText() {
+  _matchText() {
     return Container(
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),

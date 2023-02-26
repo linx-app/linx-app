@@ -48,6 +48,7 @@ class ProfileModalScreen extends ConsumerWidget {
         ProfileModalCard(
           user: users[i],
           matchPercentage: matchPercentages[i].toInt(),
+          onXPressed: () => _onXPressed(context),
         ),
       );
     }
@@ -85,4 +86,6 @@ class ProfileModalScreen extends ConsumerWidget {
           position: selectedIndex.toDouble()),
     );
   }
+
+  void _onXPressed(BuildContext context) => Navigator.maybePop(context);
 }

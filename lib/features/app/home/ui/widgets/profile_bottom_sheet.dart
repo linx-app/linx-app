@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linx/common/buttons/linx_close_button.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/common/linx_chip.dart';
 import 'package:linx/constants/colors.dart';
@@ -8,11 +9,13 @@ import 'package:linx/utils/ui_extensions.dart';
 class ProfileBottomSheet extends StatelessWidget {
   final LinxUser user;
   final int matchPercentage;
+  final VoidCallback? onXPressed;
 
   const ProfileBottomSheet({
     super.key,
     required this.user,
     required this.matchPercentage,
+    this.onXPressed,
   });
 
   @override
@@ -46,7 +49,9 @@ class ProfileBottomSheet extends StatelessWidget {
   Container _buildProfileImage(BuildContext context) {
     return Container(
       height: 232,
-      width: context.width(),
+      width: double.infinity,
+      padding: const EdgeInsets.all(10),
+      alignment: Alignment.topRight,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: NetworkImage(user.profileImageUrls.first),
@@ -57,6 +62,11 @@ class ProfileBottomSheet extends StatelessWidget {
           topRight: Radius.circular(10),
         ),
       ),
+      child: LinxCloseButton(
+        color: LinxColors.subtitleGrey,
+        size: 24,
+        onXPressed: onXPressed,
+      )
     );
   }
 
