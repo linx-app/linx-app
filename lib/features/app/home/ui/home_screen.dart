@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
+import 'package:linx/common/empty.dart';
+import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/text.dart';
+import 'package:linx/features/app/core/ui/widgets/small_profile_card.dart';
 import 'package:linx/features/app/home/presentation/home_screen_controller.dart';
 import 'package:linx/features/app/home/ui/profile_modal_screen.dart';
 import 'package:linx/features/app/home/ui/widgets/profile_card.dart';
@@ -10,12 +13,14 @@ import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_type.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
+import 'widgets/profile_bottom_sheet.dart';
+
 class HomeScreen extends ConsumerWidget {
   final LinxUser currentUser;
   final TextStyle _subtitleStyle = const TextStyle(
-      fontWeight: FontWeight.w600,
-      fontSize: 17.0,
-      color: LinxColors.subtitleGrey,
+    fontWeight: FontWeight.w600,
+    fontSize: 17.0,
+    color: LinxColors.subtitleGrey,
   );
 
   const HomeScreen(this.currentUser, {super.key});
@@ -30,13 +35,16 @@ class HomeScreen extends ConsumerWidget {
           children: [
             _buildHomeAppBar(context, ref),
             _buildHomeTitle(context, ref),
-            if (uiState.matches.isNotEmpty &&
-                uiState.matchPercentages.isNotEmpty)
-              _buildMatchesCarousel(
-                context,
-                uiState.matches,
-                uiState.matchPercentages,
-              )
+            _buildMatchesCarousel(
+              context,
+              uiState.matches,
+              uiState.matchPercentages,
+            ),
+            _buildHomeBottomSection(
+              context,
+              uiState.matches,
+              uiState.matchPercentages,
+            ),
           ],
         ),
       ),
@@ -83,11 +91,12 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Column _buildMatchesCarousel(
+  Widget _buildMatchesCarousel(
     BuildContext context,
     List<LinxUser> users,
     List<double> percentages,
   ) {
+    if (users.isEmpty || percentages.isEmpty) return Empty();
     List<ProfileCard> pages = [];
 
     for (int i = 0; i < users.length; i++) {
@@ -96,7 +105,8 @@ class HomeScreen extends ConsumerWidget {
           matchPercentage: percentages[i].toInt(),
           user: users[i],
           onSeeDetailsPressed: (selectedUser) =>
-              _onProfileCardSeeDetailsPressed(context, selectedUser, users, percentages),
+              _onProfileCardSeeDetailsPressed(
+                  context, selectedUser, users, percentages),
         ),
       );
     }
@@ -129,5 +139,81 @@ class HomeScreen extends ConsumerWidget {
       opaque: false,
     );
     Navigator.of(context).push(builder);
+  }
+
+  Container _buildHomeBottomSection(
+    BuildContext context,
+    List<LinxUser> matches,
+    List<double> matchPercentages,
+  ) {
+    var cards = <SmallProfileCard>[];
+
+    for (int i = 0; i < matches.length; i++) {
+      cards.add(
+        SmallProfileCard(
+          user: matches[i],
+          matchPercentage: matchPercentages[i].toInt(),
+          onPressed: (user, percentage) =>
+              _onSmallCardPressed(context, user, percentage),
+        ),
+      );
+    }
+
+    return Container(
+      width: context.width(),
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        children: [_buildBottomSectionTitleBar(), ...cards],
+      ),
+    );
+  }
+
+  Container _buildBottomSectionTitleBar() {
+    var isClub = currentUser.type == UserType.club;
+    var title = isClub ? "Find a match" : "Other requests";
+    return Container(
+      child: Row(
+        children: [
+          Expanded(
+              child: Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 17,
+              color: LinxColors.subtitleGrey,
+            ),
+          )),
+          SizedBox(
+            height: 24,
+            width: 24,
+            child: InkWell(
+              child: Image.asset(
+                "assets/sort.png",
+                color: LinxColors.subtitleGrey,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  void _onSmallCardPressed(
+    BuildContext context,
+    LinxUser user,
+    int matchPercentage,
+  ) {
+    var bottomSheet = SizedBox(
+      height: context.height() * 0.80,
+      child: ProfileBottomSheet(user: user, matchPercentage: matchPercentage),
+    );
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => bottomSheet,
+      barrierColor: LinxColors.black.withOpacity(0.60),
+      shape: RoundedBorder.clockwise(10, 10, 0, 0),
+    );
   }
 }
