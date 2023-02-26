@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/text.dart';
 import 'package:linx/constants/colors.dart';
 
@@ -30,7 +31,7 @@ ButtonStyle greenButtonStyle() {
   return ElevatedButton.styleFrom(
     backgroundColor: LinxColors.green,
     foregroundColor: LinxColors.white,
-    shape: _roundedButtonShape,
+    shape: RoundedBorder.all(buttonRadius),
     textStyle: LinxTextStyles.button(color: LinxColors.black),
     padding: const EdgeInsets.symmetric(vertical: 11.0, horizontal: 29.0),
     minimumSize: const Size.fromHeight(40.0),
@@ -42,13 +43,10 @@ ButtonStyle greyButtonStyle() {
   return ElevatedButton.styleFrom(
     backgroundColor: LinxColors.buttonGrey,
     foregroundColor: LinxColors.black,
-    shape: _roundedButtonShape,
+    shape: RoundedBorder.all(buttonRadius),
     textStyle: LinxTextStyles.button(color: LinxColors.green),
     padding: const EdgeInsets.symmetric(vertical: 11.0, horizontal: 29.0),
     minimumSize: const Size.fromHeight(40.0),
     shadowColor: Colors.transparent,
   );
 }
-
-RoundedRectangleBorder _roundedButtonShape =
-    RoundedRectangleBorder(borderRadius: BorderRadius.circular(buttonRadius));

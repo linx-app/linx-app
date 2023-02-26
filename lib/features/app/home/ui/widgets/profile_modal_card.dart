@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/common/linx_chip.dart';
+import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
@@ -15,7 +16,7 @@ class ProfileModalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      shape: RoundedBorder.all(10),
       elevation: 10,
       child: Container(
         height: 630,

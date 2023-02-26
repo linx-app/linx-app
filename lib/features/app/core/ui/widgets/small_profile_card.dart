@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 
@@ -17,7 +18,7 @@ class SmallProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      shape: RoundedBorder.all(10),
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
         onTap: () { onPressed?.call(user, matchPercentage); },
