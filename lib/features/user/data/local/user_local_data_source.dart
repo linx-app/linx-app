@@ -18,7 +18,6 @@ class UserLocalDataSource {
   static const _biography = "biography";
   static const _interests = "interests";
   static const _descriptors = "descriptors";
-  static const _packages = "packages";
   static const _profileImages = "profile_images";
   static Database? _database;
 
@@ -71,7 +70,6 @@ class UserLocalDataSource {
             $_biography TEXT,
             $_interests TEXT,
             $_descriptors TEXT,
-            $_packages TEXT,
             $_profileImages TEXT
           )
         """);
@@ -91,7 +89,7 @@ class UserLocalDataSource {
       _interests: user.interests.join("|"),
       _descriptors: user.descriptors.join("|"),
       _type: user.type,
-      _packages: user.packages.join("|"),
+      // _packages: user.packages.join("|"),
       _profileImages: user.profileImageUrls.join("|")
     };
   }
@@ -107,7 +105,7 @@ class UserLocalDataSource {
       interests: (user[_interests] as String).split("|"),
       descriptors: (user[_descriptors] as String).split("|"),
       type: user[_type],
-      packages: (user[_packages] as String).split("|"),
+      // packages: (user[_packages] as String).split("|"),
       profileImageUrls: (user[_profileImages] as String).split("|")
     );
   }

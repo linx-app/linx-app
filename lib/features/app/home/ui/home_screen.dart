@@ -29,6 +29,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.read(homeScreenControllerProvider.notifier).initialize(currentUser);
     var uiState = ref.watch(homeScreenControllerProvider);
+
     return BaseScaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -37,13 +38,13 @@ class HomeScreen extends ConsumerWidget {
             _buildHomeTitle(context, ref),
             _buildMatchesCarousel(
               context,
-              uiState.matches,
-              uiState.matchPercentages,
+              uiState.topMatches,
+              uiState.topMatchPercentages,
             ),
             _buildHomeBottomSection(
               context,
-              uiState.matches,
-              uiState.matchPercentages,
+              uiState.nextMatches,
+              uiState.nextMatchPercentages,
             ),
           ],
         ),

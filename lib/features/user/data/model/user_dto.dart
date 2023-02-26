@@ -8,7 +8,7 @@ class UserDTO {
   final List<String> interests;
   final List<String> descriptors;
   final String type;
-  final List<String> packages;
+  final int numberOfPackages;
   final List<String> profileImageUrls;
 
   UserDTO({
@@ -17,11 +17,11 @@ class UserDTO {
     this.email = "",
     this.type = "",
     this.location = "",
-    this.phoneNumber ="",
+    this.phoneNumber = "",
     this.biography = "",
     this.interests = const [],
     this.descriptors = const [],
-    this.packages = const [],
     this.profileImageUrls = const [],
+    this.numberOfPackages = 0,
   });
 }

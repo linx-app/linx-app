@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:linx/features/core/data/model/package_dto.dart';
 import 'package:linx/features/core/domain/model/sponsorship_package.dart';
 import 'package:linx/firebase/firebase_providers.dart';
 import 'package:linx/firebase/firestore_paths.dart';
@@ -13,48 +14,59 @@ class SponsorshipPackageRepository {
 
   SponsorshipPackageRepository(this._firestore);
 
-  Future<List<String>> addSponsorshipPackages(
+  Future<void> updateSponsorshipPackages(
     List<SponsorshipPackage> packages,
   ) async {
-    List<String> packageIds = [];
 
     for (var package in packages) {
-      _firestore.collection(FirestorePaths.PACKAGES).add({
-        FirestorePaths.NAME: package.name,
-        FirestorePaths.OWN_BENEFITS: package.ownBenefit,
-        FirestorePaths.PARTNER_BENEFITS: package.partnerBenefit,
-      }).then((doc) => packageIds.add(doc.id));
+      if (package.packageId != "") {
+        _firestore
+            .collection(FirestorePaths.PACKAGES)
+            .doc(package.packageId)
+            .update({
+          FirestorePaths.NAME: package.name,
+          FirestorePaths.OWN_BENEFITS: package.ownBenefit,
+          FirestorePaths.PARTNER_BENEFITS: package.partnerBenefit,
+          FirestorePaths.USER_ID: package.user.uid,
+        });
+      } else {
+        _firestore.collection(FirestorePaths.PACKAGES).add({
+          FirestorePaths.NAME: package.name,
+          FirestorePaths.OWN_BENEFITS: package.ownBenefit,
+          FirestorePaths.PARTNER_BENEFITS: package.partnerBenefit,
+          FirestorePaths.USER_ID: package.user.uid,
+        });
+      }
     }
-
-    return packageIds;
   }
 
-  Future<List<SponsorshipPackage>> fetchSponsorshipPackages(
-    List<String> ids,
+  Future<List<PackageDTO>> fetchSponsorshipPackagesByUser(
+    String userId,
   ) async {
-    if (ids.isEmpty) return [];
-    List<SponsorshipPackage> packages = [];
-
-    _firestore
+    return _firestore
         .collection(FirestorePaths.PACKAGES)
-        .where(FieldPath.documentId, whereIn: ids)
+        .where(FirestorePaths.USER_ID, isEqualTo: userId)
         .get()
         .then(
-          (query) => query.docs.forEach(
-            (doc) {
-              var data = doc.data();
-              packages.add(
-                SponsorshipPackage(
-                  name: data[FirestorePaths.NAME] as String,
-                  ownBenefit: data[FirestorePaths.OWN_BENEFITS] as String,
-                  partnerBenefit:
-                      data[FirestorePaths.PARTNER_BENEFITS] as String,
-                ),
-              );
-            },
-          ),
+          (query) => _mapQueryToPackage(query),
         );
+  }
 
-    return packages;
+  List<PackageDTO> _mapQueryToPackage(QuerySnapshot query) {
+    var list = <PackageDTO>[];
+
+    for (var doc in query.docs) {
+      var data = doc.data() as Map<String, dynamic>;
+      list.add(
+        PackageDTO(
+            packageId: doc.id,
+            packageName: data[FirestorePaths.NAME] ?? "",
+            ownBenefits: data[FirestorePaths.OWN_BENEFITS] ?? "",
+            partnerBenefits: data[FirestorePaths.PARTNER_BENEFITS] ?? "",
+            userId: data[FirestorePaths.USER_ID] ?? ""),
+      );
+    }
+
+    return list;
   }
 }

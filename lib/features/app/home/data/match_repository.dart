@@ -14,40 +14,40 @@ class MatchRepository {
 
   MatchRepository(this._firestore);
 
-  Future<List<UserDTO>> fetchUserInterests(
-    int n,
+  Future<List<UserDTO>> fetchUsersWithMatchingInterests(
     Set<String> interests,
   ) async {
     return await _firestore
         .collection(FirestorePaths.USERS)
         .where(FirestorePaths.DESCRIPTORS, arrayContainsAny: interests.toList())
         .where(FirestorePaths.TYPE, isEqualTo: UserType.business.name)
-        .limit(n)
         .get()
-        .then((QuerySnapshot query) {
-      var list = <UserDTO>[];
-      for (var element in query.docs) {
-        var obj = element.data() as Map<String, dynamic>;
-        list.add(UserDTO(
-          uid: obj[FirestorePaths.USER_ID] ?? "",
-          displayName: obj[FirestorePaths.NAME] ?? "",
-          type: obj[FirestorePaths.TYPE] ?? "",
-          location: obj[FirestorePaths.LOCATION] ?? "",
-          phoneNumber: obj[FirestorePaths.PHONE_NUMBER] ?? "",
-          biography: obj[FirestorePaths.BIOGRAPHY] ?? "",
-          interests: ((obj[FirestorePaths.INTERESTS] ?? []) as List<dynamic>)
-              .toStrList(),
-          descriptors:
-              ((obj[FirestorePaths.DESCRIPTORS] ?? []) as List<dynamic>)
-                  .toStrList(),
-          packages: ((obj[FirestorePaths.PACKAGES] ?? []) as List<dynamic>)
-              .toStrList(),
-          profileImageUrls:
-              ((obj[FirestorePaths.PROFILE_IMAGES] ?? []) as List<dynamic>)
-                  .toStrList(),
-        ));
-      }
-      return list;
-    });
+        .then((QuerySnapshot query) => _mapQueryToUserDTO(query));
+  }
+
+  List<UserDTO> _mapQueryToUserDTO(QuerySnapshot query) {
+    var list = <UserDTO>[];
+
+    for (var element in query.docs) {
+      var obj = element.data() as Map<String, dynamic>;
+      list.add(UserDTO(
+        uid: obj[FirestorePaths.USER_ID] ?? "",
+        displayName: obj[FirestorePaths.NAME] ?? "",
+        type: obj[FirestorePaths.TYPE] ?? "",
+        location: obj[FirestorePaths.LOCATION] ?? "",
+        phoneNumber: obj[FirestorePaths.PHONE_NUMBER] ?? "",
+        biography: obj[FirestorePaths.BIOGRAPHY] ?? "",
+        interests: ((obj[FirestorePaths.INTERESTS] ?? []) as List<dynamic>)
+            .toStrList(),
+        descriptors: ((obj[FirestorePaths.DESCRIPTORS] ?? []) as List<dynamic>)
+            .toStrList(),
+        numberOfPackages: obj[FirestorePaths.NUMBER_OF_PACKAGES] ?? 0,
+        profileImageUrls:
+            ((obj[FirestorePaths.PROFILE_IMAGES] ?? []) as List<dynamic>)
+                .toStrList(),
+      ),);
+    }
+
+    return list;
   }
 }

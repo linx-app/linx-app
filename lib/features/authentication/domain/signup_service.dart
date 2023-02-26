@@ -18,7 +18,8 @@ class SignUpService {
   final SessionRepository _sessionRepository;
   final UserRepository _userRepository;
 
-  SignUpService(this._authRepository, this._sessionRepository, this._userRepository);
+  SignUpService(
+      this._authRepository, this._sessionRepository, this._userRepository);
 
   Future<AuthResponse> createUserWithEmailAndPassword(
     String email,
@@ -32,7 +33,11 @@ class SignUpService {
     );
 
     if (res is AuthSuccess) {
-      await _userRepository.initializeUser(res.userId, email, userType.name);
+      await _userRepository.initializeUser(
+        uid: res.userId,
+        email: email,
+        type: userType.name,
+      );
       var user = await _userRepository.fetchUserProfile(res.userId);
       _sessionRepository.saveUser(user);
     }
