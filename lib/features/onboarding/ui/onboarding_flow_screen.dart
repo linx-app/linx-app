@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
+import 'package:linx/common/buttons/linx_back_button.dart';
 import 'package:linx/common/buttons/linx_text_button.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/constants/colors.dart';
@@ -95,12 +96,7 @@ class OnboardingFlowScreen extends OnboardingFlowRouter {
     return Container(
       alignment: Alignment.centerLeft,
       width: context.width() / 2,
-      child: LinxTextButton(
-        label: "Back",
-        onPressed: () => onBackPressed(context, ref),
-        iconData: Icons.chevron_left,
-        tint: LinxColors.backButtonGrey,
-      ),
+      child: LinxBackButton(onPressed: () => onBackPressed(context, ref)),
     );
   }
 

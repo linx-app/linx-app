@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linx/constants/colors.dart';
 
 class LinxCloseButton extends StatelessWidget {
   final Color? color;
@@ -9,8 +10,9 @@ class LinxCloseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
+    return Material(
+      shape: const CircleBorder(),
+      color: LinxColors.transparent,
       child: InkWell(
         customBorder: const CircleBorder(),
         onTap: () => onXPressed?.call(),
