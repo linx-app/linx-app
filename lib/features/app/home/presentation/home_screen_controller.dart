@@ -43,7 +43,7 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
   }
 
   double _calculateMatchPercentage(LinxUser a, LinxUser b) {
-    return (a.interests.intersection(b.descriptors).length /
+    return (a.interests.intersection(b.interests).length /
             a.interests.length) *
         100;
   }

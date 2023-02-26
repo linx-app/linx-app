@@ -19,7 +19,7 @@ class MatchRepository {
   ) async {
     return await _firestore
         .collection(FirestorePaths.USERS)
-        .where(FirestorePaths.DESCRIPTORS, arrayContainsAny: interests.toList())
+        .where(FirestorePaths.INTERESTS, arrayContainsAny: interests.take(10).toList())
         .where(FirestorePaths.TYPE, isEqualTo: UserType.business.name)
         .get()
         .then((QuerySnapshot query) => _mapQueryToUserDTO(query));

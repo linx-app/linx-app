@@ -23,7 +23,7 @@ abstract class OnboardingFlowRouter extends ConsumerWidget {
   final navigatorKey = GlobalKey<NavigatorState>();
 
   @protected
-  Route onGenerateRoute(RouteSettings settings, WidgetRef ref) {
+  Route onGenerateRoute(RouteSettings settings, WidgetRef ref, VoidCallback onFinishOnboarding) {
     late Widget page;
 
     switch (settings.name) {
@@ -98,7 +98,7 @@ abstract class OnboardingFlowRouter extends ConsumerWidget {
       /**  Review Profile Screen **/
       case routeOnboardingReviewProfile:
         var screen = OnboardingReviewProfileScreen(
-          onScreenCompleted: _onReviewProfileComplete,
+          onScreenCompleted: (nav) => _onReviewProfileComplete(nav, onFinishOnboarding),
         );
         // _backstack.push(screen);
         _currentScreen = screen;
@@ -212,9 +212,9 @@ abstract class OnboardingFlowRouter extends ConsumerWidget {
     navigatorKey.currentState?.popAndPushNamed(route);
   }
 
-  void _onReviewProfileComplete(OnboardingNav nav) {
+  void _onReviewProfileComplete(OnboardingNav nav, VoidCallback onFinishOnboarding) {
     if (nav == OnboardingNav.next) {
-
+      onFinishOnboarding();
     } else {
       navigatorKey.currentState?.popAndPushNamed(routeOnboardingSponsorshipPackage);
     }

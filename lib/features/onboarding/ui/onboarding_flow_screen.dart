@@ -4,6 +4,7 @@ import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/common/buttons/linx_text_button.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/constants/colors.dart';
+import 'package:linx/constants/routes.dart';
 import 'package:linx/features/onboarding/presentation/onboarding_flow_controller.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_flow_router.dart';
 import 'package:linx/utils/ui_extensions.dart';
@@ -38,7 +39,7 @@ class OnboardingFlowScreen extends OnboardingFlowRouter {
                       child: Navigator(
                         key: navigatorKey,
                         initialRoute: initialRoute,
-                        onGenerateRoute: (settings) => onGenerateRoute(settings, ref),
+                        onGenerateRoute: (settings) => onGenerateRoute(settings, ref, () => _onFinishOnboarding(context)),
                       ),
                     ),
                   ],
@@ -137,5 +138,9 @@ class OnboardingFlowScreen extends OnboardingFlowRouter {
             color: LinxColors.onboardingStepGrey,
           )),
     );
+  }
+
+  void _onFinishOnboarding(BuildContext context) {
+    Navigator.popAndPushNamed(context, routeApp);
   }
 }
