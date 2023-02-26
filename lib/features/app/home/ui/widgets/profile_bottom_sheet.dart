@@ -1,54 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/common/linx_chip.dart';
-import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
-class ProfileModalCard extends StatelessWidget {
+class ProfileBottomSheet extends StatelessWidget {
   final LinxUser user;
   final int matchPercentage;
 
-  const ProfileModalCard(
-      {super.key, required this.user, required this.matchPercentage});
+  const ProfileBottomSheet({
+    super.key,
+    required this.user,
+    required this.matchPercentage,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedBorder.all(10),
-      elevation: 10,
-      child: Container(
-        height: 630,
-        width: context.width() * 0.65,
-        child: Column(
-          children: [
-            SizedBox(
-              height: 550,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _profileImage(),
-                    _matchText(),
-                    _nameText(),
-                    _locationText(),
-                    _descriptorChips(),
-                    _biographyText(),
-                    _interestsChips(),
-                  ],
-                ),
+    return Container(
+      height: context.height() * 0.80,
+      child: Column(
+        children: [
+          SizedBox(
+            height: context.height() * 0.70,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildProfileImage(context),
+                  _buildMatchText(),
+                  _buildNameText(),
+                  _buildLocationText(),
+                  _buildDescriptorChips(),
+                  _buildBiographyText(),
+                  _buildInterestsChips(),
+                ],
               ),
             ),
-            _buttonRow(),
-          ],
-        ),
+          ),
+          _buildButtonRow()
+        ],
       ),
     );
   }
 
-  Container _profileImage() {
+  Container _buildProfileImage(BuildContext context) {
     return Container(
-      height: 210,
+      height: 232,
+      width: context.width(),
       decoration: BoxDecoration(
         image: DecorationImage(
           image: NetworkImage(user.profileImageUrls.first),
@@ -62,7 +60,7 @@ class ProfileModalCard extends StatelessWidget {
     );
   }
 
-  Container _matchText() {
+  Container _buildMatchText() {
     return Container(
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
@@ -71,27 +69,27 @@ class ProfileModalCard extends StatelessWidget {
         style: const TextStyle(
           color: LinxColors.green,
           fontWeight: FontWeight.w600,
-          fontSize: 15.0,
+          fontSize: 16.0,
         ),
       ),
     );
   }
 
-  Container _nameText() {
+  Container _buildNameText() {
     return Container(
       alignment: Alignment.centerLeft,
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Text(
         user.displayName,
         style: const TextStyle(
             color: LinxColors.subtitleGrey,
             fontWeight: FontWeight.w600,
-            fontSize: 22.0),
+            fontSize: 24.0),
       ),
     );
   }
 
-  Container _locationText() {
+  Container _buildLocationText() {
     return Container(
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -99,13 +97,13 @@ class ProfileModalCard extends StatelessWidget {
         user.location,
         style: const TextStyle(
           color: LinxColors.locationTextGrey,
-          fontSize: 15,
+          fontSize: 16,
         ),
       ),
     );
   }
 
-  Container _descriptorChips() {
+  Container _buildDescriptorChips() {
     var chips = user.descriptors.map((e) => LinxChip(label: e));
     return Container(
       alignment: Alignment.centerLeft,
@@ -114,18 +112,21 @@ class ProfileModalCard extends StatelessWidget {
     );
   }
 
-  Container _biographyText() {
+  Container _buildBiographyText() {
     return Container(
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Text(
         user.biography,
-        style: const TextStyle(color: LinxColors.chipTextGrey, fontSize: 15),
+        style: const TextStyle(
+          color: LinxColors.chipTextGrey,
+          fontSize: 16,
+        ),
       ),
     );
   }
 
-  Container _interestsChips() {
+  Container _buildInterestsChips() {
     var chips = user.interests.map((e) => LinxChip(label: e));
 
     return Container(
@@ -148,7 +149,7 @@ class ProfileModalCard extends StatelessWidget {
     );
   }
 
-  Container _buttonRow() {
+  Container _buildButtonRow() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: RoundedButton(

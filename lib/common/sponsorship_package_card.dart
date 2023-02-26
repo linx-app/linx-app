@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/core/domain/model/sponsorship_package.dart';
 
@@ -10,7 +11,7 @@ class SponsorshipPackageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      shape: RoundedBorder.all(10),
       margin: EdgeInsets.only(left: 24),
       elevation: 10,
       child: Container(

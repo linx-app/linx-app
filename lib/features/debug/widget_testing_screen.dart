@@ -4,9 +4,11 @@ import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/common/buttons/linx_text_button.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/common/linx_chip.dart';
+import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/core/ui/widgets/small_profile_card.dart';
 import 'package:linx/features/app/home/ui/profile_modal_screen.dart';
+import 'package:linx/features/app/home/ui/widgets/profile_bottom_sheet.dart';
 import 'package:linx/features/app/home/ui/widgets/profile_card.dart';
 import 'package:linx/features/app/home/ui/widgets/profile_modal_card.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
@@ -14,30 +16,29 @@ import 'package:linx/utils/ui_extensions.dart';
 
 class WidgetTestingScreen extends ConsumerWidget {
   final _testUser = LinxUser(
-    uid: "id",
-    displayName: "Williams Fresh Cafe",
-    location: "Waterloo, ON",
-    biography:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna adipiscing elit eiusmod  dolore magna, Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna adipiscing elit eiusmod  dolore magna",
-    profileImageUrls: [
-      "https://picsum.photos/500/300",
-      "https://picsum.photos/400/300"
-    ],
-    descriptors: {
-      "Food",
-      "Beverage",
-      "Waterloo Alumni",
-      "Dank food",
-      "Overpriced shit coffee"
-    },
-    interests: {
-      "Anything",
-      "Test 1",
-      "Test 2",
-      'Test 3',
-      "Test 4"
-    }
-  );
+      uid: "id",
+      displayName: "Williams Fresh Cafe",
+      location: "Waterloo, ON",
+      biography:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna adipiscing elit eiusmod  dolore magna, Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna adipiscing elit eiusmod  dolore magna",
+      profileImageUrls: [
+        "https://picsum.photos/500/300",
+        "https://picsum.photos/400/300"
+      ],
+      descriptors: {
+        "Food",
+        "Beverage",
+        "Waterloo Alumni",
+        "Dank food",
+        "Overpriced shit coffee"
+      },
+      interests: {
+        "Anything",
+        "Test 1",
+        "Test 2",
+        'Test 3',
+        "Test 4"
+      });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -75,10 +76,10 @@ class WidgetTestingScreen extends ConsumerWidget {
                 onPressed: () {
                   Navigator.of(context).push(PageRouteBuilder(
                       pageBuilder: (_, __, ___) => ProfileModalScreen(
-                        0,
-                        [_testUser, _testUser, _testUser],
-                        const [10, 10, 10],
-                      ),
+                            0,
+                            [_testUser, _testUser, _testUser],
+                            const [10, 10, 10],
+                          ),
                       opaque: false));
                 },
                 style: greenButtonStyle(),
@@ -96,7 +97,15 @@ class WidgetTestingScreen extends ConsumerWidget {
                 matchPercentage: 10,
               ),
             ),
-            _widgetContainer(SmallProfileCard(user: _testUser, matchPercentage: 70,))
+            _widgetContainer(
+              SmallProfileCard(
+                user: _testUser,
+                matchPercentage: 70,
+                onPressed: (user, percentage) {
+                  _openProfileBottomSheet(context, user, percentage);
+                },
+              ),
+            )
           ],
         ),
       ),
@@ -113,5 +122,25 @@ class WidgetTestingScreen extends ConsumerWidget {
   void _onAction(BuildContext context, String name) {
     var snackBar = SnackBar(content: Text("Something happened with $name!"));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void _openProfileBottomSheet(
+    BuildContext context,
+    LinxUser user,
+    int matchPercentage,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => Container(
+        height: context.height() * 0.80,
+        child: ProfileBottomSheet(
+          user: user,
+          matchPercentage: matchPercentage.toInt(),
+        ),
+      ),
+      barrierColor: Colors.black.withOpacity(0.60),
+      shape: RoundedBorder.clockwise(10, 10, 0, 0),
+    );
   }
 }
