@@ -1,5 +1,6 @@
 enum ChipSelectionScreenType {
   clubDescriptors,
   clubInterests,
-  businessInterests
+  businessInterests,
+  businessDescriptors
 }

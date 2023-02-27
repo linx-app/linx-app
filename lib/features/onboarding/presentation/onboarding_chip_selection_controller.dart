@@ -46,6 +46,11 @@ class OnboardingChipSelectionController
           categories = await _categoryService.fetchBusinessInterestCategories();
           selected = user.interests;
           break;
+        case ChipSelectionScreenType.businessDescriptors:
+          categories =
+              await _categoryService.fetchBusinessDescriptorCategories();
+          selected = user.descriptors;
+          break;
       }
 
       state = OnboardingChipSelectionUiState(
@@ -77,11 +82,14 @@ class OnboardingChipSelectionController
       case ChipSelectionScreenType.clubInterests:
       case ChipSelectionScreenType.businessInterests:
         await _userInterestDescriptorService.updateUserInterests(
-            interests: state.selectedChips);
+          interests: state.selectedChips,
+        );
         break;
+      case ChipSelectionScreenType.businessDescriptors:
       case ChipSelectionScreenType.clubDescriptors:
         await _userInterestDescriptorService.updateUserDescriptors(
-            descriptors: state.selectedChips);
+          descriptors: state.selectedChips,
+        );
         break;
     }
   }

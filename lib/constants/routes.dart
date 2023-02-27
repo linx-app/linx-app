@@ -14,6 +14,7 @@ const routeOnboardingBasicInfo = "basic_info";
 const routeOnboardingChipClubDescriptor = "chip_club_descriptor";
 const routeOnboardingChipClubInterest = "chip_club_interest";
 const routeOnboardingChipBusinessInterest = "chip_business_interest";
+const routeOnboardingChipBusinessDescriptor = "chip_business_descriptor";
 const routeOnboardingCreateProfile = "create_profile";
 const routeOnboardingSponsorshipPackage = "sponsorship_packages";
 const routeOnboardingReviewProfile = "review_profile";
