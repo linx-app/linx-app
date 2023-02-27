@@ -50,7 +50,7 @@ abstract class OnboardingFlowRouter extends ConsumerWidget {
       case routeOnboardingChipClubDescriptor:
         var screen = OnboardingChipSelectionScreen(
           type: ChipSelectionScreenType.clubDescriptors,
-          onScreenCompleted: _onClubDescriptorComplete,
+          onScreenCompleted: _onChipDescriptorComplete,
           pageTitle: "What type of\ngroup are you?",
         );
         _currentScreen = screen;
@@ -72,6 +72,16 @@ abstract class OnboardingFlowRouter extends ConsumerWidget {
           type: ChipSelectionScreenType.businessInterests,
           onScreenCompleted: _onChipInterestComplete,
           pageTitle: "How do you\nwant to help?",
+        );
+        _currentScreen = screen;
+        // _backstack.push(screen);
+        page = screen;
+        break;
+      case routeOnboardingChipBusinessDescriptor:
+        var screen = OnboardingChipSelectionScreen(
+          type: ChipSelectionScreenType.businessDescriptors,
+          onScreenCompleted: _onChipDescriptorComplete,
+          pageTitle: "What type of\nbusiness are you?",
         );
         _currentScreen = screen;
         // _backstack.push(screen);
@@ -160,7 +170,7 @@ abstract class OnboardingFlowRouter extends ConsumerWidget {
     if (nav == OnboardingNav.next) {
       route = _userType == UserType.club
           ? routeOnboardingChipClubDescriptor
-          : routeOnboardingCreateProfile;
+          : routeOnboardingChipBusinessDescriptor;
     } else {
       route = routeOnboardingSignUp;
     }
@@ -175,7 +185,7 @@ abstract class OnboardingFlowRouter extends ConsumerWidget {
     navigatorKey.currentState?.popAndPushNamed(route);
   }
 
-  void _onClubDescriptorComplete(OnboardingNav nav) {
+  void _onChipDescriptorComplete(OnboardingNav nav) {
     var route = nav == OnboardingNav.next
         ? routeOnboardingCreateProfile
         : routeOnboardingBasicInfo;

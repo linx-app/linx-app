@@ -51,4 +51,16 @@ class CategoryService {
       return result;
     }
   }
+
+  Future<Map<String, List<String>>> fetchBusinessDescriptorCategories() async {
+    List<String> buisnessDescriptorCategories = ["industries"];
+
+    Map<String, List<String>>? result =
+    await _categoryRepository.fetchCategories(buisnessDescriptorCategories);
+    if (result == null) {
+      return {};
+    } else {
+      return result;
+    }
+  }
 }
