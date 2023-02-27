@@ -9,7 +9,7 @@ class ProfileCard extends StatelessWidget {
   final int matchPercentage;
   final LinxUser user;
   final String mainText;
-  final void Function(LinxUser)? onMainButtonPressed;
+  final VoidCallback? onMainButtonPressed;
 
   const ProfileCard({
     super.key,
@@ -115,11 +115,9 @@ class ProfileCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: RoundedButton(
         style: greenButtonStyle(),
-        onPressed: _onMainButtonPressed,
+        onPressed: () => onMainButtonPressed?.call(),
         text: mainButtonText,
       ),
     );
   }
-
-  void _onMainButtonPressed() => (onMainButtonPressed ?? () {}).call(user);
 }

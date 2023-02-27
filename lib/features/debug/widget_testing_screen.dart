@@ -94,7 +94,7 @@ class WidgetTestingScreen extends ConsumerWidget {
               ProfileCard(
                 mainButtonText: "See details",
                 mainText: _testUser.biography,
-                onMainButtonPressed: (user) {},
+                onMainButtonPressed: () {},
                 matchPercentage: 10,
                 user: _testUser,
               ),
@@ -104,6 +104,7 @@ class WidgetTestingScreen extends ConsumerWidget {
                 packages: [_testPackage, _testPackage],
                 user: _testUser,
                 matchPercentage: 10,
+                mainButtonText: "See pitch",
               ),
             ),
             _widgetContainer(

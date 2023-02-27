@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +7,8 @@ import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/home/domain/model/request.dart';
 import 'package:linx/features/app/home/ui/send_a_pitch_screen.dart';
+import 'package:linx/features/app/home/ui/widgets/home_business_widgets.dart';
+import 'package:linx/features/app/home/ui/widgets/home_club_widgets.dart';
 import 'package:linx/features/app/home/ui/widgets/profile_modal_card.dart';
 import 'package:linx/features/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
@@ -58,23 +62,35 @@ class ProfileModalScreen extends ConsumerWidget {
   SizedBox _buildProfileCardCarousel(BuildContext context, WidgetRef ref) {
     var pages = <ProfileModalCard>[];
 
-    for (int i = 0; i < users.length; i++) {
-      pages.add(
-        ProfileModalCard(
-          user: users[i],
-          request: requests.isEmpty ? null : requests[i],
-          matchPercentage: matchPercentages[i].toInt(),
-          packages: packages[i],
-          onXPressed: () => _onXPressed(context),
-          onMainButtonPressed: () {
-            _onMainButtonPressed(
-              receiver: users[i],
-              request: requests.isEmpty ? null : requests[i],
-              context: context,
-              packages: packages[i],
-            );
-          },
-        ),
+    if (currentUser.type == UserType.club) {
+      pages = buildMatchesModalCards(
+        users: users,
+        percentages: matchPercentages,
+        packages: packages,
+        onXPressed: () => _onXPressed(context),
+        onMainButtonPressed: (index) {
+          _onMainButtonPressed(
+            receiver: users[index],
+            request: requests.isEmpty ? null : requests[index],
+            context: context,
+            packages: packages[index],
+          );
+        },
+      );
+    } else {
+      pages = buildRequestsModalCards(
+        requests: requests,
+        percentages: matchPercentages,
+        packages: packages,
+        onXPressed: () => _onXPressed(context),
+        onMainButtonPressed: (index) {
+          _onMainButtonPressed(
+            receiver: users[index],
+            request: requests.isEmpty ? null : requests[index],
+            context: context,
+            packages: packages[index],
+          );
+        },
       );
     }
 
@@ -107,7 +123,7 @@ class ProfileModalScreen extends ConsumerWidget {
             activeColor: LinxColors.white,
             size: const Size(8, 8),
           ),
-          dotsCount: users.length,
+          dotsCount: max(users.length, requests.length),
           position: selectedIndex.toDouble()),
     );
   }
