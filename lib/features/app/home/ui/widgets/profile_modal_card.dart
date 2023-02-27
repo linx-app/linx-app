@@ -23,6 +23,7 @@ class ProfileModalCard extends StatelessWidget {
   final int matchPercentage;
   final VoidCallback? onXPressed;
   final Function()? onMainButtonPressed;
+  final String mainButtonText;
 
   const ProfileModalCard({
     super.key,
@@ -32,6 +33,7 @@ class ProfileModalCard extends StatelessWidget {
     this.request,
     this.onXPressed,
     this.onMainButtonPressed,
+    required this.mainButtonText,
   });
 
   @override
@@ -226,7 +228,7 @@ class ProfileModalCard extends StatelessWidget {
       child: RoundedButton(
         style: greenButtonStyle(),
         onPressed: () => onMainButtonPressed?.call(),
-        text: "Send pitch",
+        text: mainButtonText,
       ),
     );
   }

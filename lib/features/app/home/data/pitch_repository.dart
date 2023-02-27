@@ -22,7 +22,7 @@ class PitchRepository {
   }
 
   Future<List<PitchDTO>> fetchPitchesWithReceiver(String receiverId) async {
-    return _firestore
+    return await _firestore
         .collection(FirestorePaths.PITCHES)
         .where(FirestorePaths.RECEIVER, isEqualTo: receiverId)
         .get()
@@ -34,7 +34,6 @@ class PitchRepository {
 
     for (var doc in query.docs) {
       var obj = doc.data() as Map<String, dynamic>;
-
       list.add(
         PitchDTO(
           createdDate: obj[FirestorePaths.CREATED_AT] ?? 0,
