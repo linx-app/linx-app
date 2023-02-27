@@ -13,7 +13,8 @@ class MatchService {
   MatchService(this._matchRepository);
 
   Future<List<LinxUser>> fetchUsersWithMatchingInterests(
-      Set<String> interests) async {
+    Set<String> interests,
+  ) async {
     var networkUsers =
         await _matchRepository.fetchUsersWithMatchingInterests(interests);
     var domainUsers = networkUsers.map((user) => user.toDomain()).toList();

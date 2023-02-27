@@ -12,3 +12,14 @@ extension PitchTransformationExtensions on PitchDTO {
     );
   }
 }
+
+extension RequestTransformationExtensions on Request {
+  PitchDTO toNetwork() {
+    return PitchDTO(
+        createdDate: createdAt.millisecondsSinceEpoch,
+        message: message,
+        receiverId: receiver.uid,
+        senderId: sender.uid,
+    );
+  }
+}
