@@ -1,22 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:linx/common/buttons/linx_close_button.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
+import 'package:linx/common/empty.dart';
 import 'package:linx/common/linx_chip.dart';
 import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
+import 'package:linx/features/app/home/domain/model/request.dart';
+import 'package:linx/features/core/domain/model/sponsorship_package.dart';
+import 'package:linx/features/core/ui/sponsorship_package_carousel.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class ProfileModalCard extends StatelessWidget {
+  final TextStyle _subHeadingStyle = const TextStyle(
+    fontWeight: FontWeight.w600,
+    color: LinxColors.subtitleGrey,
+    fontSize: 17,
+  );
   final LinxUser user;
+  final Request? request;
+  final List<SponsorshipPackage> packages;
   final int matchPercentage;
   final VoidCallback? onXPressed;
+  final Function()? onMainButtonPressed;
 
   const ProfileModalCard({
     super.key,
     required this.user,
     required this.matchPercentage,
+    required this.packages,
+    this.request,
     this.onXPressed,
+    this.onMainButtonPressed,
   });
 
   @override
@@ -39,8 +54,11 @@ class ProfileModalCard extends StatelessWidget {
                     _nameText(),
                     _locationText(),
                     _descriptorChips(),
+                    _requestText(),
                     _biographyText(),
                     _interestsChips(),
+                    _buildSponsorshipPackageSection(),
+                    const SizedBox(height: 32),
                   ],
                 ),
               ),
@@ -128,13 +146,43 @@ class ProfileModalCard extends StatelessWidget {
     );
   }
 
+  Widget _requestText() {
+    if (request == null) return Empty();
+    return Container(
+      alignment: Alignment.centerLeft,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Text("Pitch", style: _subHeadingStyle),
+          ),
+          Text(
+            request!.message,
+            style: const TextStyle(color: LinxColors.chipTextGrey, fontSize: 15),
+          ),
+        ],
+      ),
+    );
+  }
+
   Container _biographyText() {
     return Container(
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Text(
-        user.biography,
-        style: const TextStyle(color: LinxColors.chipTextGrey, fontSize: 15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Text("Biography", style: _subHeadingStyle),
+          ),
+          Text(
+            user.biography,
+            style: const TextStyle(color: LinxColors.chipTextGrey, fontSize: 15),
+          ),
+        ],
       ),
     );
   }
@@ -148,15 +196,25 @@ class ProfileModalCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Looking for",
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: LinxColors.subtitleGrey,
-              fontSize: 17,
-            ),
-          ),
+          Text("Looking for", style: _subHeadingStyle),
           Wrap(spacing: 4.0, children: [...chips]),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSponsorshipPackageSection() {
+    if (packages.isEmpty) return Empty();
+    return Container(
+      alignment: Alignment.centerLeft,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.only(left: 20, bottom: 10),
+            child: Text("Packages", style: _subHeadingStyle),
+          ),
+          SponsorshipPackageCarousel(packages: packages),
         ],
       ),
     );
@@ -167,7 +225,7 @@ class ProfileModalCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: RoundedButton(
         style: greenButtonStyle(),
-        onPressed: () {},
+        onPressed: () => onMainButtonPressed?.call(),
         text: "Send pitch",
       ),
     );

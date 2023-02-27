@@ -31,7 +31,7 @@ class MatchRepository {
     for (var element in query.docs) {
       var obj = element.data() as Map<String, dynamic>;
       list.add(UserDTO(
-        uid: obj[FirestorePaths.USER_ID] ?? "",
+        uid: element.id,
         displayName: obj[FirestorePaths.NAME] ?? "",
         type: obj[FirestorePaths.TYPE] ?? "",
         location: obj[FirestorePaths.LOCATION] ?? "",

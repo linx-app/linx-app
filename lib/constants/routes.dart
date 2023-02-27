@@ -2,6 +2,7 @@ const routeLanding = "/";
 
 const routeLogIn = "/log_in";
 const routeApp= "/app";
+const routeSendAPitch = "/send_a_pitch";
 const routeProfileModal = "/profile_modal";
 
 const routeDebugWidgetTesting = "/debug_widget_testing";

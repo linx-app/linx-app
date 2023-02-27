@@ -6,11 +6,20 @@ import 'package:linx/firebase/firestore_paths.dart';
 
 class PitchRepository {
   static final provider =
-  Provider((ref) => PitchRepository(ref.read(firestoreProvider)));
+      Provider((ref) => PitchRepository(ref.read(firestoreProvider)));
 
   final FirebaseFirestore _firestore;
 
   PitchRepository(this._firestore);
+
+  Future<void> sendPitch(PitchDTO pitch) async {
+    await _firestore.collection(FirestorePaths.PITCHES).add({
+      FirestorePaths.CREATED_AT: pitch.createdDate,
+      FirestorePaths.RECEIVER: pitch.receiverId,
+      FirestorePaths.SENDER: pitch.senderId,
+      FirestorePaths.MESSAGE: pitch.message
+    });
+  }
 
   Future<List<PitchDTO>> fetchPitchesWithReceiver(String receiverId) async {
     return _firestore
@@ -28,15 +37,14 @@ class PitchRepository {
 
       list.add(
         PitchDTO(
-            createdDate: obj[FirestorePaths.CREATED_AT] ?? 0,
-            message: obj[FirestorePaths.MESSAGE] ?? "",
-            receiverId: obj[FirestorePaths.RECEIVER] ?? "",
-            senderId: obj[FirestorePaths.SENDER] ?? "",
+          createdDate: obj[FirestorePaths.CREATED_AT] ?? 0,
+          message: obj[FirestorePaths.MESSAGE] ?? "",
+          receiverId: obj[FirestorePaths.RECEIVER] ?? "",
+          senderId: obj[FirestorePaths.SENDER] ?? "",
         ),
       );
     }
 
     return list;
   }
-
 }

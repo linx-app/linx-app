@@ -3,17 +3,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/constants/colors.dart';
+import 'package:linx/features/app/home/domain/model/request.dart';
+import 'package:linx/features/app/home/ui/send_a_pitch_screen.dart';
 import 'package:linx/features/app/home/ui/widgets/profile_modal_card.dart';
+import 'package:linx/features/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/user_type.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class ProfileModalScreen extends ConsumerWidget {
+  final LinxUser currentUser;
   final int initialIndex;
   final List<LinxUser> users;
   final List<double> matchPercentages;
+  final List<Request> requests;
+  final List<List<SponsorshipPackage>> packages;
   late StateProvider _profileModalCarouselSelectedIndexProvider;
 
-  ProfileModalScreen(this.initialIndex, this.users, this.matchPercentages) {
+  ProfileModalScreen({
+    super.key,
+    required this.initialIndex,
+    required this.users,
+    required this.requests,
+    required this.matchPercentages,
+    required this.packages,
+    required this.currentUser,
+  }) {
     _profileModalCarouselSelectedIndexProvider =
         StateProvider((ref) => initialIndex);
   }
@@ -47,13 +62,23 @@ class ProfileModalScreen extends ConsumerWidget {
       pages.add(
         ProfileModalCard(
           user: users[i],
+          request: requests.isEmpty ? null : requests[i],
           matchPercentage: matchPercentages[i].toInt(),
+          packages: packages[i],
           onXPressed: () => _onXPressed(context),
+          onMainButtonPressed: () {
+            _onMainButtonPressed(
+              receiver: users[i],
+              request: requests.isEmpty ? null : requests[i],
+              context: context,
+              packages: packages[i],
+            );
+          },
         ),
       );
     }
 
-    StateNotifier indexNotifier =
+    var indexNotifier =
         ref.read(_profileModalCarouselSelectedIndexProvider.notifier);
 
     PageController controller = PageController(
@@ -88,4 +113,23 @@ class ProfileModalScreen extends ConsumerWidget {
   }
 
   void _onXPressed(BuildContext context) => Navigator.maybePop(context);
+
+  void _onMainButtonPressed({
+    required LinxUser receiver,
+    Request? request,
+    required List<SponsorshipPackage> packages,
+    required BuildContext context,
+  }) {
+    if (currentUser.type == UserType.club) {
+      var screen = SendAPitchScreen(
+        receiver: receiver,
+        sender: currentUser,
+        packages: packages,
+      );
+      var builder = PageRouteBuilder(
+        pageBuilder: (_, __, ___) => screen,
+      );
+      Navigator.of(context).push(builder);
+    } else {}
+  }
 }

@@ -5,15 +5,19 @@ import 'package:linx/constants/colors.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 
 class ProfileCard extends StatelessWidget {
+  final String mainButtonText;
   final int matchPercentage;
   final LinxUser user;
-  final void Function(LinxUser)? onSeeDetailsPressed;
+  final String mainText;
+  final void Function(LinxUser)? onMainButtonPressed;
 
   const ProfileCard({
     super.key,
+    required this.mainButtonText,
     required this.matchPercentage,
     required this.user,
-    this.onSeeDetailsPressed,
+    this.onMainButtonPressed,
+    required this.mainText,
   });
 
   @override
@@ -30,7 +34,7 @@ class ProfileCard extends StatelessWidget {
             _matchText(),
             _nameText(),
             _locationText(),
-            _biographyText(),
+            _mainText(),
             _buttonRow(),
           ],
         ),
@@ -93,16 +97,17 @@ class ProfileCard extends StatelessWidget {
         ));
   }
 
-  Container _biographyText() {
+  Container _mainText() {
     return Container(
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Text(
-          "${user.biography}\n\n\n\n",
-          style: const TextStyle(color: LinxColors.chipTextGrey, fontSize: 12),
-          maxLines: 4,
-          overflow: TextOverflow.ellipsis,
-        ));
+      alignment: Alignment.centerLeft,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Text(
+        "$mainText\n\n\n\n",
+        style: const TextStyle(color: LinxColors.chipTextGrey, fontSize: 12),
+        maxLines: 4,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
   }
 
   Container _buttonRow() {
@@ -110,11 +115,11 @@ class ProfileCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: RoundedButton(
         style: greenButtonStyle(),
-        onPressed: _onSeeDetailsPressed,
-        text: "See details",
+        onPressed: _onMainButtonPressed,
+        text: mainButtonText,
       ),
     );
   }
 
-  void _onSeeDetailsPressed() => (onSeeDetailsPressed ?? () {}).call(user);
+  void _onMainButtonPressed() => (onMainButtonPressed ?? () {}).call(user);
 }
