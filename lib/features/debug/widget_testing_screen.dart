@@ -9,6 +9,7 @@ import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/core/ui/widgets/small_profile_card.dart';
 import 'package:linx/features/app/home/domain/model/request.dart';
 import 'package:linx/features/app/home/ui/profile_modal_screen.dart';
+import 'package:linx/features/app/home/ui/widgets/home_business_widgets.dart';
 import 'package:linx/features/app/home/ui/widgets/profile_bottom_sheet.dart';
 import 'package:linx/features/app/home/ui/widgets/profile_card.dart';
 import 'package:linx/features/app/home/ui/widgets/profile_modal_card.dart';
@@ -115,7 +116,14 @@ class WidgetTestingScreen extends ConsumerWidget {
                   _openProfileBottomSheet(context, _testUser, 70);
                 },
               ),
-            )
+            ),
+            _widgetContainer(
+              RoundedButton(
+                style: greenButtonStyle(),
+                onPressed: () => _showConfirmationSnackbar(context),
+                text: "Show confirmation snackbar",
+              ),
+            ),
           ],
         ),
       ),
@@ -146,7 +154,7 @@ class WidgetTestingScreen extends ConsumerWidget {
         [_testPackage, _testPackage, _testPackage]
       ],
       currentUser: _testUser,
-      onMainButtonPressed: (receiver, packages, request) {  },
+      onMainButtonPressed: (receiver, packages, request) {},
     );
 
     Navigator.of(context).push(
@@ -174,11 +182,17 @@ class WidgetTestingScreen extends ConsumerWidget {
           packages: [_testPackage, _testPackage],
           onXPressed: () => Navigator.maybePop(context),
           mainButtonText: "Send Pitch",
-          onMainButtonPressed: () {  },
+          onMainButtonPressed: () {},
         ),
       ),
       barrierColor: Colors.black.withOpacity(0.60),
       shape: RoundedBorder.clockwise(10, 10, 0, 0),
+    );
+  }
+
+  void _showConfirmationSnackbar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      buildMatchConfirmationSnackbar("William's"),
     );
   }
 }

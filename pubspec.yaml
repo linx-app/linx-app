@@ -93,6 +93,7 @@ flutter:
     - search.png
     - match.png
     - sort.png
+    - confirmation.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
