@@ -9,6 +9,7 @@ import 'package:linx/features/app/core/ui/widgets/small_profile_card.dart';
 import 'package:linx/features/app/home/domain/model/request.dart';
 import 'package:linx/features/app/home/presentation/home_screen_controller.dart';
 import 'package:linx/features/app/home/ui/profile_modal_screen.dart';
+import 'package:linx/features/app/home/ui/send_a_pitch_screen.dart';
 import 'package:linx/features/app/home/ui/widgets/home_business_widgets.dart';
 import 'package:linx/features/app/home/ui/widgets/home_club_widgets.dart';
 import 'package:linx/features/app/home/ui/widgets/profile_card.dart';
@@ -32,15 +33,14 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var uiState = ref.watch(homeScreenControllerProvider);
-    print("Top Requests ${uiState.topRequests}");
     return BaseScaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
             _buildHomeAppBar(context, ref),
             _buildHomeTitle(context, ref),
-            _buildHomeCarousel(context, uiState),
-            _buildHomeList(context, uiState),
+            _buildHomeCarousel(context, ref, uiState),
+            _buildHomeList(context, ref, uiState),
           ],
         ),
       ),
@@ -88,7 +88,8 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildHomeCarousel(BuildContext context, HomeScreenUiState state) {
+  Widget _buildHomeCarousel(
+      BuildContext context, WidgetRef ref, HomeScreenUiState state) {
     List<ProfileCard> pages = [];
 
     if (currentUser.type == UserType.club) {
@@ -98,7 +99,7 @@ class HomeScreen extends ConsumerWidget {
           percentages: state.topMatchPercentages,
           packages: state.topPackages,
           onMainButtonPressed: (index) {
-            _onProfileCardMainButtonPressed(context, index, state);
+            _onProfileCardMainButtonPressed(context, ref, index, state);
           });
     } else {
       pages = buildRequestsCarouselPages(
@@ -107,7 +108,7 @@ class HomeScreen extends ConsumerWidget {
         percentages: state.topMatchPercentages,
         packages: state.topPackages,
         onMainButtonPressed: (index) {
-          _onProfileCardMainButtonPressed(context, index, state);
+          _onProfileCardMainButtonPressed(context, ref, index, state);
         },
       );
     }
@@ -131,6 +132,7 @@ class HomeScreen extends ConsumerWidget {
 
   void _onProfileCardMainButtonPressed(
     BuildContext context,
+    WidgetRef ref,
     int initialIndex,
     HomeScreenUiState state,
   ) {
@@ -141,6 +143,9 @@ class HomeScreen extends ConsumerWidget {
       matchPercentages: state.topMatchPercentages,
       packages: state.topPackages,
       currentUser: currentUser,
+      onMainButtonPressed: (user, packages, request) {
+        _onMainButtonPressed(user, packages, request, context, ref);
+      },
     );
     var builder = PageRouteBuilder(
       pageBuilder: (_, __, ___) => screen,
@@ -149,7 +154,8 @@ class HomeScreen extends ConsumerWidget {
     Navigator.of(context).push(builder);
   }
 
-  Widget _buildHomeList(BuildContext context, HomeScreenUiState state) {
+  Widget _buildHomeList(
+      BuildContext context, WidgetRef ref, HomeScreenUiState state) {
     var cards = <SmallProfileCard>[];
 
     if (currentUser.type == UserType.club) {
@@ -163,6 +169,7 @@ class HomeScreen extends ConsumerWidget {
               user: state.nextMatches[index],
               matchPercentage: state.nextMatchPercentages[index].toInt(),
               packages: state.nextPackages[index],
+              ref: ref,
             );
           });
     } else {
@@ -177,6 +184,7 @@ class HomeScreen extends ConsumerWidget {
               request: state.nextRequests[index],
               matchPercentage: state.nextMatchPercentages[index].toInt(),
               packages: state.nextPackages[index],
+              ref: ref,
             );
           });
     }
@@ -226,15 +234,22 @@ class HomeScreen extends ConsumerWidget {
     Request? request,
     required int matchPercentage,
     required List<SponsorshipPackage> packages,
+    required WidgetRef ref,
   }) {
+    var isClub = currentUser.type == UserType.club;
+    var mainButtonText = isClub ? "Send pitch" : "I'm interested";
     var bottomSheet = SizedBox(
       height: context.height() * 0.80,
       child: ProfileBottomSheet(
         user: user,
         request: request,
         matchPercentage: matchPercentage,
+        mainButtonText: mainButtonText,
         onXPressed: () => Navigator.maybePop(context),
         packages: packages,
+        onMainButtonPressed: () {
+          _onMainButtonPressed(user, packages, request, context, ref);
+        },
       ),
     );
 
@@ -245,5 +260,41 @@ class HomeScreen extends ConsumerWidget {
       barrierColor: LinxColors.black.withOpacity(0.60),
       shape: RoundedBorder.clockwise(10, 10, 0, 0),
     );
+  }
+
+  void _onMainButtonPressed(
+    LinxUser receiver,
+    List<SponsorshipPackage> packages,
+    Request? request,
+    BuildContext context,
+    WidgetRef ref,
+  ) {
+    if (currentUser.type == UserType.club) {
+      _onSendPitchPressed(context, receiver, packages);
+    } else {
+      _onImInterestedPressed(ref, receiver);
+    }
+  }
+
+  void _onSendPitchPressed(
+    BuildContext context,
+    LinxUser receiver,
+    List<SponsorshipPackage> packages,
+  ) {
+    var screen = SendAPitchScreen(
+      receiver: receiver,
+      sender: currentUser,
+      packages: packages,
+    );
+    var builder = PageRouteBuilder(pageBuilder: (_, __, ___) => screen);
+    Navigator.of(context).push(builder);
+  }
+
+  void _onImInterestedPressed(
+    WidgetRef ref,
+    LinxUser club,
+  ) {
+    var notifier = ref.read(homeScreenControllerProvider.notifier);
+    notifier.onImInterestedPressed(club: club);
   }
 }

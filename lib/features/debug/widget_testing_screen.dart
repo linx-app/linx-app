@@ -146,6 +146,7 @@ class WidgetTestingScreen extends ConsumerWidget {
         [_testPackage, _testPackage, _testPackage]
       ],
       currentUser: _testUser,
+      onMainButtonPressed: (receiver, packages, request) {  },
     );
 
     Navigator.of(context).push(
@@ -172,6 +173,8 @@ class WidgetTestingScreen extends ConsumerWidget {
           request: _testRequest,
           packages: [_testPackage, _testPackage],
           onXPressed: () => Navigator.maybePop(context),
+          mainButtonText: "Send Pitch",
+          onMainButtonPressed: () {  },
         ),
       ),
       barrierColor: Colors.black.withOpacity(0.60),

@@ -19,10 +19,24 @@ class MatchRepository {
   ) async {
     return await _firestore
         .collection(FirestorePaths.USERS)
-        .where(FirestorePaths.INTERESTS, arrayContainsAny: interests.take(10).toList())
+        .where(FirestorePaths.INTERESTS,
+            arrayContainsAny: interests.take(10).toList())
         .where(FirestorePaths.TYPE, isEqualTo: UserType.business.name)
         .get()
         .then((QuerySnapshot query) => _mapQueryToUserDTO(query));
+  }
+
+  Future<void> addMatch({
+    required String businessId,
+    required String clubId,
+    required int createdAt,
+  }) async {
+    var data = {
+      FirestorePaths.BUSINESS: businessId,
+      FirestorePaths.CLUB: clubId,
+      FirestorePaths.CREATED_AT: createdAt
+    };
+    await _firestore.collection(FirestorePaths.MATCHES).add(data);
   }
 
   List<UserDTO> _mapQueryToUserDTO(QuerySnapshot query) {
@@ -30,22 +44,25 @@ class MatchRepository {
 
     for (var element in query.docs) {
       var obj = element.data() as Map<String, dynamic>;
-      list.add(UserDTO(
-        uid: element.id,
-        displayName: obj[FirestorePaths.NAME] ?? "",
-        type: obj[FirestorePaths.TYPE] ?? "",
-        location: obj[FirestorePaths.LOCATION] ?? "",
-        phoneNumber: obj[FirestorePaths.PHONE_NUMBER] ?? "",
-        biography: obj[FirestorePaths.BIOGRAPHY] ?? "",
-        interests: ((obj[FirestorePaths.INTERESTS] ?? []) as List<dynamic>)
-            .toStrList(),
-        descriptors: ((obj[FirestorePaths.DESCRIPTORS] ?? []) as List<dynamic>)
-            .toStrList(),
-        numberOfPackages: obj[FirestorePaths.NUMBER_OF_PACKAGES] ?? 0,
-        profileImageUrls:
-            ((obj[FirestorePaths.PROFILE_IMAGES] ?? []) as List<dynamic>)
-                .toStrList(),
-      ),);
+      list.add(
+        UserDTO(
+          uid: element.id,
+          displayName: obj[FirestorePaths.NAME] ?? "",
+          type: obj[FirestorePaths.TYPE] ?? "",
+          location: obj[FirestorePaths.LOCATION] ?? "",
+          phoneNumber: obj[FirestorePaths.PHONE_NUMBER] ?? "",
+          biography: obj[FirestorePaths.BIOGRAPHY] ?? "",
+          interests: ((obj[FirestorePaths.INTERESTS] ?? []) as List<dynamic>)
+              .toStrList(),
+          descriptors:
+              ((obj[FirestorePaths.DESCRIPTORS] ?? []) as List<dynamic>)
+                  .toStrList(),
+          numberOfPackages: obj[FirestorePaths.NUMBER_OF_PACKAGES] ?? 0,
+          profileImageUrls:
+              ((obj[FirestorePaths.PROFILE_IMAGES] ?? []) as List<dynamic>)
+                  .toStrList(),
+        ),
+      );
     }
 
     return list;
