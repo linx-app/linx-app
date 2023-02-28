@@ -41,4 +41,8 @@ class FirestorePaths {
   /// PACKAGE COLLECTION ///
   static const String PACKAGES = "packages";
 
+  /// MATCH COLLECTION ///
+  static const String MATCHES = "matches";
+  static const String BUSINESS = "business";
+  static const String CLUB = "club";
 }

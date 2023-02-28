@@ -71,6 +71,7 @@ class LinxApp extends ConsumerWidget {
               matchPercentages: [],
               packages: [],
               currentUser: LinxUser(uid: "id"),
+              onMainButtonPressed: (user, packages, request) {  },
             );
             break;
           default:

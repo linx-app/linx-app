@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/home/domain/model/request.dart';
-import 'package:linx/features/app/home/ui/send_a_pitch_screen.dart';
 import 'package:linx/features/app/home/ui/widgets/home_business_widgets.dart';
 import 'package:linx/features/app/home/ui/widgets/home_club_widgets.dart';
 import 'package:linx/features/app/home/ui/widgets/profile_modal_card.dart';
@@ -22,6 +21,11 @@ class ProfileModalScreen extends ConsumerWidget {
   final List<double> matchPercentages;
   final List<Request> requests;
   final List<List<SponsorshipPackage>> packages;
+  final Function(
+    LinxUser receiver,
+    List<SponsorshipPackage> packages,
+    Request? request,
+  ) onMainButtonPressed;
   late StateProvider _profileModalCarouselSelectedIndexProvider;
 
   ProfileModalScreen({
@@ -32,6 +36,7 @@ class ProfileModalScreen extends ConsumerWidget {
     required this.matchPercentages,
     required this.packages,
     required this.currentUser,
+    required this.onMainButtonPressed,
   }) {
     _profileModalCarouselSelectedIndexProvider =
         StateProvider((ref) => initialIndex);
@@ -69,12 +74,7 @@ class ProfileModalScreen extends ConsumerWidget {
         packages: packages,
         onXPressed: () => _onXPressed(context),
         onMainButtonPressed: (index) {
-          _onMainButtonPressed(
-            receiver: users[index],
-            request: requests.isEmpty ? null : requests[index],
-            context: context,
-            packages: packages[index],
-          );
+          onMainButtonPressed(users[index], packages[index], null);
         },
       );
     } else {
@@ -84,11 +84,10 @@ class ProfileModalScreen extends ConsumerWidget {
         packages: packages,
         onXPressed: () => _onXPressed(context),
         onMainButtonPressed: (index) {
-          _onMainButtonPressed(
-            receiver: users[index],
-            request: requests.isEmpty ? null : requests[index],
-            context: context,
-            packages: packages[index],
+          onMainButtonPressed(
+            requests[index].sender,
+            packages[index],
+            requests[index],
           );
         },
       );
@@ -129,23 +128,4 @@ class ProfileModalScreen extends ConsumerWidget {
   }
 
   void _onXPressed(BuildContext context) => Navigator.maybePop(context);
-
-  void _onMainButtonPressed({
-    required LinxUser receiver,
-    Request? request,
-    required List<SponsorshipPackage> packages,
-    required BuildContext context,
-  }) {
-    if (currentUser.type == UserType.club) {
-      var screen = SendAPitchScreen(
-        receiver: receiver,
-        sender: currentUser,
-        packages: packages,
-      );
-      var builder = PageRouteBuilder(
-        pageBuilder: (_, __, ___) => screen,
-      );
-      Navigator.of(context).push(builder);
-    } else {}
-  }
 }

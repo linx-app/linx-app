@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/core/ui/widgets/small_profile_card.dart';
 import 'package:linx/features/app/home/domain/model/request.dart';
 import 'package:linx/features/app/home/ui/widgets/profile_card.dart';
@@ -43,10 +44,9 @@ List<SmallProfileCard> buildRequestsList({
   for (int i = 0; i < requests.length; i++) {
     cards.add(
       SmallProfileCard(
-        user: requests[i].sender,
-        matchPercentage: percentages[i].toInt(),
-        onPressed: () => onPressed(i)
-      ),
+          user: requests[i].sender,
+          matchPercentage: percentages[i].toInt(),
+          onPressed: () => onPressed(i)),
     );
   }
 
@@ -77,4 +77,45 @@ List<ProfileModalCard> buildRequestsModalCards({
   }
 
   return pages;
+}
+
+SnackBar buildMatchConfirmationSnackbar(String clubDisplayName) {
+  return SnackBar(
+    content: Container(
+      alignment: Alignment.centerLeft,
+      height: 50,
+      child: Row(
+        children: [
+          Image.asset("assets/confirmation.png", height: 48, width: 48),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Matched with $clubDisplayName",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: LinxColors.black,
+                    fontSize: 15
+                  ),
+                ),
+                const Text(
+                  "They will be notified.",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      color: LinxColors.black,
+                      fontSize: 14
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+    backgroundColor: LinxColors.background,
+    elevation: 10,
+  );
 }

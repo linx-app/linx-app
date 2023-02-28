@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:linx/features/app/home/domain/create_a_match_service.dart';
 import 'package:linx/features/app/home/domain/fetch_requests_service.dart';
 import 'package:linx/features/app/home/domain/match_service.dart';
 import 'package:linx/features/app/home/domain/model/request.dart';
@@ -14,7 +15,8 @@ final homeScreenControllerProvider =
     ref.read(MatchService.provider),
     ref.read(FetchRequestsService.provider),
     ref.read(SponsorshipPackageService.provider),
-    ref.read(UserService.provider)
+    ref.read(UserService.provider),
+    ref.read(CreateAMatchService.provider),
   );
 });
 
@@ -23,6 +25,7 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
   final MatchService _matchService;
   final FetchRequestsService _fetchRequestsService;
   final SponsorshipPackageService _sponsorshipPackageService;
+  final CreateAMatchService _createAMatchService;
   late LinxUser _currentUser;
 
   HomeScreenController(
@@ -30,6 +33,7 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
     this._fetchRequestsService,
     this._sponsorshipPackageService,
     this._userService,
+      this._createAMatchService,
   ) : super(HomeScreenUiState()) {
      initialize();
   }
@@ -105,6 +109,10 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
         nextPackages: allPackages.getRange(5, allPackages.length).toList(),
       );
     }
+  }
+
+  void onImInterestedPressed({required LinxUser club}) async {
+    _createAMatchService.execute(business: _currentUser, club: club);
   }
 
   Future<List<SponsorshipPackage>> _fetchSponsorshipPackages(

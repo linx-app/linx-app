@@ -25,6 +25,8 @@ class ProfileBottomSheet extends StatelessWidget {
   final VoidCallback? onXPressed;
   final Request? request;
   final List<SponsorshipPackage> packages;
+  final String mainButtonText;
+  final VoidCallback onMainButtonPressed;
 
   const ProfileBottomSheet({
     super.key,
@@ -33,6 +35,8 @@ class ProfileBottomSheet extends StatelessWidget {
     this.request,
     this.onXPressed,
     required this.packages,
+    required this.mainButtonText,
+    required this.onMainButtonPressed,
   });
 
   @override
@@ -60,7 +64,7 @@ class ProfileBottomSheet extends StatelessWidget {
               ),
             ),
           ),
-          _buildButtonRow()
+          _buildButtonRow(context),
         ],
       ),
     );
@@ -208,13 +212,13 @@ class ProfileBottomSheet extends StatelessWidget {
     );
   }
 
-  Container _buildButtonRow() {
+  Container _buildButtonRow(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: RoundedButton(
         style: greenButtonStyle(),
-        onPressed: () {},
-        text: "Send pitch",
+        onPressed: onMainButtonPressed,
+        text: mainButtonText,
       ),
     );
   }
