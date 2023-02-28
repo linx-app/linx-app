@@ -85,7 +85,7 @@ class ProfileModalScreen extends ConsumerWidget {
         onXPressed: () => _onXPressed(context),
         onMainButtonPressed: (index) {
           onMainButtonPressed(
-            users[index],
+            requests[index].sender,
             packages[index],
             requests[index],
           );
