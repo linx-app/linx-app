@@ -33,6 +33,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var uiState = ref.watch(homeScreenControllerProvider);
+
     return BaseScaffold(
       body: SingleChildScrollView(
         child: Column(
