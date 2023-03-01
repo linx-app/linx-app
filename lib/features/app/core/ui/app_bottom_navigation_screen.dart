@@ -44,7 +44,7 @@ class AppBottomNavigationScreen extends ConsumerWidget {
       body = const CircularProgressIndicator();
     } else {
       List<Widget> pages = [
-        HomeScreen(user),
+        HomeScreen(),
         SearchHomeScreen(),
         PitchesScreen(),
         ChatHomeScreen()

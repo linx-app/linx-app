@@ -5,7 +5,6 @@ import 'package:linx/common/buttons/linx_back_button.dart';
 import 'package:linx/common/buttons/linx_text_button.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/constants/colors.dart';
-import 'package:linx/constants/routes.dart';
 import 'package:linx/features/onboarding/presentation/onboarding_flow_controller.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_flow_router.dart';
 import 'package:linx/utils/ui_extensions.dart';
@@ -137,6 +136,6 @@ class OnboardingFlowScreen extends OnboardingFlowRouter {
   }
 
   void _onFinishOnboarding(BuildContext context) {
-    Navigator.popAndPushNamed(context, routeApp);
+    Navigator.pop(context);
   }
 }

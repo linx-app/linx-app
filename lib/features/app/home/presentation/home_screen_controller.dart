@@ -3,6 +3,7 @@ import 'package:linx/features/app/home/domain/create_a_match_service.dart';
 import 'package:linx/features/app/home/domain/fetch_requests_service.dart';
 import 'package:linx/features/app/home/domain/match_service.dart';
 import 'package:linx/features/app/home/domain/model/request.dart';
+import 'package:linx/features/authentication/domain/log_out_service.dart';
 import 'package:linx/features/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/core/domain/sponsorship_package_service.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
@@ -10,13 +11,14 @@ import 'package:linx/features/user/domain/model/user_type.dart';
 import 'package:linx/features/user/domain/user_service.dart';
 
 final homeScreenControllerProvider =
-    StateNotifierProvider<HomeScreenController, HomeScreenUiState>((ref) {
+    StateNotifierProvider.autoDispose<HomeScreenController, HomeScreenUiState>((ref) {
   return HomeScreenController(
     ref.read(MatchService.provider),
     ref.read(FetchRequestsService.provider),
     ref.read(SponsorshipPackageService.provider),
     ref.read(UserService.provider),
     ref.read(CreateAMatchService.provider),
+    ref.read(LogOutService.provider)
   );
 });
 
@@ -26,6 +28,7 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
   final FetchRequestsService _fetchRequestsService;
   final SponsorshipPackageService _sponsorshipPackageService;
   final CreateAMatchService _createAMatchService;
+  final LogOutService _logOutService;
   late LinxUser _currentUser;
 
   HomeScreenController(
@@ -33,9 +36,10 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
     this._fetchRequestsService,
     this._sponsorshipPackageService,
     this._userService,
-      this._createAMatchService,
+    this._createAMatchService,
+    this._logOutService,
   ) : super(HomeScreenUiState()) {
-     initialize();
+    initialize();
   }
 
   void initialize() async {
@@ -113,6 +117,10 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
 
   void onImInterestedPressed({required LinxUser club}) async {
     _createAMatchService.execute(business: _currentUser, club: club);
+  }
+
+  void logOut() async {
+    _logOutService.execute();
   }
 
   Future<List<SponsorshipPackage>> _fetchSponsorshipPackages(

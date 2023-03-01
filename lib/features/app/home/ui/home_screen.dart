@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
@@ -21,14 +22,13 @@ import 'package:linx/utils/ui_extensions.dart';
 import 'widgets/profile_bottom_sheet.dart';
 
 class HomeScreen extends ConsumerWidget {
-  final LinxUser currentUser;
   final TextStyle _subtitleStyle = const TextStyle(
     fontWeight: FontWeight.w600,
     fontSize: 17.0,
     color: LinxColors.subtitleGrey,
   );
 
-  const HomeScreen(this.currentUser, {super.key});
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,7 +38,7 @@ class HomeScreen extends ConsumerWidget {
         child: Column(
           children: [
             _buildHomeAppBar(context, ref),
-            _buildHomeTitle(context, ref),
+            _buildHomeTitle(context, ref, uiState.currentUser),
             _buildHomeCarousel(context, ref, uiState),
             _buildHomeList(context, ref, uiState),
           ],
@@ -53,6 +53,7 @@ class HomeScreen extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          _buildLogOutButton(ref),
           IconButton(
             onPressed: () {},
             icon: const Icon(Icons.bookmark_border_outlined),
@@ -66,7 +67,21 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Container _buildHomeTitle(BuildContext context, WidgetRef ref) {
+  Widget _buildLogOutButton(WidgetRef ref) {
+    if (kDebugMode) {
+      var notifier = ref.read(homeScreenControllerProvider.notifier);
+      return IconButton(
+          onPressed: () => notifier.logOut(), icon: const Icon(Icons.logout));
+    } else {
+      return Empty();
+    }
+  }
+
+  Container _buildHomeTitle(
+    BuildContext context,
+    WidgetRef ref,
+    LinxUser currentUser,
+  ) {
     var isClub = currentUser.type == UserType.club;
     var title = isClub ? "Discover" : "Requests";
     var subtitle = isClub
@@ -89,10 +104,13 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildHomeCarousel(
-      BuildContext context, WidgetRef ref, HomeScreenUiState state) {
+    BuildContext context,
+    WidgetRef ref,
+    HomeScreenUiState state,
+  ) {
     List<ProfileCard> pages = [];
 
-    if (currentUser.type == UserType.club) {
+    if (state.currentUser.type == UserType.club) {
       pages = buildMatchesCarouselPages(
           context: context,
           users: state.topMatches,
@@ -142,9 +160,16 @@ class HomeScreen extends ConsumerWidget {
       requests: state.topRequests,
       matchPercentages: state.topMatchPercentages,
       packages: state.topPackages,
-      currentUser: currentUser,
+      currentUser: state.currentUser,
       onMainButtonPressed: (user, packages, request) {
-        _onMainButtonPressed(user, packages, request, context, ref);
+        _onMainButtonPressed(
+          user,
+          packages,
+          request,
+          context,
+          ref,
+          state.currentUser,
+        );
       },
     );
     var builder = PageRouteBuilder(
@@ -155,10 +180,13 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildHomeList(
-      BuildContext context, WidgetRef ref, HomeScreenUiState state) {
+    BuildContext context,
+    WidgetRef ref,
+    HomeScreenUiState state,
+  ) {
     var cards = <SmallProfileCard>[];
 
-    if (currentUser.type == UserType.club) {
+    if (state.currentUser.type == UserType.club) {
       cards = buildMatchesList(
           users: state.nextMatches,
           percentages: state.nextMatchPercentages,
@@ -170,6 +198,7 @@ class HomeScreen extends ConsumerWidget {
               matchPercentage: state.nextMatchPercentages[index].toInt(),
               packages: state.nextPackages[index],
               ref: ref,
+              currentUser: state.currentUser,
             );
           });
     } else {
@@ -185,6 +214,7 @@ class HomeScreen extends ConsumerWidget {
               matchPercentage: state.nextMatchPercentages[index].toInt(),
               packages: state.nextPackages[index],
               ref: ref,
+              currentUser: state.currentUser,
             );
           });
     }
@@ -195,12 +225,12 @@ class HomeScreen extends ConsumerWidget {
       width: context.width(),
       padding: const EdgeInsets.all(24),
       child: Column(
-        children: [_buildBottomSectionTitleBar(), ...cards],
+        children: [_buildBottomSectionTitleBar(state.currentUser), ...cards],
       ),
     );
   }
 
-  Row _buildBottomSectionTitleBar() {
+  Row _buildBottomSectionTitleBar(LinxUser currentUser) {
     var isClub = currentUser.type == UserType.club;
     var title = isClub ? "Find a match" : "Other requests";
     return Row(
@@ -235,6 +265,7 @@ class HomeScreen extends ConsumerWidget {
     required int matchPercentage,
     required List<SponsorshipPackage> packages,
     required WidgetRef ref,
+    required LinxUser currentUser,
   }) {
     var isClub = currentUser.type == UserType.club;
     var mainButtonText = isClub ? "Send pitch" : "I'm interested";
@@ -248,7 +279,14 @@ class HomeScreen extends ConsumerWidget {
         onXPressed: () => Navigator.maybePop(context),
         packages: packages,
         onMainButtonPressed: () {
-          _onMainButtonPressed(user, packages, request, context, ref);
+          _onMainButtonPressed(
+            user,
+            packages,
+            request,
+            context,
+            ref,
+            currentUser,
+          );
         },
       ),
     );
@@ -268,6 +306,7 @@ class HomeScreen extends ConsumerWidget {
     Request? request,
     BuildContext context,
     WidgetRef ref,
+    LinxUser currentUser,
   ) {
     if (currentUser.type == UserType.club) {
       _onSendPitchPressed(context, receiver, packages);
@@ -283,7 +322,6 @@ class HomeScreen extends ConsumerWidget {
   ) {
     var screen = SendAPitchScreen(
       receiver: receiver,
-      sender: currentUser,
       packages: packages,
     );
     var builder = PageRouteBuilder(pageBuilder: (_, __, ___) => screen);
