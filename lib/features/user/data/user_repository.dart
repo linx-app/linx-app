@@ -40,6 +40,14 @@ class UserRepository {
     });
   }
 
+  Future<void> removeFCMToken(String uid) async {
+    var token = await _fcmToken;
+    if (token == null) return;
+    _firestore.collection(FirestorePaths.USERS).doc(uid).update({
+      FirestorePaths.NOTIFICATION_TOKEN: FieldValue.arrayRemove([token]),
+    });
+  }
+
   Future<void> updateUserInfo({
     required String uid,
     String? name,
