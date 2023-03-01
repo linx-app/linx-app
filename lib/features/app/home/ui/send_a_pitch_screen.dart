@@ -12,7 +12,6 @@ import 'package:linx/features/core/ui/sponsorship_package_carousel.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 
 class SendAPitchScreen extends ConsumerWidget {
-  final LinxUser sender;
   final LinxUser receiver;
   final List<SponsorshipPackage> packages;
   final TextEditingController _pitchMessageController = TextEditingController();
@@ -21,7 +20,6 @@ class SendAPitchScreen extends ConsumerWidget {
     super.key,
     required this.receiver,
     required this.packages,
-    required this.sender,
   });
 
   @override
@@ -138,7 +136,6 @@ class SendAPitchScreen extends ConsumerWidget {
     var notifier = ref.read(sendAPitchScreenControllerProvider.notifier);
     notifier.sendPitch(
       receiver: receiver,
-      sender: sender,
       message: _pitchMessageController.text,
     );
   }
