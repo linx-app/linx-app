@@ -14,6 +14,10 @@ class AuthRepository {
 
   Stream<User?> authStateChange() => _auth.authStateChanges();
 
+  Future<void> logOut() async {
+    await _auth.signOut();
+  }
+
   Future<AuthResponse> signInWithEmailAndPassword(
     String email,
     String password,

@@ -1,26 +1,27 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:linx/common/loading_screen.dart';
 import 'package:linx/constants/colors.dart';
-import 'package:linx/constants/routes.dart';
 import 'package:linx/constants/text.dart';
 import 'package:linx/features/app/core/ui/app_bottom_navigation_screen.dart';
-import 'package:linx/features/app/home/ui/profile_modal_screen.dart';
 import 'package:linx/features/authentication/ui/landing_screen.dart';
-import 'package:linx/features/authentication/ui/login_screen.dart';
-import 'package:linx/features/debug/widget_testing_screen.dart';
-import 'package:linx/features/onboarding/ui/onboarding_flow_screen.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
-import 'package:linx/main_controller.dart';
+import 'package:linx/firebase/firebase_providers.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_fcmBackgroundHandler);
   runApp(
     const ProviderScope(
       child: LinxApp(),
     ),
   );
+}
+
+Future<void> _fcmBackgroundHandler(RemoteMessage message) async {
+
 }
 
 class LinxApp extends ConsumerWidget {
@@ -29,16 +30,7 @@ class LinxApp extends ConsumerWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.read(mainControllerProvider);
-    String initialRoute;
-
-    if (state.isFirstTimeInApp) {
-      initialRoute = routeLanding;
-    } else if (state.isUserFound) {
-      initialRoute = routeLogIn; // TODO: Change to redirect to home
-    } else {
-      initialRoute = routeLogIn;
-    }
+    final authState = ref.watch(authStateChangesProvider);
 
     return MaterialApp(
       title: 'LINX application',
@@ -47,49 +39,17 @@ class LinxApp extends ConsumerWidget {
         colorScheme: LinxColors.colorScheme,
         textTheme: LinxTextStyles.theme,
       ),
-      onGenerateRoute: (settings) {
-        late Widget page;
-
-        switch (settings.name) {
-          case routeLanding:
-            page = const LandingScreen();
-            break;
-          case routeLogIn:
-            page = LogInScreen();
-            break;
-          case routeApp:
-            page = AppBottomNavigationScreen();
-            break;
-          case routeDebugWidgetTesting:
-            page = WidgetTestingScreen();
-            break;
-          case routeProfileModal:
-            page = ProfileModalScreen(
-              initialIndex: 0,
-              users: [],
-              requests: [],
-              matchPercentages: [],
-              packages: [],
-              currentUser: LinxUser(uid: "id"),
-              onMainButtonPressed: (user, packages, request) {  },
-            );
-            break;
-          default:
-            if (settings.name!.startsWith(routeOnboardingRoot)) {
-              final subRoute =
-                  settings.name!.substring(routeOnboardingRoot.length);
-              page = OnboardingFlowScreen(initialRoute: subRoute);
-            } else {
-              throw Exception("Unknown route: ${settings.name}");
-            }
-        }
-
-        return MaterialPageRoute(
-          builder: (context) => page,
-          settings: settings,
-        );
-      },
-      initialRoute: initialRoute,
+      home: authState.when(
+        data: (data) {
+          if (data != null) {
+            return AppBottomNavigationScreen();
+          } else {
+            return const LandingScreen();
+          }
+        },
+        error: (e, trace) => const LoadingScreen(),
+        loading: () => const LoadingScreen(),
+      ),
     );
   }
 }

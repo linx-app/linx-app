@@ -6,7 +6,10 @@ import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/routes.dart';
 import 'package:linx/constants/text.dart';
+import 'package:linx/features/authentication/ui/login_screen.dart';
 import 'package:linx/features/authentication/ui/widgets/linx_logo.dart';
+import 'package:linx/features/debug/widget_testing_screen.dart';
+import 'package:linx/features/onboarding/ui/onboarding_flow_screen.dart';
 
 class LandingScreen extends ConsumerWidget {
   const LandingScreen({super.key});
@@ -68,14 +71,18 @@ class LandingScreen extends ConsumerWidget {
   }
 
   void onLogInPressed(BuildContext context) {
-    Navigator.pushNamed(context, routeLogIn);
+    var page = MaterialPageRoute(builder: (context) => LogInScreen());
+    Navigator.push(context, page);
   }
 
   void onSignUpPressed(BuildContext context) {
-    Navigator.pushNamed(context, routeOnboardingStart);
+    var screen = OnboardingFlowScreen(initialRoute: routeOnboardingSignUp);
+    var page = MaterialPageRoute(builder: (context) => screen);
+    Navigator.push(context, page);
   }
 
   void _onWidgetTestingPressed(BuildContext context) {
-    Navigator.pushNamed(context, routeDebugWidgetTesting);
+    var page = MaterialPageRoute(builder: (context) => WidgetTestingScreen());
+    Navigator.push(context, page);
   }
 }
