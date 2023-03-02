@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>1003695627478-6bj9jl2sc6ah7t4k6k4ltraincfa3f3d.apps.googleusercontent.com</string>
+	<string>1003695627478-hmch8gr80n7c1c0vnbekceuivfp26lvs.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1003695627478-6bj9jl2sc6ah7t4k6k4ltraincfa3f3d</string>
+	<string>com.googleusercontent.apps.1003695627478-hmch8gr80n7c1c0vnbekceuivfp26lvs</string>
 	<key>API_KEY</key>
 	<string>AIzaSyBPHODB8xJKGpCxMsU7QL50MeuM3BTCGwM</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.linx.linx</string>
+	<string>ca.linx-app.ios</string>
 	<key>PROJECT_ID</key>
 	<string>linx-2022</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1003695627478:ios:d79236e1b07bfef3fb3d77</string>
+	<string>1:1003695627478:ios:e34c910f216d04f3fb3d77</string>
 </dict>
 </plist>
