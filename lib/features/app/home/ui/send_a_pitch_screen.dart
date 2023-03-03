@@ -36,13 +36,15 @@ class SendAPitchScreen extends ConsumerWidget {
           _buildBackButton(context),
           Expanded(
             flex: 1,
-            child: Column(
-              children: [
-                _buildTitleText(),
-                _buildDisplayNameText(),
-                _buildPitchMessageField(),
-                _buildPackageSection(),
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildTitleText(),
+                  _buildDisplayNameText(),
+                  _buildPitchMessageField(),
+                  _buildPackageSection(),
+                ],
+              ),
             ),
           ),
           _buildButtonRow(context, ref),

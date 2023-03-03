@@ -46,23 +46,22 @@ class ProfileModalCard extends StatelessWidget {
         width: context.width() * 0.65,
         child: Column(
           children: [
-            SizedBox(
-              height: 550,
+            Expanded(
               child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _profileImage(),
-                    _matchText(),
-                    _nameText(),
-                    _locationText(),
-                    _descriptorChips(),
-                    _requestText(),
-                    _biographyText(),
-                    _interestsChips(),
-                    _buildSponsorshipPackageSection(),
-                    const SizedBox(height: 32),
-                  ],
-                ),
+                  child: Column(
+                    children: [
+                      _profileImage(),
+                      _matchText(),
+                      _nameText(),
+                      _locationText(),
+                      _descriptorChips(),
+                      _requestText(),
+                      _biographyText(),
+                      _interestsChips(),
+                      _buildSponsorshipPackageSection(),
+                      const SizedBox(height: 32),
+                    ],
+                  ),
               ),
             ),
             _buttonRow(),
@@ -162,7 +161,8 @@ class ProfileModalCard extends StatelessWidget {
           ),
           Text(
             request!.message,
-            style: const TextStyle(color: LinxColors.chipTextGrey, fontSize: 15),
+            style:
+                const TextStyle(color: LinxColors.chipTextGrey, fontSize: 15),
           ),
         ],
       ),
@@ -182,7 +182,8 @@ class ProfileModalCard extends StatelessWidget {
           ),
           Text(
             user.biography,
-            style: const TextStyle(color: LinxColors.chipTextGrey, fontSize: 15),
+            style:
+                const TextStyle(color: LinxColors.chipTextGrey, fontSize: 15),
           ),
         ],
       ),
@@ -224,7 +225,7 @@ class ProfileModalCard extends StatelessWidget {
 
   Container _buttonRow() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: RoundedButton(
         style: greenButtonStyle(),
         onPressed: () => onMainButtonPressed?.call(),

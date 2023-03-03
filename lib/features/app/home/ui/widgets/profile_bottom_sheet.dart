@@ -45,8 +45,7 @@ class ProfileBottomSheet extends StatelessWidget {
       height: context.height() * 0.80,
       child: Column(
         children: [
-          SizedBox(
-            height: context.height() * 0.70,
+          Expanded(
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -214,7 +213,7 @@ class ProfileBottomSheet extends StatelessWidget {
 
   Container _buildButtonRow(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: RoundedButton(
         style: greenButtonStyle(),
         onPressed: onMainButtonPressed,

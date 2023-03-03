@@ -97,8 +97,13 @@ class UserRepository {
         .get()
         .then(
       (DocumentSnapshot snapshot) {
-        var obj = snapshot.data() as Map<String, dynamic>;
-        return UserDTO.fromNetwork(uid, obj);
+        var data = snapshot.data();
+        if (data != null) {
+          var obj = snapshot.data() as Map<String, dynamic>;
+          return UserDTO.fromNetwork(uid, obj);
+        } else {
+          throw Exception("Firebase document is null");
+        }
       },
     );
   }

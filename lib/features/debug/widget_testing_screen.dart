@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
+import 'package:linx/common/buttons/linx_back_button.dart';
 import 'package:linx/common/buttons/linx_text_button.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/common/linx_chip.dart';
@@ -14,6 +15,7 @@ import 'package:linx/features/app/home/ui/widgets/profile_bottom_sheet.dart';
 import 'package:linx/features/app/home/ui/widgets/profile_card.dart';
 import 'package:linx/features/app/home/ui/widgets/profile_modal_card.dart';
 import 'package:linx/features/core/domain/model/sponsorship_package.dart';
+import 'package:linx/features/image_upload/ui/image_uploader.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
@@ -63,6 +65,13 @@ class WidgetTestingScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Container(
+              width: context.width(),
+              alignment: Alignment.centerLeft,
+              child: LinxBackButton(
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            ),
             SizedBox(width: context.width()),
             // Example usage:
             _widgetContainer(
@@ -123,6 +132,9 @@ class WidgetTestingScreen extends ConsumerWidget {
                 onPressed: () => _showConfirmationSnackbar(context),
                 text: "Show confirmation snackbar",
               ),
+            ),
+            _widgetContainer(
+              ImageUploader((p0) {}),
             ),
           ],
         ),
