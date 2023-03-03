@@ -23,7 +23,7 @@ class FetchNotificationPermissionsService {
     this._userRepository,
   );
 
-  Future<void> execute() async {
+  Future<AuthorizationStatus> execute() async {
     NotificationSettings settings = await _fcmInstance.requestPermission(
       alert: true,
       announcement: false,
@@ -36,7 +36,9 @@ class FetchNotificationPermissionsService {
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       var uid = _sessionRepository.userId;
-      await _userRepository.removeFCMToken(uid);
+      await _userRepository.addFCMToken(uid);
     }
+
+    return settings.authorizationStatus;
   }
 }

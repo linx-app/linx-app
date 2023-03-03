@@ -6,7 +6,6 @@ import 'package:linx/features/app/home/domain/model/request.dart';
 import 'package:linx/features/authentication/domain/log_out_service.dart';
 import 'package:linx/features/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/core/domain/sponsorship_package_service.dart';
-import 'package:linx/features/notifications/domain/fetch_notifications_permissions.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_type.dart';
 import 'package:linx/features/user/domain/user_service.dart';
@@ -21,7 +20,6 @@ final homeScreenControllerProvider =
     ref.read(UserService.provider),
     ref.read(CreateAMatchService.provider),
     ref.read(LogOutService.provider),
-    ref.read(FetchNotificationPermissionsService.provider),
   );
 });
 
@@ -32,8 +30,7 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
   final SponsorshipPackageService _sponsorshipPackageService;
   final CreateAMatchService _createAMatchService;
   final LogOutService _logOutService;
-  final FetchNotificationPermissionsService
-      _fetchNotificationPermissionsService;
+
   late LinxUser _currentUser;
 
   HomeScreenController(
@@ -43,13 +40,11 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
     this._userService,
     this._createAMatchService,
     this._logOutService,
-    this._fetchNotificationPermissionsService,
   ) : super(HomeScreenUiState()) {
     initialize();
   }
 
   void initialize() async {
-    await _fetchNotificationPermissionsService.execute();
     _currentUser = await _userService.fetchUserProfile();
     state = HomeScreenUiState(currentUser: _currentUser);
     if (_currentUser.type == UserType.club) {
