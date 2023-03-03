@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:linx/common/error_snackbar.dart';
 import 'package:linx/common/linx_chip.dart';
 import 'package:linx/constants/colors.dart';
-import 'package:linx/features/onboarding/ui/model/chip_selection_screen_type.dart';
 import 'package:linx/features/onboarding/presentation/onboarding_chip_selection_controller.dart';
+import 'package:linx/features/onboarding/ui/model/chip_selection_screen_type.dart';
 import 'package:linx/features/onboarding/ui/model/onboarding_nav.dart';
 import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
 import 'package:linx/utils/ui_extensions.dart';
@@ -36,9 +37,22 @@ class OnboardingChipSelectionScreen extends OnboardingView {
     return true;
   }
 
-  void _onChipSelected(String label, WidgetRef ref) {
-    var notifier = ref.read(onboardingChipSelectionController.notifier);
-    notifier.onChipSelected(label);
+  void _onChipSelected(
+    String label,
+    WidgetRef ref,
+    OnboardingChipSelectionUiState state,
+    BuildContext context,
+  ) {
+    var selected = state.selectedChips;
+
+    if (selected.length == 10 && !selected.contains(label)) {
+      var snackBarMessage = "You cannot select more than 10 chips";
+      var snackBar = ErrorSnackBar(errorMessage: snackBarMessage);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      var notifier = ref.read(onboardingChipSelectionController.notifier);
+      notifier.onChipSelected(label);
+    }
   }
 
   List<Container> _buildSections(
@@ -48,7 +62,7 @@ class OnboardingChipSelectionScreen extends OnboardingView {
   ) {
     List<Container> sections = [];
     state.chips.forEach((key, value) {
-      sections.add(_buildSection(context, key, value, ref));
+      sections.add(_buildSection(context, key, value, ref, state));
     });
     return sections;
   }
@@ -58,12 +72,13 @@ class OnboardingChipSelectionScreen extends OnboardingView {
     String category,
     List<String> values,
     WidgetRef ref,
+    OnboardingChipSelectionUiState state,
   ) {
     var selected = ref.watch(onboardingChipSelectionController).selectedChips;
     Iterable<LinxChip> chips = values.map(
       (label) => LinxChip(
         label: label,
-        onChipSelected: (label) => _onChipSelected(label, ref),
+        onChipSelected: (label) => _onChipSelected(label, ref, state, context),
         isSelected: selected.contains(label),
       ),
     );
@@ -95,7 +110,6 @@ class OnboardingChipSelectionScreen extends OnboardingView {
 
   @override
   void onScreenPushed(WidgetRef ref) {
-    print(type);
     ref.read(onboardingChipSelectionController.notifier).fetchCategories(type);
   }
 }
