@@ -16,6 +16,7 @@ extension UserDTOExtension on UserDTO {
       descriptors: descriptors.toSet(),
       numberOfPackages: numberOfPackages,
       profileImageUrls: profileImageUrls,
+      pitchesTo: pitchesTo,
     );
   }
 }

@@ -312,7 +312,7 @@ class HomeScreen extends ConsumerWidget {
     if (currentUser.type == UserType.club) {
       _onSendPitchPressed(context, receiver, packages);
     } else {
-      _onImInterestedPressed(ref, receiver);
+      _onImInterestedPressed(context, ref, receiver);
     }
   }
 
@@ -330,10 +330,12 @@ class HomeScreen extends ConsumerWidget {
   }
 
   void _onImInterestedPressed(
+    BuildContext context,
     WidgetRef ref,
     LinxUser club,
   ) {
     var notifier = ref.read(homeScreenControllerProvider.notifier);
     notifier.onImInterestedPressed(club: club);
+    Navigator.of(context).pop();
   }
 }

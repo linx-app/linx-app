@@ -51,6 +51,7 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
   void initialize() async {
     await _fetchNotificationPermissionsService.execute();
     _currentUser = await _userService.fetchUserProfile();
+    state = HomeScreenUiState(currentUser: _currentUser);
     if (_currentUser.type == UserType.club) {
       fetchMatchesForClubs();
     } else {
@@ -59,8 +60,8 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
   }
 
   void fetchMatchesForClubs() async {
-    var matches = await _matchService
-        .fetchUsersWithMatchingInterests(_currentUser.interests);
+    var matches =
+        await _matchService.fetchUsersWithMatchingInterests(_currentUser);
     var percentages = matches.map((e) {
       return _calculateMatchPercentage(_currentUser, e);
     }).toList();
@@ -76,6 +77,7 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
         topMatches: matches.take(matches.length).toList(),
         topMatchPercentages: percentages.take(percentages.length).toList(),
         topPackages: allPackages.take(allPackages.length).toList(),
+        currentUser: _currentUser,
       );
     } else {
       state = HomeScreenUiState(
@@ -86,6 +88,7 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
             percentages.getRange(5, percentages.length).toList(),
         topPackages: allPackages.take(5).toList(),
         nextPackages: allPackages.getRange(5, allPackages.length).toList(),
+        currentUser: _currentUser,
       );
     }
   }
@@ -108,6 +111,7 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
         topRequests: requests.take(requests.length).toList(),
         topMatchPercentages: percentages.take(percentages.length).toList(),
         topPackages: allPackages.take(allPackages.length).toList(),
+        currentUser: _currentUser,
       );
     } else {
       state = HomeScreenUiState(
@@ -118,6 +122,7 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
             percentages.getRange(5, percentages.length).toList(),
         topPackages: allPackages.take(5).toList(),
         nextPackages: allPackages.getRange(5, allPackages.length).toList(),
+        currentUser: _currentUser,
       );
     }
   }

@@ -24,8 +24,6 @@ class SessionRepository {
     this._sharedPreferences,
   );
 
-  Stream<bool> isUserLoggedIn() => _auth.authStateChanges().map((e) => e != null);
-
   String get userId {
     var uid = _auth.currentUser?.uid;
     if (uid == null) {
@@ -40,13 +38,11 @@ class SessionRepository {
   }
 
   Future<UserDTO?> fetchUser() async {
-    var uid = await userId;
-    return await _userLocalDataSource.fetchUser(uid);
+    return await _userLocalDataSource.fetchUser(userId);
   }
 
   Future<void> deleteUser() async {
-    var uid = await userId;
-    await _userLocalDataSource.deleteUser(uid);
+    await _userLocalDataSource.deleteUser(userId);
   }
 
   Future<bool> isFirstTimeInApp() async {

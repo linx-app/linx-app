@@ -64,6 +64,6 @@ class DefaultFirebaseOptions {
     projectId: 'linx-2022',
     storageBucket: 'linx-2022.appspot.com',
     iosClientId: '1003695627478-6bj9jl2sc6ah7t4k6k4ltraincfa3f3d.apps.googleusercontent.com',
-    iosBundleId: 'com.linx.linx',
+    iosBundleId: 'ca.linx-app.ios',
   );
 }

@@ -39,7 +39,7 @@ class SignUpService {
         type: userType.name,
       );
       var user = await _userRepository.fetchUserProfile(res.userId);
-      _sessionRepository.saveUser(user);
+      await _sessionRepository.saveUser(user);
     }
 
     return res;

@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/user/data/model/user_dto.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_type.dart';
-import 'package:linx/firebase/firebase_extensions.dart';
 import 'package:linx/firebase/firebase_providers.dart';
 import 'package:linx/firebase/firestore_paths.dart';
 
@@ -14,16 +14,14 @@ class MatchRepository {
 
   MatchRepository(this._firestore);
 
-  Future<List<UserDTO>> fetchUsersWithMatchingInterests(
-    Set<String> interests,
-  ) async {
+  Future<List<UserDTO>> fetchUsersWithMatchingInterests(LinxUser user) async {
+    var interests = user.interests.take(10).toList();
     return await _firestore
         .collection(FirestorePaths.USERS)
-        .where(FirestorePaths.INTERESTS,
-            arrayContainsAny: interests.take(10).toList())
+        .where(FirestorePaths.INTERESTS, arrayContainsAny: interests)
         .where(FirestorePaths.TYPE, isEqualTo: UserType.business.name)
         .get()
-        .then((QuerySnapshot query) => _mapQueryToUserDTO(query));
+        .then((QuerySnapshot query) => _mapQueryToUserDTO(query, user));
   }
 
   Future<void> addMatch({
@@ -39,30 +37,14 @@ class MatchRepository {
     await _firestore.collection(FirestorePaths.MATCHES).add(data);
   }
 
-  List<UserDTO> _mapQueryToUserDTO(QuerySnapshot query) {
+  List<UserDTO> _mapQueryToUserDTO(QuerySnapshot query, LinxUser user) {
     var list = <UserDTO>[];
 
     for (var element in query.docs) {
-      var obj = element.data() as Map<String, dynamic>;
-      list.add(
-        UserDTO(
-          uid: element.id,
-          displayName: obj[FirestorePaths.NAME] ?? "",
-          type: obj[FirestorePaths.TYPE] ?? "",
-          location: obj[FirestorePaths.LOCATION] ?? "",
-          phoneNumber: obj[FirestorePaths.PHONE_NUMBER] ?? "",
-          biography: obj[FirestorePaths.BIOGRAPHY] ?? "",
-          interests: ((obj[FirestorePaths.INTERESTS] ?? []) as List<dynamic>)
-              .toStrList(),
-          descriptors:
-              ((obj[FirestorePaths.DESCRIPTORS] ?? []) as List<dynamic>)
-                  .toStrList(),
-          numberOfPackages: obj[FirestorePaths.NUMBER_OF_PACKAGES] ?? 0,
-          profileImageUrls:
-              ((obj[FirestorePaths.PROFILE_IMAGES] ?? []) as List<dynamic>)
-                  .toStrList(),
-        ),
-      );
+      if (element.id != user.uid && !user.pitchesTo.contains(element.id)) {
+        var obj = element.data() as Map<String, dynamic>;
+        list.add(UserDTO.fromNetwork(element.id, obj));
+      }
     }
 
     return list;
