@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1003695627478:android:b91ac4fc6919a9f0fb3d77",
+        "mobilesdk_app_id": "1:1003695627478:android:f1bdc6bc17f2c7e5fb3d77",
         "android_client_info": {
-          "package_name": "com.linx.linx"
+          "package_name": "ca.linx_app.android"
         }
       },
       "oauth_client": [
@@ -31,10 +31,10 @@
               "client_type": 3
             },
             {
-              "client_id": "1003695627478-95ucj98vu3b8vledvsfmq1t7buq8ukj5.apps.googleusercontent.com",
+              "client_id": "1003695627478-6bj9jl2sc6ah7t4k6k4ltraincfa3f3d.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.linx"
+                "bundle_id": "com.linx.linx"
               }
             }
           ]

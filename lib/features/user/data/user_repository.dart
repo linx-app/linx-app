@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/user/data/model/user_dto.dart';
-import 'package:linx/firebase/firebase_extensions.dart';
 import 'package:linx/firebase/firebase_providers.dart';
 import 'package:linx/firebase/firestore_paths.dart';
 
@@ -98,25 +97,13 @@ class UserRepository {
         .get()
         .then(
       (DocumentSnapshot snapshot) {
-        var obj = snapshot.data() as Map<String, dynamic>;
-        return UserDTO(
-          uid: uid,
-          displayName: obj[FirestorePaths.NAME] ?? "",
-          email: obj[FirestorePaths.EMAIL] ?? "",
-          type: obj[FirestorePaths.TYPE] ?? "",
-          location: obj[FirestorePaths.LOCATION] ?? "",
-          phoneNumber: obj[FirestorePaths.PHONE_NUMBER] ?? "",
-          biography: obj[FirestorePaths.BIOGRAPHY] ?? "",
-          interests: ((obj[FirestorePaths.INTERESTS] ?? []) as List<dynamic>)
-              .toStrList(),
-          descriptors:
-              ((obj[FirestorePaths.DESCRIPTORS] ?? []) as List<dynamic>)
-                  .toStrList(),
-          numberOfPackages: obj[FirestorePaths.NUMBER_OF_PACKAGES] ?? 0,
-          profileImageUrls:
-              ((obj[FirestorePaths.PROFILE_IMAGES] ?? []) as List<dynamic>)
-                  .toStrList(),
-        );
+        var data = snapshot.data();
+        if (data != null) {
+          var obj = snapshot.data() as Map<String, dynamic>;
+          return UserDTO.fromNetwork(uid, obj);
+        } else {
+          throw Exception("Firebase document is null");
+        }
       },
     );
   }

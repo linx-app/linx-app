@@ -6,7 +6,6 @@ import 'package:linx/features/app/home/domain/model/request.dart';
 import 'package:linx/features/authentication/domain/log_out_service.dart';
 import 'package:linx/features/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/core/domain/sponsorship_package_service.dart';
-import 'package:linx/features/notifications/domain/fetch_notifications_permissions.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_type.dart';
 import 'package:linx/features/user/domain/user_service.dart';
@@ -21,7 +20,6 @@ final homeScreenControllerProvider =
     ref.read(UserService.provider),
     ref.read(CreateAMatchService.provider),
     ref.read(LogOutService.provider),
-    ref.read(FetchNotificationPermissionsService.provider),
   );
 });
 
@@ -32,8 +30,7 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
   final SponsorshipPackageService _sponsorshipPackageService;
   final CreateAMatchService _createAMatchService;
   final LogOutService _logOutService;
-  final FetchNotificationPermissionsService
-      _fetchNotificationPermissionsService;
+
   late LinxUser _currentUser;
 
   HomeScreenController(
@@ -43,14 +40,13 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
     this._userService,
     this._createAMatchService,
     this._logOutService,
-    this._fetchNotificationPermissionsService,
   ) : super(HomeScreenUiState()) {
     initialize();
   }
 
   void initialize() async {
-    await _fetchNotificationPermissionsService.execute();
     _currentUser = await _userService.fetchUserProfile();
+    state = HomeScreenUiState(currentUser: _currentUser);
     if (_currentUser.type == UserType.club) {
       fetchMatchesForClubs();
     } else {
@@ -59,8 +55,8 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
   }
 
   void fetchMatchesForClubs() async {
-    var matches = await _matchService
-        .fetchUsersWithMatchingInterests(_currentUser.interests);
+    var matches =
+        await _matchService.fetchUsersWithMatchingInterests(_currentUser);
     var percentages = matches.map((e) {
       return _calculateMatchPercentage(_currentUser, e);
     }).toList();
@@ -76,6 +72,7 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
         topMatches: matches.take(matches.length).toList(),
         topMatchPercentages: percentages.take(percentages.length).toList(),
         topPackages: allPackages.take(allPackages.length).toList(),
+        currentUser: _currentUser,
       );
     } else {
       state = HomeScreenUiState(
@@ -86,6 +83,7 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
             percentages.getRange(5, percentages.length).toList(),
         topPackages: allPackages.take(5).toList(),
         nextPackages: allPackages.getRange(5, allPackages.length).toList(),
+        currentUser: _currentUser,
       );
     }
   }
@@ -108,6 +106,7 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
         topRequests: requests.take(requests.length).toList(),
         topMatchPercentages: percentages.take(percentages.length).toList(),
         topPackages: allPackages.take(allPackages.length).toList(),
+        currentUser: _currentUser,
       );
     } else {
       state = HomeScreenUiState(
@@ -118,6 +117,7 @@ class HomeScreenController extends StateNotifier<HomeScreenUiState> {
             percentages.getRange(5, percentages.length).toList(),
         topPackages: allPackages.take(5).toList(),
         nextPackages: allPackages.getRange(5, allPackages.length).toList(),
+        currentUser: _currentUser,
       );
     }
   }

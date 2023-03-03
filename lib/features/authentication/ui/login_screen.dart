@@ -10,6 +10,7 @@ import 'package:linx/constants/text.dart';
 import 'package:linx/features/authentication/presentation/login_controller.dart';
 import 'package:linx/features/authentication/ui/widgets/linx_logo.dart';
 import 'package:linx/features/authentication/ui/widgets/password_text_field.dart';
+import 'package:linx/features/onboarding/ui/onboarding_flow_screen.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class LogInScreen extends ConsumerWidget {
@@ -54,14 +55,20 @@ class LogInScreen extends ConsumerWidget {
   }
 
   void _onSignUpPressed(BuildContext context) {
-    Navigator.of(context).popAndPushNamed(routeOnboardingStart);
+    var screen = OnboardingFlowScreen(initialRoute: routeOnboardingSignUp);
+    var route = MaterialPageRoute(builder: (_) => screen);
+    Navigator.of(context).pop();
+    Navigator.of(context).push(route);
   }
 
   void _onLogInPressed(BuildContext context, WidgetRef ref) async {
     var email = _emailController.text;
     var password = _passwordController.text;
-    ref.read(logInControllerProvider.notifier).onLogInPressed(email, password);
-    Navigator.pop(context);
+    var notifier = ref.read(logInControllerProvider.notifier);
+    var success = await notifier.onLogInPressed(email, password);
+    if (success) {
+      Navigator.of(context).pop();
+    }
   }
 
   void _onForgetPasswordPressed(BuildContext context) {}

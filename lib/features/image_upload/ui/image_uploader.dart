@@ -61,7 +61,7 @@ class ImageUploader extends ConsumerWidget {
       permissionStatus = await Permission.photos.status;
     }
 
-    if (permissionStatus.isGranted) {
+    if (permissionStatus.isGranted || permissionStatus.isLimited) {
       var image = await imagePicker.pickImage(source: ImageSource.gallery);
       if (image != null) {
         var file = File(image.path);

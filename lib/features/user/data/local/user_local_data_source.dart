@@ -51,7 +51,7 @@ class UserLocalDataSource {
     if (user.isEmpty) {
       return null;
     } else {
-      return _fromMap(uid, user.first);
+      return UserDTO.fromNetwork(uid, user.first);
     }
   }
 
@@ -92,21 +92,5 @@ class UserLocalDataSource {
       // _packages: user.packages.join("|"),
       _profileImages: user.profileImageUrls.join("|")
     };
-  }
-
-  UserDTO _fromMap(String uid, Map<String, dynamic> user) {
-    return UserDTO(
-      uid: uid,
-      displayName: user[_name],
-      email: user[_email],
-      location: user[_location],
-      phoneNumber: user[_phoneNumber],
-      biography: user[_biography],
-      interests: (user[_interests] as String).split("|"),
-      descriptors: (user[_descriptors] as String).split("|"),
-      type: user[_type],
-      // packages: (user[_packages] as String).split("|"),
-      profileImageUrls: (user[_profileImages] as String).split("|")
-    );
   }
 }

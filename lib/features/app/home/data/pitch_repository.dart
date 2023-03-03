@@ -19,12 +19,20 @@ class PitchRepository {
       FirestorePaths.SENDER: pitch.senderId,
       FirestorePaths.MESSAGE: pitch.message
     });
+
+    await _firestore
+        .collection(FirestorePaths.USERS)
+        .doc(pitch.senderId)
+        .update({
+      FirestorePaths.PITCHES_TO: FieldValue.arrayUnion([pitch.receiverId])
+    });
   }
 
   Future<List<PitchDTO>> fetchPitchesWithReceiver(String receiverId) async {
     return await _firestore
         .collection(FirestorePaths.PITCHES)
         .where(FirestorePaths.RECEIVER, isEqualTo: receiverId)
+        .limit(10)
         .get()
         .then((QuerySnapshot query) => _mapQueryToPitches(query));
   }

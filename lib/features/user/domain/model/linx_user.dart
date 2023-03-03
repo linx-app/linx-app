@@ -12,6 +12,7 @@ class LinxUser {
   final int numberOfPackages;
   final UserType type;
   final List<String> profileImageUrls;
+  final List<String> pitchesTo;
 
   const LinxUser({
     required this.uid,
@@ -25,5 +26,6 @@ class LinxUser {
     this.descriptors = const {},
     this.numberOfPackages = 0,
     this.profileImageUrls = const [],
+    this.pitchesTo = const [],
   });
 }

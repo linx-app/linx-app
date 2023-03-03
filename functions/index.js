@@ -28,6 +28,10 @@ exports.sendMatchNotification = functions.firestore
           body: `${business.data().name} matched with you!`,
           icon: business.data().profile_images[0],
         },
+        data: {
+          match_id: value.id,
+
+        }
       };
 
       const response = await admin.messaging().sendToDevice(tokens, payload);

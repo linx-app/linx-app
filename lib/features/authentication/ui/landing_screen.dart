@@ -10,6 +10,7 @@ import 'package:linx/features/authentication/ui/login_screen.dart';
 import 'package:linx/features/authentication/ui/widgets/linx_logo.dart';
 import 'package:linx/features/debug/widget_testing_screen.dart';
 import 'package:linx/features/onboarding/ui/onboarding_flow_screen.dart';
+import 'package:linx/utils/ui_extensions.dart';
 
 class LandingScreen extends ConsumerWidget {
   const LandingScreen({super.key});
@@ -22,14 +23,16 @@ class LandingScreen extends ConsumerWidget {
         children: [
           Container(
             alignment: Alignment.bottomCenter,
-            height: 185,
+            height: context.height() * 0.20,
             child: const LinxLogo(),
           ),
           Expanded(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset("assets/landing_graphic.png"),
+                Image.asset("assets/landing_graphic.png", width: context.width() * 0.85),
                 Container(
+                  width: context.width(),
                   padding: const EdgeInsets.all(24),
                   child: const Text(
                     "Connect with clubs or businesses in your area.",

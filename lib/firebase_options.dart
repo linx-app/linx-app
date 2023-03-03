@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyC5KGCyeT-uFTsikLnf--SJtp5HdRHlfwc',
-    appId: '1:1003695627478:android:b91ac4fc6919a9f0fb3d77',
+    appId: '1:1003695627478:android:f1bdc6bc17f2c7e5fb3d77',
     messagingSenderId: '1003695627478',
     projectId: 'linx-2022',
     storageBucket: 'linx-2022.appspot.com',
@@ -59,11 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBPHODB8xJKGpCxMsU7QL50MeuM3BTCGwM',
-    appId: '1:1003695627478:ios:d79236e1b07bfef3fb3d77',
+    appId: '1:1003695627478:ios:e34c910f216d04f3fb3d77',
     messagingSenderId: '1003695627478',
     projectId: 'linx-2022',
     storageBucket: 'linx-2022.appspot.com',
-    iosClientId: '1003695627478-6bj9jl2sc6ah7t4k6k4ltraincfa3f3d.apps.googleusercontent.com',
+    iosClientId: '1003695627478-hmch8gr80n7c1c0vnbekceuivfp26lvs.apps.googleusercontent.com',
     iosBundleId: 'ca.linx-app.ios',
   );
 }
