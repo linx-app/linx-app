@@ -1,5 +1,5 @@
-import 'package:linx/features/app/home/data/model/pitch_dto.dart';
-import 'package:linx/features/app/home/domain/model/request.dart';
+import 'package:linx/features/app/pitch/data/model/pitch_dto.dart';
+import 'package:linx/features/app/request/domain/model/request.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 
 extension PitchTransformationExtensions on PitchDTO {

@@ -4,9 +4,10 @@ import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/chat/chat_home_screen.dart';
 import 'package:linx/features/app/core/presentation/app_bottom_nav_screen_controller.dart';
-import 'package:linx/features/app/home/ui/home_screen.dart';
-import 'package:linx/features/app/pitches/pitches_screen.dart';
-import 'package:linx/features/app/search/search_home_sreen.dart';
+import 'package:linx/features/app/discover/ui/discover_screen.dart';
+import 'package:linx/features/app/pitch/pitches_screen.dart';
+import 'package:linx/features/app/request/ui/request_screen.dart';
+import 'package:linx/features/app/search/ui/search_screen.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_type.dart';
 
@@ -43,11 +44,14 @@ class AppBottomNavigationScreen extends ConsumerWidget {
     if (user == null) {
       body = const CircularProgressIndicator();
     } else {
+      var isClub = user.type == UserType.club;
+      var firstScreen = isClub ? DiscoverScreen() : RequestScreen();
+      var secondScreen = isClub ? SearchScreen() : DiscoverScreen();
       List<Widget> pages = [
-        HomeScreen(),
-        SearchHomeScreen(),
+        firstScreen,
+        secondScreen,
         PitchesScreen(),
-        ChatHomeScreen()
+        ChatHomeScreen(),
       ];
       body = pages.elementAt(selectedIndex);
     }

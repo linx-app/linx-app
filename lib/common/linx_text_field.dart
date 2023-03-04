@@ -8,7 +8,8 @@ class LinxTextField extends StatelessWidget {
   final double _helperTextSize = 12.0;
   final int? minLines;
   final int? maxLines;
-  final Widget? icon;
+  final Widget? suffixIcon;
+  final Widget? prefixIcon;
   final bool shouldObscureText;
   final TextEditingController controller;
   final String? Function(String?)? validator;
@@ -20,12 +21,13 @@ class LinxTextField extends StatelessWidget {
     super.key,
     required this.label,
     required this.controller,
-    this.icon,
+    this.suffixIcon,
     this.shouldObscureText = false,
     this.validator,
     this.minLines,
     this.maxLines,
     this.errorText,
+    this.prefixIcon,
   });
 
   @override
@@ -34,7 +36,9 @@ class LinxTextField extends StatelessWidget {
       validator: validator,
       controller: controller,
       decoration: InputDecoration(
-        suffixIcon: icon,
+        suffixIcon: suffixIcon,
+        prefixIcon: prefixIcon,
+        prefixIconColor: LinxColors.grey,
         hintText: label,
         hintStyle: _inputTextStyle(LinxColors.black_60),
         enabledBorder: _border(LinxColors.transparent),

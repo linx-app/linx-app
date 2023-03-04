@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:linx/features/authentication/domain/log_out_service.dart';
 import 'package:linx/features/notifications/data/subscribe_to_notifications_service.dart';
 import 'package:linx/features/notifications/domain/fetch_notifications_permissions.dart';
 import 'package:linx/features/notifications/domain/models/fcm_notification.dart';
@@ -13,6 +14,7 @@ final appBottomNavScreenControllerProvider = StateNotifierProvider.autoDispose<
     ref.read(UserService.provider),
     ref.read(FetchNotificationPermissionsService.provider),
     ref.read(SubscribeToNotificationsService.provider),
+    ref.read(LogOutService.provider),
   );
 });
 
@@ -22,6 +24,7 @@ class AppBottomNavScreenController
     this._userService,
     this._fetchNotificationPermissionsService,
     this._subscribeToNotificationsService,
+    this._logOutService,
   ) : super(AppBottomNavScreenUiState()) {
     initialize();
   }
@@ -30,6 +33,7 @@ class AppBottomNavScreenController
   final FetchNotificationPermissionsService
       _fetchNotificationPermissionsService;
   final SubscribeToNotificationsService _subscribeToNotificationsService;
+  final LogOutService _logOutService;
 
   Future<void> initialize() async {
     var status = await _fetchNotificationPermissionsService.execute();
@@ -44,10 +48,11 @@ class AppBottomNavScreenController
 
   void _foregroundNotificationsHandler(FCMNotification notification) {
     if (notification.type == FCMType.new_pitch) {
+    } else if (notification.type == FCMType.new_match) {}
+  }
 
-    } else if (notification.type == FCMType.new_match) {
-
-    }
+  void logOut() async {
+    _logOutService.execute();
   }
 }
 
