@@ -5,7 +5,7 @@ import 'package:linx/constants/colors.dart';
 import 'package:linx/features/authentication/presentation/signup_controller.dart';
 import 'package:linx/features/authentication/ui/widgets/password_text_field.dart';
 import 'package:linx/features/authentication/ui/widgets/user_type_toggle_button.dart';
-import 'package:linx/features/onboarding/ui/widgets/onboarding_view.dart';
+import 'package:linx/features/app/onboarding/ui/widgets/onboarding_view.dart';
 import 'package:linx/features/user/domain/model/user_type.dart';
 import 'package:linx/utils/ui_extensions.dart';
 

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 abstract class LinxColors {
   static const ColorScheme colorScheme = ColorScheme(
       brightness: Brightness.light,
-      primary: LinxColors.background,
+      primary: LinxColors.grey,
       onPrimary: LinxColors.black,
       secondary: LinxColors.green,
       onSecondary: LinxColors.white,

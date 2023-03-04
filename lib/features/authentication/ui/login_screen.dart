@@ -10,7 +10,7 @@ import 'package:linx/constants/text.dart';
 import 'package:linx/features/authentication/presentation/login_controller.dart';
 import 'package:linx/features/authentication/ui/widgets/linx_logo.dart';
 import 'package:linx/features/authentication/ui/widgets/password_text_field.dart';
-import 'package:linx/features/onboarding/ui/onboarding_flow_screen.dart';
+import 'package:linx/features/app/onboarding/ui/onboarding_flow_screen.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class LogInScreen extends ConsumerWidget {

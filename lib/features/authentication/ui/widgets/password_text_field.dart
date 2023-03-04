@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/linx_text_field.dart';
 import 'package:linx/constants/colors.dart';
-import 'package:linx/features/authentication/presentation/signup_controller.dart';
 
 class PasswordTextField extends ConsumerWidget {
   final _passwordObscureTextStateProvider = StateProvider((ref) => true);
@@ -22,7 +21,7 @@ class PasswordTextField extends ConsumerWidget {
     return LinxTextField(
       label: label,
       controller: controller,
-      icon: _passwordVisibilityIcon(ref),
+      suffixIcon: _passwordVisibilityIcon(ref),
       shouldObscureText: ref.watch(_passwordObscureTextStateProvider),
       maxLines: 1,
       errorText: errorText,
