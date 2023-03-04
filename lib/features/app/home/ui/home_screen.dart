@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
@@ -69,13 +68,11 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildLogOutButton(WidgetRef ref) {
-    if (kDebugMode) {
-      var notifier = ref.read(homeScreenControllerProvider.notifier);
-      return IconButton(
-          onPressed: () => notifier.logOut(), icon: const Icon(Icons.logout));
-    } else {
-      return Empty();
-    }
+    var notifier = ref.read(homeScreenControllerProvider.notifier);
+    return IconButton(
+      onPressed: () => notifier.logOut(),
+      icon: const Icon(Icons.logout),
+    );
   }
 
   Container _buildHomeTitle(
