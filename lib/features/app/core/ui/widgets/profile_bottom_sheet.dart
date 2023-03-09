@@ -5,9 +5,8 @@ import 'package:linx/common/empty.dart';
 import 'package:linx/common/linx_chip.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/request/domain/model/request.dart';
-import 'package:linx/features/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/core/ui/sponsorship_package_carousel.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/display_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class ProfileBottomSheet extends StatelessWidget {
@@ -20,21 +19,17 @@ class ProfileBottomSheet extends StatelessWidget {
     color: LinxColors.chipTextGrey,
     fontSize: 16,
   );
-  final LinxUser user;
-  final int matchPercentage;
+  final DisplayUser user;
   final VoidCallback? onXPressed;
   final Request? request;
-  final List<SponsorshipPackage> packages;
   final String mainButtonText;
   final VoidCallback onMainButtonPressed;
 
   const ProfileBottomSheet({
     super.key,
     required this.user,
-    required this.matchPercentage,
     this.request,
     this.onXPressed,
-    required this.packages,
     required this.mainButtonText,
     required this.onMainButtonPressed,
   });
@@ -77,7 +72,7 @@ class ProfileBottomSheet extends StatelessWidget {
         alignment: Alignment.topRight,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage(user.profileImageUrls.first),
+            image: NetworkImage(user.info.profileImageUrls.first),
             fit: BoxFit.cover,
           ),
           borderRadius: const BorderRadius.only(
@@ -97,7 +92,7 @@ class ProfileBottomSheet extends StatelessWidget {
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
       child: Text(
-        "$matchPercentage% match",
+        "${user.matchPercentage}% match",
         style: const TextStyle(
           color: LinxColors.green,
           fontWeight: FontWeight.w600,
@@ -112,7 +107,7 @@ class ProfileBottomSheet extends StatelessWidget {
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Text(
-        user.displayName,
+        user.info.displayName,
         style: const TextStyle(
             color: LinxColors.subtitleGrey,
             fontWeight: FontWeight.w600,
@@ -126,7 +121,7 @@ class ProfileBottomSheet extends StatelessWidget {
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Text(
-        user.location,
+        user.info.location,
         style: const TextStyle(
           color: LinxColors.locationTextGrey,
           fontSize: 16,
@@ -136,7 +131,7 @@ class ProfileBottomSheet extends StatelessWidget {
   }
 
   Container _buildDescriptorChips() {
-    var chips = user.descriptors.map((e) => LinxChip(label: e));
+    var chips = user.info.descriptors.map((e) => LinxChip(label: e));
     return Container(
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.all(20),
@@ -173,14 +168,14 @@ class ProfileBottomSheet extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 10),
             child: Text("Biography", style: _subHeadingStyle),
           ),
-          Text(user.biography, style: _regularStyle),
+          Text(user.info.biography, style: _regularStyle),
         ],
       ),
     );
   }
 
   Container _buildInterestsChips() {
-    var chips = user.interests.map((e) => LinxChip(label: e));
+    var chips = user.info.interests.map((e) => LinxChip(label: e));
 
     return Container(
       alignment: Alignment.centerLeft,
@@ -205,7 +200,7 @@ class ProfileBottomSheet extends StatelessWidget {
             padding: const EdgeInsets.only(left: 20, bottom: 10),
             child: Text("Packages", style: _subHeadingStyle),
           ),
-          SponsorshipPackageCarousel(packages: packages),
+          SponsorshipPackageCarousel(packages: user.packages),
         ],
       ),
     );

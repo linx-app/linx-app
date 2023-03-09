@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:linx/features/app/core/ui/widgets/profile_modal_card.dart';
-import 'package:linx/features/core/domain/model/sponsorship_package.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/display_user.dart';
 
 List<ProfileModalCard> buildTopMatchesModalCards({
-  required List<LinxUser> users,
-  required List<double> percentages,
-  required List<List<SponsorshipPackage>> packages,
+  required List<DisplayUser> users,
   required VoidCallback onXPressed,
   required Function(int) onMainButtonPressed,
 }) {
@@ -16,8 +13,6 @@ List<ProfileModalCard> buildTopMatchesModalCards({
     pages.add(
       ProfileModalCard(
         user: users[i],
-        matchPercentage: percentages[i].toInt(),
-        packages: packages[i],
         onXPressed: onXPressed,
         mainButtonText: "Send pitch",
         onMainButtonPressed: () => onMainButtonPressed(i),

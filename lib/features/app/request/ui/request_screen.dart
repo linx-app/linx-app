@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/common/empty.dart';
+import 'package:linx/common/linx_loading_spinner.dart';
 import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/core/ui/widgets/app_title_bar.dart';
@@ -11,8 +12,7 @@ import 'package:linx/features/app/request/domain/model/request.dart';
 import 'package:linx/features/app/core/ui/profile_modal_screen.dart';
 import 'package:linx/features/app/request/presentation/request_screen_controller.dart';
 import 'package:linx/features/app/request/ui/widgets/request_screen_widgets.dart';
-import 'package:linx/features/core/domain/model/sponsorship_package.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/display_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class RequestScreen extends ConsumerWidget {
@@ -21,9 +21,7 @@ class RequestScreen extends ConsumerWidget {
     var state = ref.watch(requestScreenControllerProvider);
 
     if (state == null) {
-      return const BaseScaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return BaseScaffold(body: LinxLoadingSpinner());
     } else {
       return BaseScaffold(
         body: SingleChildScrollView(
@@ -51,8 +49,6 @@ class RequestScreen extends ConsumerWidget {
     var pages = buildRequestsCarouselPages(
       context: context,
       requests: state.topRequests,
-      percentages: state.topMatchPercentages,
-      packages: state.topPackages,
       onMainButtonPressed: (index) {
         _onProfileCardSeePitchPressed(context, ref, index, state);
       },
@@ -82,17 +78,11 @@ class RequestScreen extends ConsumerWidget {
   ) {
     var cards = buildRequestsList(
       requests: state.nextRequests,
-      percentages: state.nextMatchPercentages,
-      packages: state.nextPackages,
       onPressed: (index) {
         _onSmallCardPressed(
           context: context,
-          user: state.nextRequests[index].sender,
           request: state.nextRequests[index],
-          matchPercentage: state.nextMatchPercentages[index].toInt(),
-          packages: state.nextPackages[index],
           ref: ref,
-          currentUser: state.currentUser,
         );
       },
     );
@@ -126,12 +116,10 @@ class RequestScreen extends ConsumerWidget {
       initialIndex: initialIndex,
       users: const [],
       requests: state.topRequests,
-      matchPercentages: state.topMatchPercentages,
-      packages: state.topPackages,
-      currentUser: state.currentUser,
-      onMainButtonPressed: (user, packages, request) {
+      onMainButtonPressed: (user) {
         _onImInterestedPressed(context, ref, user);
       },
+      isCurrentUserClub: false,
     );
     var builder = PageRouteBuilder(
       pageBuilder: (_, __, ___) => screen,
@@ -142,24 +130,18 @@ class RequestScreen extends ConsumerWidget {
 
   void _onSmallCardPressed({
     required BuildContext context,
-    required LinxUser user,
     required Request request,
-    required int matchPercentage,
-    required List<SponsorshipPackage> packages,
     required WidgetRef ref,
-    required LinxUser currentUser,
   }) {
     var bottomSheet = SizedBox(
       height: context.height() * 0.80,
       child: ProfileBottomSheet(
-        user: user,
+        user: request.sender,
         request: request,
-        matchPercentage: matchPercentage,
         mainButtonText: "Send pitch",
         onXPressed: () => Navigator.maybePop(context),
-        packages: packages,
         onMainButtonPressed: () {
-          _onImInterestedPressed(context, ref, user);
+          _onImInterestedPressed(context, ref, request.sender);
         },
       ),
     );
@@ -176,10 +158,10 @@ class RequestScreen extends ConsumerWidget {
   void _onImInterestedPressed(
     BuildContext context,
     WidgetRef ref,
-    LinxUser club,
+    DisplayUser club,
   ) {
     var notifier = ref.read(requestScreenControllerProvider.notifier);
-    notifier.onImInterestedPressed(club: club);
+    notifier.onImInterestedPressed(club: club.info);
     Navigator.of(context).pop();
   }
 }

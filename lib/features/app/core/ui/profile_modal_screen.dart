@@ -9,23 +9,15 @@ import 'package:linx/features/app/core/ui/widgets/profile_modal_card.dart';
 import 'package:linx/features/app/discover/ui/widgets/top_matches_modal_cards.dart';
 import 'package:linx/features/app/request/domain/model/request.dart';
 import 'package:linx/features/app/request/ui/widgets/request_screen_widgets.dart';
-import 'package:linx/features/core/domain/model/sponsorship_package.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
-import 'package:linx/features/user/domain/model/user_type.dart';
+import 'package:linx/features/user/domain/model/display_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class ProfileModalScreen extends ConsumerWidget {
-  final LinxUser currentUser;
+  final bool isCurrentUserClub;
   final int initialIndex;
-  final List<LinxUser> users;
-  final List<double> matchPercentages;
+  final List<DisplayUser> users;
   final List<Request> requests;
-  final List<List<SponsorshipPackage>> packages;
-  final Function(
-    LinxUser receiver,
-    List<SponsorshipPackage> packages,
-    Request? request,
-  ) onMainButtonPressed;
+  final Function(DisplayUser receiver) onMainButtonPressed;
   late StateProvider _profileModalCarouselSelectedIndexProvider;
 
   ProfileModalScreen({
@@ -33,9 +25,7 @@ class ProfileModalScreen extends ConsumerWidget {
     required this.initialIndex,
     required this.users,
     required this.requests,
-    required this.matchPercentages,
-    required this.packages,
-    required this.currentUser,
+    required this.isCurrentUserClub,
     required this.onMainButtonPressed,
   }) {
     _profileModalCarouselSelectedIndexProvider =
@@ -67,28 +57,18 @@ class ProfileModalScreen extends ConsumerWidget {
   SizedBox _buildProfileCardCarousel(BuildContext context, WidgetRef ref) {
     var pages = <ProfileModalCard>[];
 
-    if (currentUser.type == UserType.club) {
+    if (isCurrentUserClub) {
       pages = buildTopMatchesModalCards(
         users: users,
-        percentages: matchPercentages,
-        packages: packages,
         onXPressed: () => _onXPressed(context),
-        onMainButtonPressed: (index) {
-          onMainButtonPressed(users[index], packages[index], null);
-        },
+        onMainButtonPressed: (index) => onMainButtonPressed(users[index]),
       );
     } else {
       pages = buildRequestsModalCards(
         requests: requests,
-        percentages: matchPercentages,
-        packages: packages,
         onXPressed: () => _onXPressed(context),
         onMainButtonPressed: (index) {
-          onMainButtonPressed(
-            requests[index].sender,
-            packages[index],
-            requests[index],
-          );
+          onMainButtonPressed(requests[index].sender);
         },
       );
     }

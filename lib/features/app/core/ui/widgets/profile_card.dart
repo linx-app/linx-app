@@ -2,19 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/display_user.dart';
 
 class ProfileCard extends StatelessWidget {
   final String mainButtonText;
-  final int matchPercentage;
-  final LinxUser user;
+  final DisplayUser user;
   final String mainText;
   final VoidCallback? onMainButtonPressed;
 
   const ProfileCard({
     super.key,
     required this.mainButtonText,
-    required this.matchPercentage,
     required this.user,
     this.onMainButtonPressed,
     required this.mainText,
@@ -47,7 +45,7 @@ class ProfileCard extends StatelessWidget {
       height: 155,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: NetworkImage(user.profileImageUrls.first),
+          image: NetworkImage(user.info.profileImageUrls.first),
           fit: BoxFit.cover,
         ),
         borderRadius: const BorderRadius.only(
@@ -63,7 +61,7 @@ class ProfileCard extends StatelessWidget {
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Text(
-        "$matchPercentage% match",
+        "${user.matchPercentage}% match",
         style: const TextStyle(
             color: LinxColors.green,
             fontWeight: FontWeight.w600,
@@ -77,7 +75,7 @@ class ProfileCard extends StatelessWidget {
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Text(
-        user.displayName,
+        user.info.displayName,
         style: const TextStyle(
             color: LinxColors.subtitleGrey,
             fontWeight: FontWeight.w600,
@@ -91,7 +89,7 @@ class ProfileCard extends StatelessWidget {
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Text(
-          user.location,
+          user.info.location,
           style:
               const TextStyle(color: LinxColors.locationTextGrey, fontSize: 12),
         ));

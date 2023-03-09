@@ -7,20 +7,14 @@ import 'package:linx/common/linx_text_field.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/text.dart';
 import 'package:linx/features/app/discover/presentation/send_a_pitch_screen_controller.dart';
-import 'package:linx/features/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/core/ui/sponsorship_package_carousel.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/display_user.dart';
 
 class SendAPitchScreen extends ConsumerWidget {
-  final LinxUser receiver;
-  final List<SponsorshipPackage> packages;
+  final DisplayUser receiver;
   final TextEditingController _pitchMessageController = TextEditingController();
 
-  SendAPitchScreen({
-    super.key,
-    required this.receiver,
-    required this.packages,
-  });
+  SendAPitchScreen({super.key, required this.receiver});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -77,7 +71,7 @@ class SendAPitchScreen extends ConsumerWidget {
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Text(
-        receiver.displayName,
+        receiver.info.displayName,
         style: LinxTextStyles.subtitle,
       ),
     );
@@ -113,7 +107,7 @@ class SendAPitchScreen extends ConsumerWidget {
               ),
             ),
           ),
-          SponsorshipPackageCarousel(packages: packages),
+          SponsorshipPackageCarousel(packages: receiver.packages),
         ],
       ),
     );
@@ -137,7 +131,7 @@ class SendAPitchScreen extends ConsumerWidget {
   void _onSendPitchPressed(BuildContext context, WidgetRef ref) {
     var notifier = ref.read(sendAPitchScreenControllerProvider.notifier);
     notifier.sendPitch(
-      receiver: receiver,
+      receiver: receiver.info,
       message: _pitchMessageController.text,
     );
   }

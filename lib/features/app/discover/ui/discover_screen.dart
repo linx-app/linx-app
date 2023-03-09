@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/common/empty.dart';
+import 'package:linx/common/linx_loading_spinner.dart';
 import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/core/ui/profile_modal_screen.dart';
@@ -9,11 +10,11 @@ import 'package:linx/features/app/core/ui/widgets/app_title_bar.dart';
 import 'package:linx/features/app/core/ui/widgets/home_app_bar.dart';
 import 'package:linx/features/app/core/ui/widgets/profile_bottom_sheet.dart';
 import 'package:linx/features/app/discover/presentation/discover_screen_controller.dart';
+import 'package:linx/features/app/discover/ui/send_a_pitch_screen.dart';
 import 'package:linx/features/app/discover/ui/widgets/matches_list.dart';
 import 'package:linx/features/app/discover/ui/widgets/top_matches_carousel.dart';
-import 'package:linx/features/app/discover/ui/send_a_pitch_screen.dart';
-import 'package:linx/features/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/core/ui/search_bar.dart';
+import 'package:linx/features/user/domain/model/display_user.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_type.dart';
 import 'package:linx/utils/ui_extensions.dart';
@@ -27,16 +28,18 @@ class DiscoverScreen extends ConsumerWidget {
     var state = ref.watch(discoverScreenControllerProvider);
 
     if (state == null) {
-      return const BaseScaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return BaseScaffold(body: LinxLoadingSpinner());
     } else {
-      var isClub = state.currentUser.type == UserType.club;
-      var spacer = isClub ? Empty() : SizedBox(height: context.height() * 0.1);
-      var screenBar = isClub ? HomeAppBar() : Empty();
-      var searchBar = isClub
+      final isClub = state.currentUser.type == UserType.club;
+      final spacer = isClub ? Empty() : SizedBox(height: context.height() * 0.1);
+      final screenBar = isClub ? HomeAppBar() : Empty();
+      final searchBar = isClub
           ? Empty()
-          : SearchBar(controller: _searchController, label: _searchText);
+          : SearchBar(
+              controller: _searchController,
+              label: _searchText,
+              onFocusChanged: (bool) {},
+            );
 
       return BaseScaffold(
         body: SingleChildScrollView(
@@ -63,8 +66,6 @@ class DiscoverScreen extends ConsumerWidget {
     var pages = buildTopMatchesCarouselPages(
       context: context,
       users: state.topMatches,
-      percentages: state.topMatchPercentages,
-      packages: state.topPackages,
       onMainButtonPressed: (index) {
         _onProfileCardSeeDetailsPressed(context, ref, index, state);
       },
@@ -92,16 +93,11 @@ class DiscoverScreen extends ConsumerWidget {
       BuildContext context, WidgetRef ref, DiscoverScreenUiState state) {
     var cards = buildMatchesList(
         users: state.nextMatches,
-        percentages: state.nextMatchPercentages,
-        packages: state.nextPackages,
         onPressed: (index) {
           _onSmallCardPressed(
             context: context,
             user: state.nextMatches[index],
-            matchPercentage: state.nextMatchPercentages[index].toInt(),
-            packages: state.nextPackages[index],
             ref: ref,
-            currentUser: state.currentUser,
           );
         });
 
@@ -134,17 +130,9 @@ class DiscoverScreen extends ConsumerWidget {
       initialIndex: initialIndex,
       users: state.topMatches,
       requests: const [],
-      matchPercentages: state.topMatchPercentages,
-      packages: state.topPackages,
-      currentUser: state.currentUser,
-      onMainButtonPressed: (user, packages, request) {
-        _onSendPitchPressed(
-          user,
-          packages,
-          context,
-          ref,
-          state.currentUser,
-        );
+      isCurrentUserClub: state.currentUser.isClub(),
+      onMainButtonPressed: (user) {
+        _onSendPitchPressed(user, context, ref);
       },
     );
     var builder = PageRouteBuilder(
@@ -155,45 +143,27 @@ class DiscoverScreen extends ConsumerWidget {
   }
 
   void _onSendPitchPressed(
-    LinxUser receiver,
-    List<SponsorshipPackage> packages,
+    DisplayUser receiver,
     BuildContext context,
     WidgetRef ref,
-    LinxUser currentUser,
   ) {
-    var screen = SendAPitchScreen(
-      receiver: receiver,
-      packages: packages,
-    );
-    var builder = PageRouteBuilder(pageBuilder: (_, __, ___) => screen);
+    final screen = SendAPitchScreen(receiver: receiver);
+    final builder = PageRouteBuilder(pageBuilder: (_, __, ___) => screen);
     Navigator.of(context).push(builder);
   }
 
   void _onSmallCardPressed({
     required BuildContext context,
-    required LinxUser user,
-    required int matchPercentage,
-    required List<SponsorshipPackage> packages,
+    required DisplayUser user,
     required WidgetRef ref,
-    required LinxUser currentUser,
   }) {
     var bottomSheet = SizedBox(
       height: context.height() * 0.80,
       child: ProfileBottomSheet(
         user: user,
-        matchPercentage: matchPercentage,
-        mainButtonText: "Send pitch" ,
+        mainButtonText: "Send pitch",
         onXPressed: () => Navigator.maybePop(context),
-        packages: packages,
-        onMainButtonPressed: () {
-          _onSendPitchPressed(
-            user,
-            packages,
-            context,
-            ref,
-            currentUser,
-          );
-        },
+        onMainButtonPressed: () => _onSendPitchPressed(user, context, ref),
       ),
     );
 

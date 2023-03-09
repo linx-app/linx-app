@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:linx/common/loading_screen.dart';
+import 'package:linx/common/linx_loading_spinner.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/text.dart';
 import 'package:linx/features/app/core/ui/app_bottom_navigation_screen.dart';
@@ -47,8 +47,8 @@ class LinxApp extends ConsumerWidget {
             return const LandingScreen();
           }
         },
-        error: (e, trace) => const LoadingScreen(),
-        loading: () => const LoadingScreen(),
+        error: (e, trace) => LinxLoadingSpinner(),
+        loading: () => LinxLoadingSpinner(),
       ),
     );
   }
