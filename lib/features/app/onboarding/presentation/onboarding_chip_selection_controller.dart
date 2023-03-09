@@ -30,7 +30,7 @@ class OnboardingChipSelectionController
   Future<void> fetchCategories(ChipSelectionScreenType type) async {
     if (type != state.type) {
       Map<String, List<String>> categories;
-      var user = await _userService.fetchUserProfile();
+      var user = await _userService.fetchUserInfo();
       Set<String> selected;
 
       switch (type) {

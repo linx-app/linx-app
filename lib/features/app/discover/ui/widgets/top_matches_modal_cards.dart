@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:linx/features/app/core/ui/widgets/profile_modal_card.dart';
-import 'package:linx/features/user/domain/model/display_user.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 
 List<ProfileModalCard> buildTopMatchesModalCards({
-  required List<DisplayUser> users,
+  required List<LinxUser> users,
   required VoidCallback onXPressed,
   required Function(int) onMainButtonPressed,
 }) {

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
-import 'package:linx/features/user/domain/model/display_user.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 
 class ProfileCard extends StatelessWidget {
   final String mainButtonText;
-  final DisplayUser user;
+  final LinxUser user;
   final String mainText;
   final VoidCallback? onMainButtonPressed;
 

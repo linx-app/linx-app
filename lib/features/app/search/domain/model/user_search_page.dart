@@ -1,7 +1,7 @@
-import 'package:linx/features/user/domain/model/display_user.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 
 class UserSearchPage {
-  final List<DisplayUser> users;
+  final List<LinxUser> users;
   final int pageKey;
   final int? nextPageKey;
 

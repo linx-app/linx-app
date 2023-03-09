@@ -1,9 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:linx/common/buttons/linx_toggle_buttons.dart';
 import 'package:linx/features/user/domain/model/user_type.dart';
-import 'package:linx/features/authentication/ui/widgets/user_type_toggle_button.dart';
 
-final onboardingControllerProvider = StateNotifierProvider<OnboardingController, OnboardingFlowUiState>((ref) {
-  return OnboardingController(ref.watch(userTypeToggleStateProvider));
+final onboardingControllerProvider = StateNotifierProvider.autoDispose<OnboardingController, OnboardingFlowUiState>((ref) {
+  final userTypeToggleIndex = ref.watch(toggleButtonIndexSelectedProvider);
+  final userType = UserType.values[userTypeToggleIndex];
+  return OnboardingController(userType);
 });
 
 class OnboardingController extends StateNotifier<OnboardingFlowUiState> {

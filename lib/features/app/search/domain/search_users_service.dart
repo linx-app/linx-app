@@ -1,11 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/app/search/data/user_search_repository.dart';
 import 'package:linx/features/app/search/domain/model/user_search_page.dart';
-import 'package:linx/features/core/data/sponsorship_package_repository.dart';
-import 'package:linx/features/core/domain/model/sponsorship_package.dart';
+import 'package:linx/features/app/core/data/sponsorship_package_repository.dart';
+import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/user/data/user_repository.dart';
-import 'package:linx/features/user/domain/model/display_user.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/utils/transformations/package_transformation_extensions.dart';
 import 'package:linx/utils/transformations/user_transformation_extensions.dart';
 
@@ -25,7 +25,7 @@ class SearchUsersService {
   SearchUsersService(this._userSearchRepository, this._userRepository,
       this._sponsorshipPackageRepository);
 
-  Future<UserSearchPage> execute(LinxUser currentUser, String search) async {
+  Future<UserSearchPage> execute(UserInfo currentUser, String search) async {
     _userRepository.addToRecentSearches(currentUser.uid, search);
     final networkResult = await _userSearchRepository.search(search);
 
@@ -47,12 +47,12 @@ class SearchUsersService {
       packages.add(domainPackage);
     }
 
-    final displayUsers = <DisplayUser>[];
+    final displayUsers = <LinxUser>[];
 
     for (int i = 0; i < filteredUsers.length; i++) {
       final user = filteredUsers[i];
       displayUsers.add(
-        DisplayUser(
+        LinxUser(
           info: filteredUsers[i],
           matchPercentage: currentUser.findMatchPercent(user).toInt(),
           packages: packages[i],

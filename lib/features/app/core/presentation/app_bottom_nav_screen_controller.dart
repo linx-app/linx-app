@@ -5,7 +5,7 @@ import 'package:linx/features/notifications/data/subscribe_to_notifications_serv
 import 'package:linx/features/notifications/domain/fetch_notifications_permissions.dart';
 import 'package:linx/features/notifications/domain/models/fcm_notification.dart';
 import 'package:linx/features/notifications/domain/models/fcm_types.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/features/user/domain/user_service.dart';
 
 final appBottomNavScreenControllerProvider = StateNotifierProvider.autoDispose<
@@ -42,7 +42,7 @@ class AppBottomNavScreenController
       _subscribeToNotificationsService.execute(_foregroundNotificationsHandler);
     }
 
-    var user = await _userService.fetchUserProfile();
+    var user = await _userService.fetchUserInfo();
     state = AppBottomNavScreenUiState(currentUser: user);
   }
 
@@ -57,7 +57,7 @@ class AppBottomNavScreenController
 }
 
 class AppBottomNavScreenUiState {
-  final LinxUser? currentUser;
+  final UserInfo? currentUser;
 
   AppBottomNavScreenUiState({this.currentUser});
 }

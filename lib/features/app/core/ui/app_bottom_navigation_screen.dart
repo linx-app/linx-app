@@ -9,7 +9,7 @@ import 'package:linx/features/app/discover/ui/discover_screen.dart';
 import 'package:linx/features/app/pitch/pitches_screen.dart';
 import 'package:linx/features/app/request/ui/request_screen.dart';
 import 'package:linx/features/app/search/ui/search_screen.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/features/user/domain/model/user_type.dart';
 
 final _bottomNavigationStateProvider = StateProvider<int>((ref) => 0);
@@ -40,12 +40,12 @@ class AppBottomNavigationScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildBody(LinxUser? user, int selectedIndex) {
+  Widget _buildBody(UserInfo? info, int selectedIndex) {
     Widget body;
-    if (user == null) {
+    if (info == null) {
       body = LinxLoadingSpinner();
     } else {
-      var isClub = user.type == UserType.club;
+      var isClub = info.type == UserType.club;
       var firstScreen = isClub ? DiscoverScreen() : RequestScreen();
       var secondScreen = isClub ? SearchScreen() : DiscoverScreen();
       List<Widget> pages = [

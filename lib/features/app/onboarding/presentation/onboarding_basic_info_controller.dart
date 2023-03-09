@@ -31,7 +31,7 @@ class OnboardingBasicInfoController
   }
 
   Future<void> fetchBasicInfo() async {
-    var user = await _userService.fetchUserProfile();
+    var user = await _userService.fetchUserInfo();
     state = OnboardingBasicInfoUiState(
       name: user.displayName,
       phoneNumber: user.phoneNumber,

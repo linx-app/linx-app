@@ -12,7 +12,7 @@ import 'package:linx/features/app/request/domain/model/request.dart';
 import 'package:linx/features/app/core/ui/profile_modal_screen.dart';
 import 'package:linx/features/app/request/presentation/request_screen_controller.dart';
 import 'package:linx/features/app/request/ui/widgets/request_screen_widgets.dart';
-import 'package:linx/features/user/domain/model/display_user.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class RequestScreen extends ConsumerWidget {
@@ -158,7 +158,7 @@ class RequestScreen extends ConsumerWidget {
   void _onImInterestedPressed(
     BuildContext context,
     WidgetRef ref,
-    DisplayUser club,
+    LinxUser club,
   ) {
     var notifier = ref.read(requestScreenControllerProvider.notifier);
     notifier.onImInterestedPressed(club: club.info);

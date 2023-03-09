@@ -9,15 +9,15 @@ import 'package:linx/features/app/core/ui/widgets/profile_modal_card.dart';
 import 'package:linx/features/app/discover/ui/widgets/top_matches_modal_cards.dart';
 import 'package:linx/features/app/request/domain/model/request.dart';
 import 'package:linx/features/app/request/ui/widgets/request_screen_widgets.dart';
-import 'package:linx/features/user/domain/model/display_user.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class ProfileModalScreen extends ConsumerWidget {
   final bool isCurrentUserClub;
   final int initialIndex;
-  final List<DisplayUser> users;
+  final List<LinxUser> users;
   final List<Request> requests;
-  final Function(DisplayUser receiver) onMainButtonPressed;
+  final Function(LinxUser receiver) onMainButtonPressed;
   late StateProvider _profileModalCarouselSelectedIndexProvider;
 
   ProfileModalScreen({

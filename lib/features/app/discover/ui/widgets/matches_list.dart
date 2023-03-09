@@ -1,8 +1,8 @@
 import 'package:linx/features/app/core/ui/widgets/small_profile_card.dart';
-import 'package:linx/features/user/domain/model/display_user.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 
 List<SmallProfileCard> buildMatchesList({
-  required List<DisplayUser> users,
+  required List<LinxUser> users,
   required Function(int) onPressed,
 }) {
   if (users.isEmpty) return [];

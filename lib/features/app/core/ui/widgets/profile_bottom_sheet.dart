@@ -5,8 +5,8 @@ import 'package:linx/common/empty.dart';
 import 'package:linx/common/linx_chip.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/request/domain/model/request.dart';
-import 'package:linx/features/core/ui/sponsorship_package_carousel.dart';
-import 'package:linx/features/user/domain/model/display_user.dart';
+import 'package:linx/features/app/core/ui/sponsorship_package_carousel.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class ProfileBottomSheet extends StatelessWidget {
@@ -19,7 +19,7 @@ class ProfileBottomSheet extends StatelessWidget {
     color: LinxColors.chipTextGrey,
     fontSize: 16,
   );
-  final DisplayUser user;
+  final LinxUser user;
   final VoidCallback? onXPressed;
   final Request? request;
   final String mainButtonText;

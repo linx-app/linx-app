@@ -3,9 +3,9 @@ import 'package:linx/features/app/search/domain/fetch_same_location_users_servic
 import 'package:linx/features/app/search/domain/model/search_group.dart';
 import 'package:linx/features/app/search/domain/model/user_search_page.dart';
 import 'package:linx/features/app/search/domain/search_users_service.dart';
-import 'package:linx/features/core/domain/model/sponsorship_package.dart';
-import 'package:linx/features/core/ui/model/search_state.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
+import 'package:linx/features/app/core/ui/model/search_state.dart';
+import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/features/user/domain/user_service.dart';
 
 final searchScreenControllerProvider = StateNotifierProvider.autoDispose<
@@ -24,7 +24,7 @@ class SearchScreenController extends StateNotifier<SearchScreenUiState> {
 
   late UserSearchPage? _currentPage;
   late List<SearchGroup> _groups;
-  late LinxUser _currentUser;
+  late UserInfo _currentUser;
 
   SearchScreenController(
     this._userService,
@@ -35,7 +35,7 @@ class SearchScreenController extends StateNotifier<SearchScreenUiState> {
   }
 
   void initialize() async {
-    _currentUser = await _userService.fetchUserProfile();
+    _currentUser = await _userService.fetchUserInfo();
     _groups = await _fetchSameLocationUsers.execute(_currentUser);
     state = SearchScreenUiState(state: SearchState.initial, groups: _groups);
   }
@@ -69,7 +69,7 @@ class SearchScreenController extends StateNotifier<SearchScreenUiState> {
     } else {
       _currentPage =
           await _searchUsersService.execute(_currentUser, searchField);
-      _currentUser = await _userService.fetchUserProfile();
+      _currentUser = await _userService.fetchUserInfo();
 
       final length = _currentPage!.users.length;
       final subtitle = "Results for \"$searchField\" ($length})";

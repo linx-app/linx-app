@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:linx/features/core/domain/model/sponsorship_package.dart';
-import 'package:linx/features/core/domain/sponsorship_package_service.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
+import 'package:linx/features/app/core/domain/sponsorship_package_service.dart';
+import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/features/user/domain/user_info_service.dart';
 import 'package:linx/features/user/domain/user_service.dart';
 
@@ -20,7 +20,7 @@ class OnboardingSponsorshipPackageController
   final UserInfoService _userInfoService;
   final UserService _userService;
   final SponsorshipPackageService _sponsorshipPackageService;
-  late LinxUser _user;
+  late UserInfo _user;
 
   OnboardingSponsorshipPackageController(
     this._userInfoService,
@@ -57,7 +57,7 @@ class OnboardingSponsorshipPackageController
   }
 
   Future<void> fetchSponsorshipPackages() async {
-    _user = await _userService.fetchUserProfile();
+    _user = await _userService.fetchUserInfo();
 
     if (_user.numberOfPackages == 0) {
       var firstPackage = SponsorshipPackage(user: _user);

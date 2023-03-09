@@ -34,7 +34,7 @@ class OnboardingCreateProfileController
   }
 
   Future<void> fetchUserInfo() async {
-    var user = await _userService.fetchUserProfile();
+    var user = await _userService.fetchUserInfo();
     state = OnboardingCreateProfileUiState(
       profileImageUrls: [...user.profileImageUrls, null],
       biography: user.biography,

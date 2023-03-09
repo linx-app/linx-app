@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:linx/features/app/core/ui/widgets/profile_card.dart';
-import 'package:linx/features/user/domain/model/display_user.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 
 List<ProfileCard> buildTopMatchesCarouselPages({
   required BuildContext context,
-  required List<DisplayUser> users,
+  required List<LinxUser> users,
   required Function(int) onMainButtonPressed,
 }) {
   if (users.isEmpty) return [];
