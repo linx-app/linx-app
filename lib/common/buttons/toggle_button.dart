@@ -1,23 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:linx/common/buttons/linx_toggle_buttons.dart';
 import 'package:linx/constants/colors.dart';
-import 'package:linx/features/user/domain/model/user_type.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
-final userTypeToggleStateProvider = StateProvider((ref) => UserType.club);
-
-final userTypeToggleStateListProvider = Provider<List<bool>>((ref) {
-  final userType = ref.watch(userTypeToggleStateProvider);
-  if (userType == UserType.club) {
-    return <bool>[true, false];
-  } else {
-    return <bool>[false, true];
-  }
-});
-
-const double _doubleWidthPadding = 58.0;
-
-class UserTypeToggleButton extends ConsumerWidget {
+class ToggleButton extends ConsumerWidget {
+  final double _doubleWidthPadding = 58.0;
   final String label;
   final int index;
   final double _buttonRadius = 8.0;
@@ -32,8 +20,11 @@ class UserTypeToggleButton extends ConsumerWidget {
     fontWeight: FontWeight.w400,
     color: LinxColors.backButtonGrey,
   );
+  final Border _selectedBorder = const Border.fromBorderSide(
+    BorderSide(color: LinxColors.black_4),
+  );
 
-  const UserTypeToggleButton({
+  const ToggleButton({
     super.key,
     required this.label,
     required this.index,
@@ -42,21 +33,11 @@ class UserTypeToggleButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     double buttonMinWidth = (context.width() - _doubleWidthPadding) / 2;
-    bool isSelected = ref.watch(userTypeToggleStateProvider).index == index;
-    TextStyle style;
-    Color backgroundColor;
-    BoxBorder? border;
+    bool isSelected = ref.watch(toggleButtonIndexSelectedProvider) == index;
 
-    if (isSelected) {
-      style = _selectedTextStyle;
-      backgroundColor = LinxColors.white;
-      border = const Border.fromBorderSide(
-        BorderSide(color: LinxColors.black_4),
-      );
-    } else {
-      style = _unselectedTextStyle;
-      backgroundColor = LinxColors.transparent;
-    }
+    TextStyle style = isSelected ? _selectedTextStyle : _unselectedTextStyle;
+    Color backgroundColor = isSelected ? LinxColors.white : LinxColors.transparent;
+    BoxBorder? border = isSelected ? _selectedBorder : null;
 
     return Container(
       decoration: BoxDecoration(
