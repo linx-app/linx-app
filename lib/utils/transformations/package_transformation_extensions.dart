@@ -1,5 +1,5 @@
-import 'package:linx/features/core/data/model/package_dto.dart';
-import 'package:linx/features/core/domain/model/sponsorship_package.dart';
+import 'package:linx/features/app/core/data/model/package_dto.dart';
+import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 
 extension PackageDTOTransformationExtensions on PackageDTO {

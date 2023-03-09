@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:linx/features/core/data/shared_preferences_data_source.dart';
+import 'package:linx/features/app/core/data/shared_preferences_data_source.dart';
 import 'package:linx/features/user/data/local/user_local_data_source.dart';
 import 'package:linx/features/user/data/model/user_dto.dart';
 import 'package:linx/firebase/firebase_providers.dart';

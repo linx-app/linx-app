@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
-import 'package:linx/features/core/domain/model/sponsorship_package.dart';
+import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
 
 class SponsorshipPackageCard extends StatelessWidget {
   final SponsorshipPackage package;

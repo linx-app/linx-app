@@ -13,8 +13,8 @@ import 'package:linx/features/app/search/ui/widgets/empty_search_page.dart';
 import 'package:linx/features/app/search/ui/widgets/groups_search_page.dart';
 import 'package:linx/features/app/search/ui/widgets/recents_search_page.dart';
 import 'package:linx/features/app/search/ui/widgets/results_search_page.dart';
-import 'package:linx/features/core/ui/model/search_state.dart';
-import 'package:linx/features/core/ui/search_bar.dart';
+import 'package:linx/features/app/core/ui/model/search_state.dart';
+import 'package:linx/features/app/core/ui/search_bar.dart';
 import 'package:linx/features/user/domain/model/display_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 

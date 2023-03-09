@@ -14,7 +14,7 @@ import 'package:linx/features/app/core/ui/widgets/profile_modal_card.dart';
 import 'package:linx/features/app/core/ui/widgets/small_profile_card.dart';
 import 'package:linx/features/app/request/domain/model/request.dart';
 import 'package:linx/features/app/request/ui/widgets/request_screen_widgets.dart';
-import 'package:linx/features/core/domain/model/sponsorship_package.dart';
+import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/image_upload/ui/image_uploader.dart';
 import 'package:linx/features/user/domain/model/display_user.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';

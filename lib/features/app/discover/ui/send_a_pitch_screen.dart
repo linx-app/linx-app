@@ -7,7 +7,7 @@ import 'package:linx/common/linx_text_field.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/text.dart';
 import 'package:linx/features/app/discover/presentation/send_a_pitch_screen_controller.dart';
-import 'package:linx/features/core/ui/sponsorship_package_carousel.dart';
+import 'package:linx/features/app/core/ui/sponsorship_package_carousel.dart';
 import 'package:linx/features/user/domain/model/display_user.dart';
 
 class SendAPitchScreen extends ConsumerWidget {

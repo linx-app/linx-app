@@ -3,7 +3,7 @@ import 'package:linx/features/app/match/domain/match_service.dart';
 import 'package:linx/features/app/search/domain/model/user_search_page.dart';
 import 'package:linx/features/app/search/domain/search_users_service.dart';
 import 'package:linx/features/authentication/domain/log_out_service.dart';
-import 'package:linx/features/core/ui/model/search_state.dart';
+import 'package:linx/features/app/core/ui/model/search_state.dart';
 import 'package:linx/features/user/domain/model/display_user.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/user_service.dart';

@@ -5,7 +5,7 @@ import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/text.dart';
 import 'package:linx/features/app/onboarding/ui/model/onboarding_nav.dart';
 import 'package:linx/features/app/onboarding/ui/widgets/onboarding_profile_image_carousel.dart';
-import 'package:linx/features/core/ui/sponsorship_package_carousel.dart';
+import 'package:linx/features/app/core/ui/sponsorship_package_carousel.dart';
 import 'package:linx/features/app/onboarding/presentation/onboarding_review_profile_controller.dart';
 import 'package:linx/features/app/onboarding/ui/widgets/onboarding_profile_image.dart';
 import 'package:linx/features/app/onboarding/ui/widgets/onboarding_view.dart';

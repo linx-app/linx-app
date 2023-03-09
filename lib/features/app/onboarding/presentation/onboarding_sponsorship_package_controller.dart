@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:linx/features/core/domain/model/sponsorship_package.dart';
-import 'package:linx/features/core/domain/sponsorship_package_service.dart';
+import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
+import 'package:linx/features/app/core/domain/sponsorship_package_service.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/user_info_service.dart';
 import 'package:linx/features/user/domain/user_service.dart';
