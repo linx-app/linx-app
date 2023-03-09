@@ -15,11 +15,12 @@ class MatchRepository {
   MatchRepository(this._firestore);
 
   Future<List<UserDTO>> fetchUsersWithMatchingInterests(LinxUser user) async {
+    final type = user.isClub() ? UserType.business : UserType.club;
     var interests = user.interests.take(10).toList();
     return await _firestore
         .collection(FirestorePaths.USERS)
         .where(FirestorePaths.INTERESTS, arrayContainsAny: interests)
-        .where(FirestorePaths.TYPE, isEqualTo: UserType.business.name)
+        .where(FirestorePaths.TYPE, isEqualTo: type.name)
         .get()
         .then((QuerySnapshot query) => _mapQueryToUserDTO(query, user));
   }

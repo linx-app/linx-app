@@ -57,7 +57,7 @@ class ProfileModalScreen extends ConsumerWidget {
   SizedBox _buildProfileCardCarousel(BuildContext context, WidgetRef ref) {
     var pages = <ProfileModalCard>[];
 
-    if (isCurrentUserClub) {
+    if (isCurrentUserClub || (!isCurrentUserClub && requests.isEmpty)) {
       pages = buildTopMatchesModalCards(
         users: users,
         onXPressed: () => _onXPressed(context),
