@@ -14,22 +14,27 @@ class UserDTO {
   final int numberOfPackages;
   final List<String> profileImageUrls;
   final List<String> pitchesTo;
+  final List<String> searches;
 
-  UserDTO(
-      {required this.uid,
-      this.displayName = "",
-      this.email = "",
-      this.type = "",
-      this.location = "",
-      this.phoneNumber = "",
-      this.biography = "",
-      this.interests = const [],
-      this.descriptors = const [],
-      this.profileImageUrls = const [],
-      this.numberOfPackages = 0,
-      this.pitchesTo = const []});
+  UserDTO({
+    required this.uid,
+    this.displayName = "",
+    this.email = "",
+    this.type = "",
+    this.location = "",
+    this.phoneNumber = "",
+    this.biography = "",
+    this.interests = const [],
+    this.descriptors = const [],
+    this.profileImageUrls = const [],
+    this.numberOfPackages = 0,
+    this.pitchesTo = const [],
+    this.searches = const [],
+  });
 
   static UserDTO fromNetwork(String id, Map<String, dynamic> map) {
+    final searches = ((map[FirestorePaths.SEARCHES] ?? []) as List<dynamic>);
+    final last5Searches = searches.toStrList().reversed.take(5).toList();
     return UserDTO(
       uid: id,
       displayName: map[FirestorePaths.NAME] ?? "",
@@ -47,6 +52,7 @@ class UserDTO {
               .toStrList(),
       pitchesTo:
           ((map[FirestorePaths.PITCHES_TO] ?? []) as List<dynamic>).toStrList(),
+      searches: last5Searches,
     );
   }
 }
