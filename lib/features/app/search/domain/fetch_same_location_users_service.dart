@@ -3,7 +3,7 @@ import 'package:linx/features/app/search/domain/model/search_group.dart';
 import 'package:linx/features/app/core/data/sponsorship_package_repository.dart';
 import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/user/data/user_repository.dart';
-import 'package:linx/features/user/domain/model/display_user.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/features/user/domain/model/user_type.dart';
 import 'package:linx/utils/transformations/package_transformation_extensions.dart';
@@ -33,13 +33,13 @@ class FetchSameLocationUsersService {
     );
     final domainUsers = networkUsers.map((e) => e.toDomain());
 
-    final categories = <String, Set<DisplayUser>>{};
+    final categories = <String, Set<LinxUser>>{};
 
     for (var user in domainUsers) {
       final packages = await _fetchPackages(user);
       final percentage = currentUser.findMatchPercent(user);
       for (var descriptor in user.descriptors) {
-        final displayUser = DisplayUser(
+        final displayUser = LinxUser(
           info: user,
           packages: packages,
           matchPercentage: percentage.toInt(),

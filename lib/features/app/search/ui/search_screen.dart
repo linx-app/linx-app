@@ -15,7 +15,7 @@ import 'package:linx/features/app/search/ui/widgets/recents_search_page.dart';
 import 'package:linx/features/app/search/ui/widgets/results_search_page.dart';
 import 'package:linx/features/app/core/ui/model/search_state.dart';
 import 'package:linx/features/app/core/ui/search_bar.dart';
-import 'package:linx/features/user/domain/model/display_user.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class SearchScreen extends ConsumerWidget {
@@ -128,7 +128,7 @@ class SearchScreen extends ConsumerWidget {
   void _onProfileCardPressed({
     required BuildContext context,
     required WidgetRef ref,
-    required DisplayUser user,
+    required LinxUser user,
   }) {
     var bottomSheet = SizedBox(
       height: context.height() * 0.80,
@@ -152,7 +152,7 @@ class SearchScreen extends ConsumerWidget {
   }
 
   void _onSendPitchPressed(
-    DisplayUser receiver,
+    LinxUser receiver,
     BuildContext context,
     WidgetRef ref,
   ) {

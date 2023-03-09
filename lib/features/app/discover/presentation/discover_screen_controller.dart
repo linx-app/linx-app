@@ -4,7 +4,7 @@ import 'package:linx/features/app/search/domain/model/user_search_page.dart';
 import 'package:linx/features/app/search/domain/search_users_service.dart';
 import 'package:linx/features/authentication/domain/log_out_service.dart';
 import 'package:linx/features/app/core/ui/model/search_state.dart';
-import 'package:linx/features/user/domain/model/display_user.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/features/user/domain/user_service.dart';
 
@@ -24,7 +24,7 @@ class DiscoverScreenController extends StateNotifier<DiscoverScreenUiState> {
   final LogOutService _logOutService;
   final SearchUsersService _searchUsersService;
 
-  late List<DisplayUser> _matches;
+  late List<LinxUser> _matches;
   late UserInfo _currentUser;
 
   DiscoverScreenController(
@@ -104,8 +104,8 @@ class DiscoverScreenController extends StateNotifier<DiscoverScreenUiState> {
 
 class DiscoverScreenUiState {
   final SearchState state;
-  final List<DisplayUser> topMatches;
-  final List<DisplayUser> nextMatches;
+  final List<LinxUser> topMatches;
+  final List<LinxUser> nextMatches;
   final bool isCurrentUserClub;
   final List<String> recents;
   final UserSearchPage? results;

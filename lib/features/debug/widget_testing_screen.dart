@@ -16,7 +16,7 @@ import 'package:linx/features/app/request/domain/model/request.dart';
 import 'package:linx/features/app/request/ui/widgets/request_screen_widgets.dart';
 import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/image_upload/ui/image_uploader.dart';
-import 'package:linx/features/user/domain/model/display_user.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
@@ -50,7 +50,7 @@ class WidgetTestingScreen extends ConsumerWidget {
   );
 
   final _testRequest = Request(
-    sender: DisplayUser(
+    sender: LinxUser(
       info: const UserInfo(uid: ""),
       packages: [],
       matchPercentage: 10,
@@ -61,7 +61,7 @@ class WidgetTestingScreen extends ConsumerWidget {
         "This is a sample pitch for sample and test reasons, nothing more. I need to fill this space. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna adipiscing elit eiusmod  dolore magna, Lorem ipsum dolor sit amet, consectetur adipiscing elit,",
   );
 
-  DisplayUser _fetchTestUser({
+  LinxUser _fetchTestUser({
     UserInfo? userInfo,
     List<SponsorshipPackage>? packages,
     double? matchPercentage,
@@ -70,7 +70,7 @@ class WidgetTestingScreen extends ConsumerWidget {
     final sponsorshipPackages = packages ?? [_testPackage, _testPackage];
     final percentage = matchPercentage ?? 10;
 
-    return DisplayUser(
+    return LinxUser(
       info: info,
       packages: sponsorshipPackages,
       matchPercentage: percentage.toInt(),

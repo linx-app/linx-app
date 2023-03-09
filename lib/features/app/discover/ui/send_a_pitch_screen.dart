@@ -8,10 +8,10 @@ import 'package:linx/constants/colors.dart';
 import 'package:linx/constants/text.dart';
 import 'package:linx/features/app/discover/presentation/send_a_pitch_screen_controller.dart';
 import 'package:linx/features/app/core/ui/sponsorship_package_carousel.dart';
-import 'package:linx/features/user/domain/model/display_user.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 
 class SendAPitchScreen extends ConsumerWidget {
-  final DisplayUser receiver;
+  final LinxUser receiver;
   final TextEditingController _pitchMessageController = TextEditingController();
 
   SendAPitchScreen({super.key, required this.receiver});

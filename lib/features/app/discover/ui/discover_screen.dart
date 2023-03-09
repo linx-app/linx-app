@@ -18,7 +18,7 @@ import 'package:linx/features/app/search/ui/widgets/recents_search_page.dart';
 import 'package:linx/features/app/search/ui/widgets/results_search_page.dart';
 import 'package:linx/features/app/core/ui/model/search_state.dart';
 import 'package:linx/features/app/core/ui/search_bar.dart';
-import 'package:linx/features/user/domain/model/display_user.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class DiscoverScreen extends ConsumerWidget {
@@ -162,7 +162,7 @@ class DiscoverScreen extends ConsumerWidget {
   }
 
   void _onSendPitchPressed(
-    DisplayUser receiver,
+    LinxUser receiver,
     BuildContext context,
     WidgetRef ref,
   ) {
@@ -173,7 +173,7 @@ class DiscoverScreen extends ConsumerWidget {
 
   void _onSmallCardPressed({
     required BuildContext context,
-    required DisplayUser user,
+    required LinxUser user,
     required WidgetRef ref,
   }) {
     final bottomSheet = SizedBox(

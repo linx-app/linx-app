@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
-import 'package:linx/features/user/domain/model/display_user.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 
 class SmallProfileCard extends StatelessWidget {
-  final DisplayUser user;
+  final LinxUser user;
   final VoidCallback? onPressed;
 
   const SmallProfileCard({

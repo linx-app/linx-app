@@ -3,7 +3,7 @@ import 'package:linx/features/app/pitch/data/pitch_repository.dart';
 import 'package:linx/features/app/request/domain/model/request.dart';
 import 'package:linx/features/app/core/data/sponsorship_package_repository.dart';
 import 'package:linx/features/user/data/user_repository.dart';
-import 'package:linx/features/user/domain/model/display_user.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/utils/transformations/package_transformation_extensions.dart';
 import 'package:linx/utils/transformations/pitch_transformation_extensions.dart';
@@ -30,7 +30,7 @@ class FetchRequestsService {
     var pitches = await _pitchRepository.fetchPitchesWithReceiver(user.uid);
     pitches = pitches.take(10).toList();
 
-    final sendingUsers = <DisplayUser>[];
+    final sendingUsers = <LinxUser>[];
 
     for (var pitch in pitches) {
       final networkUser =
@@ -41,7 +41,7 @@ class FetchRequestsService {
       final domainUser = networkUser.toDomain();
       final domainPackages =
           networkPackages.map((e) => e.toDomain(domainUser)).toList();
-      final displayUser = DisplayUser(
+      final displayUser = LinxUser(
         info: domainUser,
         packages: domainPackages,
         matchPercentage: user.findMatchPercent(domainUser).toInt(),
