@@ -16,11 +16,12 @@ import 'package:linx/features/app/request/domain/model/request.dart';
 import 'package:linx/features/app/request/ui/widgets/request_screen_widgets.dart';
 import 'package:linx/features/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/image_upload/ui/image_uploader.dart';
+import 'package:linx/features/user/domain/model/display_user.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class WidgetTestingScreen extends ConsumerWidget {
-  final _testUser = const LinxUser(
+  final _testUserInfo = const LinxUser(
     uid: "id",
     displayName: "Williams Fresh Cafe",
     location: "Waterloo, ON",
@@ -49,12 +50,32 @@ class WidgetTestingScreen extends ConsumerWidget {
   );
 
   final _testRequest = Request(
-    sender: const LinxUser(uid: "id"),
+    sender: DisplayUser(
+      info: const LinxUser(uid: ""),
+      packages: [],
+      matchPercentage: 10,
+    ),
     receiver: const LinxUser(uid: "id"),
     createdAt: DateTime.now(),
     message:
         "This is a sample pitch for sample and test reasons, nothing more. I need to fill this space. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna adipiscing elit eiusmod  dolore magna, Lorem ipsum dolor sit amet, consectetur adipiscing elit,",
   );
+
+  DisplayUser _fetchTestUser({
+    LinxUser? userInfo,
+    List<SponsorshipPackage>? packages,
+    double? matchPercentage,
+  }) {
+    final info = userInfo ?? _testUserInfo;
+    final sponsorshipPackages = packages ?? [_testPackage, _testPackage];
+    final percentage = matchPercentage ?? 10;
+
+    return DisplayUser(
+      info: info,
+      packages: sponsorshipPackages,
+      matchPercentage: percentage.toInt(),
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -66,12 +87,11 @@ class WidgetTestingScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              width: context.width(),
-              alignment: Alignment.centerLeft,
-              child: LinxBackButton(
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            ),
+                width: context.width(),
+                alignment: Alignment.centerLeft,
+                child: LinxBackButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                )),
             SizedBox(width: context.width()),
             // Example usage:
             _widgetContainer(
@@ -103,26 +123,22 @@ class WidgetTestingScreen extends ConsumerWidget {
             _widgetContainer(
               ProfileCard(
                 mainButtonText: "See details",
-                mainText: _testUser.biography,
+                mainText: _fetchTestUser().info.biography,
                 onMainButtonPressed: () {},
-                matchPercentage: 10,
-                user: _testUser,
+                user: _fetchTestUser(),
               ),
             ),
             _widgetContainer(
               ProfileModalCard(
-                packages: [_testPackage, _testPackage],
-                user: _testUser,
-                matchPercentage: 10,
+                user: _fetchTestUser(),
                 mainButtonText: "See pitch",
               ),
             ),
             _widgetContainer(
               SmallProfileCard(
-                user: _testUser,
-                matchPercentage: 70,
+                user: _fetchTestUser(matchPercentage: 70),
                 onPressed: () {
-                  _openProfileBottomSheet(context, _testUser, 70);
+                  _openProfileBottomSheet(context, 70);
                 },
               ),
             ),
@@ -157,16 +173,10 @@ class WidgetTestingScreen extends ConsumerWidget {
   void _openProfileModalScreen(BuildContext context) {
     var screen = ProfileModalScreen(
       initialIndex: 0,
-      users: [_testUser, _testUser, _testUser],
-      matchPercentages: const [10, 10, 10],
+      users: [_fetchTestUser(), _fetchTestUser(), _fetchTestUser()],
       requests: [],
-      packages: [
-        [_testPackage],
-        [_testPackage, _testPackage],
-        [_testPackage, _testPackage, _testPackage]
-      ],
-      currentUser: _testUser,
-      onMainButtonPressed: (receiver, packages, request) {},
+      isCurrentUserClub: true,
+      onMainButtonPressed: (receiver) {},
     );
 
     Navigator.of(context).push(
@@ -177,21 +187,15 @@ class WidgetTestingScreen extends ConsumerWidget {
     );
   }
 
-  void _openProfileBottomSheet(
-    BuildContext context,
-    LinxUser user,
-    int matchPercentage,
-  ) {
+  void _openProfileBottomSheet(BuildContext context, int matchPercentage) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (context) => Container(
         height: context.height() * 0.80,
         child: ProfileBottomSheet(
-          user: user,
-          matchPercentage: matchPercentage.toInt(),
+          user: _fetchTestUser(),
           request: _testRequest,
-          packages: [_testPackage, _testPackage],
           onXPressed: () => Navigator.maybePop(context),
           mainButtonText: "Send Pitch",
           onMainButtonPressed: () {},

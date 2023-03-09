@@ -1,7 +1,8 @@
+import 'package:linx/features/user/domain/model/display_user.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 
 class Request {
-  final LinxUser sender;
+  final DisplayUser sender;
   final LinxUser receiver;
   final DateTime createdAt;
   final String message;

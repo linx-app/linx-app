@@ -1,14 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/user/data/model/user_dto.dart';
+import 'package:linx/features/user/domain/model/user_type.dart';
 import 'package:linx/firebase/firebase_providers.dart';
 import 'package:linx/firebase/firestore_paths.dart';
 
 class UserRepository {
   static final provider = Provider((ref) {
     return UserRepository(
-        ref.read(firestoreProvider),
-        ref.read(fcmTokenProvider),
+      ref.read(firestoreProvider),
+      ref.read(fcmTokenProvider),
     );
   });
 
@@ -77,7 +78,9 @@ class UserRepository {
   }
 
   Future<void> updateUserDescriptors(
-      String uid, Set<String> descriptors) async {
+    String uid,
+    Set<String> descriptors,
+  ) async {
     _firestore
         .collection(FirestorePaths.USERS)
         .doc(uid)
@@ -116,5 +119,35 @@ class UserRepository {
         .collection(FirestorePaths.USERS)
         .doc(uid)
         .update({FirestorePaths.NUMBER_OF_PACKAGES: count});
+  }
+
+  Future<List<UserDTO>> fetchMatchingLocationUsers(
+    String location,
+    UserType type,
+  ) async {
+    return await _firestore
+        .collection(FirestorePaths.USERS)
+        .where(FirestorePaths.LOCATION, isEqualTo: location)
+        .where(FirestorePaths.TYPE, isEqualTo: type.name)
+        .get()
+        .then((QuerySnapshot query) {
+      var data = query.docs;
+      var users = <UserDTO>[];
+
+      for (var doc in data) {
+        if (doc.data() != null) {
+          var obj = doc.data() as Map<String, dynamic>;
+          users.add(UserDTO.fromNetwork(doc.id, obj));
+        }
+      }
+
+      return users;
+    });
+  }
+
+  Future<void> addToRecentSearches(String uid, String search) async {
+    await _firestore.collection(FirestorePaths.USERS).doc(uid).update({
+      FirestorePaths.SEARCHES: FieldValue.arrayUnion([search])
+    });
   }
 }

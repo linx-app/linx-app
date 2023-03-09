@@ -14,6 +14,7 @@ class LinxTextField extends StatelessWidget {
   final TextEditingController controller;
   final String? Function(String?)? validator;
   final String? errorText;
+  final void Function(bool)? onFocusChanged;
 
   final borderRadius = const BorderRadius.all(Radius.circular(8.0));
 
@@ -28,55 +29,56 @@ class LinxTextField extends StatelessWidget {
     this.maxLines,
     this.errorText,
     this.prefixIcon,
+    this.onFocusChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      validator: validator,
-      controller: controller,
-      decoration: InputDecoration(
-        suffixIcon: suffixIcon,
-        prefixIcon: prefixIcon,
-        prefixIconColor: LinxColors.grey,
-        hintText: label,
-        hintStyle: _inputTextStyle(LinxColors.black_60),
-        enabledBorder: _border(LinxColors.transparent),
-        focusColor: LinxColors.black_5,
-        focusedBorder: _border(LinxColors.black_80),
-        fillColor: LinxColors.black_5,
-        filled: true,
-        contentPadding: EdgeInsets.all(_textFieldInputPadding),
-        errorText: errorText,
-        errorBorder: _border(LinxColors.red),
-        focusedErrorBorder: _border(LinxColors.red),
-        errorStyle: _errorTextStyle(),
-        errorMaxLines: 3,
+    return Focus(
+      onFocusChange: onFocusChanged,
+      child: TextFormField(
+        validator: validator,
+        controller: controller,
+        decoration: InputDecoration(
+          suffixIcon: suffixIcon,
+          prefixIcon: prefixIcon,
+          prefixIconColor: LinxColors.grey,
+          hintText: label,
+          hintStyle: _inputTextStyle(LinxColors.black_60),
+          enabledBorder: _border(LinxColors.transparent),
+          focusColor: LinxColors.black_5,
+          focusedBorder: _border(LinxColors.black_80),
+          fillColor: LinxColors.black_5,
+          filled: true,
+          contentPadding: EdgeInsets.all(_textFieldInputPadding),
+          errorText: errorText,
+          errorBorder: _border(LinxColors.red),
+          focusedErrorBorder: _border(LinxColors.red),
+          errorStyle: _errorTextStyle(),
+          errorMaxLines: 3,
+        ),
+        showCursor: true,
+        cursorColor: LinxColors.grey,
+        style: _inputTextStyle(LinxColors.black_80),
+        obscureText: shouldObscureText,
+        minLines: minLines,
+        maxLines: maxLines,
       ),
-      showCursor: true,
-      cursorColor: LinxColors.grey,
-      style: _inputTextStyle(LinxColors.black_80),
-      obscureText: shouldObscureText,
-      minLines: minLines,
-      maxLines: maxLines,
     );
   }
 
-  OutlineInputBorder _border(Color color) =>
-      OutlineInputBorder(
+  OutlineInputBorder _border(Color color) => OutlineInputBorder(
         borderSide: BorderSide(color: color),
         borderRadius: borderRadius,
       );
 
-  TextStyle _errorTextStyle() =>
-      TextStyle(
+  TextStyle _errorTextStyle() => TextStyle(
         fontWeight: FontWeight.w400,
         fontSize: _helperTextSize,
         color: LinxColors.red,
       );
 
-  TextStyle _inputTextStyle(Color color) =>
-      TextStyle(
+  TextStyle _inputTextStyle(Color color) => TextStyle(
         fontWeight: FontWeight.w400,
         fontSize: _textSize,
         color: color,

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:linx/common/linx_loading_spinner.dart';
 import 'package:linx/common/linx_text_field.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/onboarding/ui/model/onboarding_nav.dart';
@@ -45,7 +46,7 @@ class OnboardingCreateProfileScreen extends OnboardingView {
 
   Container _buildSectionTitle(String title) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Text(
         title.capitalize(),
         style: const TextStyle(
@@ -57,23 +58,12 @@ class OnboardingCreateProfileScreen extends OnboardingView {
     );
   }
 
-  Center _buildLoadingPage() {
-    return const Center(
-      widthFactor: 1,
-      heightFactor: 1,
-      child: CircularProgressIndicator(
-        backgroundColor: LinxColors.background,
-        color: LinxColors.green,
-      ),
-    );
-  }
-
   List<Widget> _mapUrlsToPages(List<String?> profileImageUrls, WidgetRef ref) {
     return profileImageUrls.map((url) {
       if (url == null) {
         return ImageUploader((file) => _onFileSelected(file, ref));
       } else if (url == "Loading") {
-        return _buildLoadingPage();
+        return LinxLoadingSpinner();
       } else {
         return OnboardingProfileImage(url: url);
       }
@@ -82,7 +72,7 @@ class OnboardingCreateProfileScreen extends OnboardingView {
 
   Container _buildBiographyForm() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
       child: LinxTextField(
         label: "Biography",
         controller: _bioController,

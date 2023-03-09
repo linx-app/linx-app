@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
+import 'package:linx/common/linx_loading_spinner.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/chat/chat_home_screen.dart';
 import 'package:linx/features/app/core/presentation/app_bottom_nav_screen_controller.dart';
@@ -42,7 +43,7 @@ class AppBottomNavigationScreen extends ConsumerWidget {
   Widget _buildBody(LinxUser? user, int selectedIndex) {
     Widget body;
     if (user == null) {
-      body = const CircularProgressIndicator();
+      body = LinxLoadingSpinner();
     } else {
       var isClub = user.type == UserType.club;
       var firstScreen = isClub ? DiscoverScreen() : RequestScreen();

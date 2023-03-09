@@ -11,6 +11,7 @@ class AppTitleBar extends StatelessWidget {
   final IconData? iconData;
   final Image? icon;
   final VoidCallback? onIconPressed;
+  final EdgeInsets? padding;
 
   const AppTitleBar({
     super.key,
@@ -19,13 +20,14 @@ class AppTitleBar extends StatelessWidget {
     this.icon,
     this.onIconPressed,
     this.iconData,
+    this.padding = const EdgeInsets.symmetric(horizontal: 24),
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: context.width(),
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: padding,
       child: Row(
         children: [
           Expanded(

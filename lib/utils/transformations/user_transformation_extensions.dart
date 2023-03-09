@@ -17,6 +17,7 @@ extension UserDTOExtension on UserDTO {
       numberOfPackages: numberOfPackages,
       profileImageUrls: profileImageUrls,
       pitchesTo: pitchesTo,
+      searches: searches,
     );
   }
 }

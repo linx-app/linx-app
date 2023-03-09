@@ -13,6 +13,7 @@ class LinxUser {
   final UserType type;
   final List<String> profileImageUrls;
   final List<String> pitchesTo;
+  final List<String> searches;
 
   const LinxUser({
     required this.uid,
@@ -27,5 +28,15 @@ class LinxUser {
     this.numberOfPackages = 0,
     this.profileImageUrls = const [],
     this.pitchesTo = const [],
+    this.searches = const [],
   });
+}
+
+extension LinxUserExtensions on LinxUser {
+  double findMatchPercent(LinxUser other) {
+    final length = interests.length;
+    return (interests.intersection(other.interests).length / length) * 100;
+  }
+
+  bool isClub() => type == UserType.club;
 }

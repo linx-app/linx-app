@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/display_user.dart';
 
 class SmallProfileCard extends StatelessWidget {
-  final LinxUser user;
-  final int matchPercentage;
+  final DisplayUser user;
   final VoidCallback? onPressed;
 
   const SmallProfileCard({
     super.key,
     required this.user,
-    required this.matchPercentage,
     this.onPressed,
   });
 
@@ -39,7 +37,7 @@ class SmallProfileCard extends StatelessWidget {
       width: 100,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: NetworkImage(user.profileImageUrls.first),
+          image: NetworkImage(user.info.profileImageUrls.first),
           fit: BoxFit.cover,
         ),
         borderRadius: const BorderRadius.only(
@@ -69,7 +67,7 @@ class SmallProfileCard extends StatelessWidget {
 
   Text _buildNameText() {
     return Text(
-      user.displayName,
+      user.info.displayName,
       style: const TextStyle(
           color: LinxColors.subtitleGrey,
           fontWeight: FontWeight.w600,
@@ -79,7 +77,7 @@ class SmallProfileCard extends StatelessWidget {
 
   Text _buildLocationText() {
     return Text(
-      user.location,
+      user.info.location,
       style: const TextStyle(
         color: LinxColors.locationTextGrey,
         fontWeight: FontWeight.w600,
@@ -90,7 +88,7 @@ class SmallProfileCard extends StatelessWidget {
 
   Text _buildDescriptorText() {
     return Text(
-      user.descriptors.first,
+      user.info.descriptors.first,
       style: const TextStyle(
         color: LinxColors.locationTextGrey,
         fontSize: 13.0,
@@ -100,7 +98,7 @@ class SmallProfileCard extends StatelessWidget {
 
   Text _buildMatchText() {
     return Text(
-      "$matchPercentage% match",
+      "${user.matchPercentage}% match",
       style: const TextStyle(color: LinxColors.green, fontSize: 13.0),
     );
   }

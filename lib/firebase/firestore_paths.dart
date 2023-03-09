@@ -32,6 +32,7 @@ class FirestorePaths {
   static const String REQUESTS = "requests";
   static const String NOTIFICATION_TOKEN = "notification_token";
   static const String PITCHES_TO = "pitches_to";
+  static const String SEARCHES = "searches";
 
   /// PITCH COLLECTION ///
   static const String PITCHES = "pitches";
