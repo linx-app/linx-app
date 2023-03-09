@@ -1,11 +1,11 @@
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/user_info.dart';
 
 class SponsorshipPackage {
   final String packageId;
   final String name;
   final String ownBenefit;
   final String partnerBenefit;
-  final LinxUser user;
+  final UserInfo user;
 
   SponsorshipPackage({
     this.packageId = "",

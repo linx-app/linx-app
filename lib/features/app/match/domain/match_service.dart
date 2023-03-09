@@ -3,7 +3,7 @@ import 'package:linx/features/app/match/data/match_repository.dart';
 import 'package:linx/features/app/core/data/sponsorship_package_repository.dart';
 import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/user/domain/model/display_user.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/utils/transformations/package_transformation_extensions.dart';
 import 'package:linx/utils/transformations/user_transformation_extensions.dart';
 
@@ -21,7 +21,7 @@ class MatchService {
   MatchService(this._matchRepository, this._sponsorshipPackageRepository);
 
   Future<List<DisplayUser>> fetchUsersWithMatchingInterests(
-    LinxUser currentUser,
+      UserInfo currentUser,
   ) async {
     final networkUsers =
         await _matchRepository.fetchUsersWithMatchingInterests(currentUser);
@@ -55,7 +55,7 @@ class MatchService {
     return displayUsers;
   }
 
-  int _compare(Set<String> current, LinxUser a, LinxUser b) {
+  int _compare(Set<String> current, UserInfo a, UserInfo b) {
     var aValue = current.intersection(a.descriptors).length;
     var bValue = current.intersection(b.descriptors).length;
     return aValue.compareTo(bValue);

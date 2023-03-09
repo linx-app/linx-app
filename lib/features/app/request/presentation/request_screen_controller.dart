@@ -3,7 +3,7 @@ import 'package:linx/features/app/match/domain/create_a_match_service.dart';
 import 'package:linx/features/app/pitch/domain/fetch_requests_service.dart';
 import 'package:linx/features/app/request/domain/model/request.dart';
 import 'package:linx/features/authentication/domain/log_out_service.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/features/user/domain/user_service.dart';
 
 final requestScreenControllerProvider =
@@ -22,7 +22,7 @@ class RequestScreenController extends StateNotifier<RequestScreenUiState?> {
   final CreateAMatchService _createAMatchService;
   final LogOutService _logOutService;
 
-  late LinxUser _currentUser;
+  late UserInfo _currentUser;
 
   RequestScreenController(
     this._userService,
@@ -34,7 +34,7 @@ class RequestScreenController extends StateNotifier<RequestScreenUiState?> {
   }
 
   void initialize() async {
-    _currentUser = await _userService.fetchUserProfile();
+    _currentUser = await _userService.fetchUserInfo();
     fetchRequestsForBusinesses();
   }
 
@@ -56,7 +56,7 @@ class RequestScreenController extends StateNotifier<RequestScreenUiState?> {
     }
   }
 
-  void onImInterestedPressed({required LinxUser club}) async {
+  void onImInterestedPressed({required UserInfo club}) async {
     _createAMatchService.execute(business: _currentUser, club: club);
   }
 
@@ -68,11 +68,11 @@ class RequestScreenController extends StateNotifier<RequestScreenUiState?> {
 class RequestScreenUiState {
   final List<Request> topRequests;
   final List<Request> nextRequests;
-  final LinxUser currentUser;
+  final UserInfo currentUser;
 
   RequestScreenUiState({
     this.topRequests = const [],
     this.nextRequests = const [],
-    this.currentUser = const LinxUser(uid: ""),
+    this.currentUser = const UserInfo(uid: ""),
   });
 }

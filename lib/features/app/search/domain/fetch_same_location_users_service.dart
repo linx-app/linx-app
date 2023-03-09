@@ -4,7 +4,7 @@ import 'package:linx/features/app/core/data/sponsorship_package_repository.dart'
 import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/user/data/user_repository.dart';
 import 'package:linx/features/user/domain/model/display_user.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/features/user/domain/model/user_type.dart';
 import 'package:linx/utils/transformations/package_transformation_extensions.dart';
 import 'package:linx/utils/transformations/user_transformation_extensions.dart';
@@ -25,7 +25,7 @@ class FetchSameLocationUsersService {
     this._sponsorshipPackageRepository,
   );
 
-  Future<List<SearchGroup>> execute(LinxUser currentUser) async {
+  Future<List<SearchGroup>> execute(UserInfo currentUser) async {
     final targetType = currentUser.isClub() ? UserType.business : UserType.club;
     final networkUsers = await _userRepository.fetchMatchingLocationUsers(
       currentUser.location,
@@ -57,7 +57,7 @@ class FetchSameLocationUsersService {
     return searchGroups;
   }
 
-  Future<List<SponsorshipPackage>> _fetchPackages(LinxUser user) async {
+  Future<List<SponsorshipPackage>> _fetchPackages(UserInfo user) async {
     final network = await _sponsorshipPackageRepository
         .fetchSponsorshipPackagesByUser(user.uid);
     return network.map((e) => e.toDomain(user)).toList();

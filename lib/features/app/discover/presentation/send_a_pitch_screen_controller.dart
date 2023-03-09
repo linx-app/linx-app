@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/app/pitch/domain/send_request_service.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/user_info.dart';
 
 final sendAPitchScreenControllerProvider =
     StateNotifierProvider.autoDispose<SendAPitchScreenController, SendAPitchUiState>(
@@ -16,7 +16,7 @@ class SendAPitchScreenController extends StateNotifier<SendAPitchUiState> {
       : super(SendAPitchUiState.idle);
 
   Future<void> sendPitch({
-    required LinxUser receiver,
+    required UserInfo receiver,
     required String message,
   }) async {
     state = SendAPitchUiState.loading;

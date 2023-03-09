@@ -17,11 +17,11 @@ import 'package:linx/features/app/request/ui/widgets/request_screen_widgets.dart
 import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/image_upload/ui/image_uploader.dart';
 import 'package:linx/features/user/domain/model/display_user.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class WidgetTestingScreen extends ConsumerWidget {
-  final _testUserInfo = const LinxUser(
+  final _testUserInfo = const UserInfo(
     uid: "id",
     displayName: "Williams Fresh Cafe",
     location: "Waterloo, ON",
@@ -46,23 +46,23 @@ class WidgetTestingScreen extends ConsumerWidget {
     ownBenefit: "You get one of these",
     partnerBenefit: "I get one of these",
     name: "The best tier package",
-    user: const LinxUser(uid: "id"),
+    user: const UserInfo(uid: "id"),
   );
 
   final _testRequest = Request(
     sender: DisplayUser(
-      info: const LinxUser(uid: ""),
+      info: const UserInfo(uid: ""),
       packages: [],
       matchPercentage: 10,
     ),
-    receiver: const LinxUser(uid: "id"),
+    receiver: const UserInfo(uid: "id"),
     createdAt: DateTime.now(),
     message:
         "This is a sample pitch for sample and test reasons, nothing more. I need to fill this space. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna adipiscing elit eiusmod  dolore magna, Lorem ipsum dolor sit amet, consectetur adipiscing elit,",
   );
 
   DisplayUser _fetchTestUser({
-    LinxUser? userInfo,
+    UserInfo? userInfo,
     List<SponsorshipPackage>? packages,
     double? matchPercentage,
   }) {

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/user/data/model/user_dto.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/features/user/domain/model/user_type.dart';
 import 'package:linx/firebase/firebase_providers.dart';
 import 'package:linx/firebase/firestore_paths.dart';
@@ -14,7 +14,7 @@ class MatchRepository {
 
   MatchRepository(this._firestore);
 
-  Future<List<UserDTO>> fetchUsersWithMatchingInterests(LinxUser user) async {
+  Future<List<UserDTO>> fetchUsersWithMatchingInterests(UserInfo user) async {
     final type = user.isClub() ? UserType.business : UserType.club;
     var interests = user.interests.take(10).toList();
     return await _firestore
@@ -38,7 +38,7 @@ class MatchRepository {
     await _firestore.collection(FirestorePaths.MATCHES).add(data);
   }
 
-  List<UserDTO> _mapQueryToUserDTO(QuerySnapshot query, LinxUser user) {
+  List<UserDTO> _mapQueryToUserDTO(QuerySnapshot query, UserInfo user) {
     var list = <UserDTO>[];
 
     for (var element in query.docs) {

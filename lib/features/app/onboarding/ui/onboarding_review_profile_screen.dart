@@ -9,7 +9,7 @@ import 'package:linx/features/app/core/ui/sponsorship_package_carousel.dart';
 import 'package:linx/features/app/onboarding/presentation/onboarding_review_profile_controller.dart';
 import 'package:linx/features/app/onboarding/ui/widgets/onboarding_profile_image.dart';
 import 'package:linx/features/app/onboarding/ui/widgets/onboarding_view.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/user_info.dart';
 
 class OnboardingReviewProfileScreen extends OnboardingView {
   final _imageCarouselPageProvider = StateProvider((ref) => 0.0);
@@ -56,10 +56,10 @@ class OnboardingReviewProfileScreen extends OnboardingView {
 
   OnboardingProfileImageCarousel _buildProfileImageSection(
     WidgetRef ref,
-    LinxUser user,
+      UserInfo info,
   ) {
     var dotPosition = ref.read(_imageCarouselPageProvider.notifier);
-    List<Widget> pages = user.profileImageUrls.map((url) {
+    List<Widget> pages = info.profileImageUrls.map((url) {
       return OnboardingProfileImage(
         url: url,
         alignment: Alignment.topRight,
@@ -84,7 +84,7 @@ class OnboardingReviewProfileScreen extends OnboardingView {
     );
   }
 
-  List<Widget> _buildWhoAreYouSection(LinxUser user) {
+  List<Widget> _buildWhoAreYouSection(UserInfo info) {
     return [
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -93,7 +93,7 @@ class OnboardingReviewProfileScreen extends OnboardingView {
             Expanded(
               flex: 1,
               child: Text(
-                user.displayName,
+                info.displayName,
                 style: LinxTextStyles.subtitle,
               ),
             ),
@@ -112,7 +112,7 @@ class OnboardingReviewProfileScreen extends OnboardingView {
         alignment: Alignment.centerLeft,
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Text(
-          user.location,
+          info.location,
           style: const TextStyle(
             color: LinxColors.locationTextGrey,
             fontWeight: FontWeight.w400,

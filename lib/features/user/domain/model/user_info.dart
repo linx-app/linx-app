@@ -1,6 +1,6 @@
 import 'package:linx/features/user/domain/model/user_type.dart';
 
-class LinxUser {
+class UserInfo {
   final String uid;
   final String displayName;
   final String email;
@@ -15,7 +15,7 @@ class LinxUser {
   final List<String> pitchesTo;
   final List<String> searches;
 
-  const LinxUser({
+  const UserInfo({
     required this.uid,
     this.displayName = "",
     this.email = "",
@@ -32,8 +32,8 @@ class LinxUser {
   });
 }
 
-extension LinxUserExtensions on LinxUser {
-  double findMatchPercent(LinxUser other) {
+extension UserInfoExtensions on UserInfo {
+  double findMatchPercent(UserInfo other) {
     final length = interests.length;
     return (interests.intersection(other.interests).length / length) * 100;
   }

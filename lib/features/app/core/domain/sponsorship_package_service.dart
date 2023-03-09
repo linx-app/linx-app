@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/app/core/data/sponsorship_package_repository.dart';
 import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/user/data/user_repository.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/utils/transformations/package_transformation_extensions.dart';
 import 'package:linx/utils/transformations/user_transformation_extensions.dart';
 
@@ -34,7 +34,7 @@ class SponsorshipPackageService {
     var networkPackages = await _sponsorshipPackageRepository
         .fetchSponsorshipPackagesByUser(userId);
 
-    var users = <LinxUser>[];
+    var users = <UserInfo>[];
     for (var package in networkPackages) {
       var networkUser = await _userRepository.fetchUserProfile(package.userId);
       var domainUser = networkUser.toDomain();

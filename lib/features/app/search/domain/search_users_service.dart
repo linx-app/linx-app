@@ -5,7 +5,7 @@ import 'package:linx/features/app/core/data/sponsorship_package_repository.dart'
 import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/user/data/user_repository.dart';
 import 'package:linx/features/user/domain/model/display_user.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/utils/transformations/package_transformation_extensions.dart';
 import 'package:linx/utils/transformations/user_transformation_extensions.dart';
 
@@ -25,7 +25,7 @@ class SearchUsersService {
   SearchUsersService(this._userSearchRepository, this._userRepository,
       this._sponsorshipPackageRepository);
 
-  Future<UserSearchPage> execute(LinxUser currentUser, String search) async {
+  Future<UserSearchPage> execute(UserInfo currentUser, String search) async {
     _userRepository.addToRecentSearches(currentUser.uid, search);
     final networkResult = await _userSearchRepository.search(search);
 

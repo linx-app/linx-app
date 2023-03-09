@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/app/core/domain/sponsorship_package_service.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/features/user/domain/user_service.dart';
 
 final onboardingReviewProfileControllerProvider = StateNotifierProvider<
@@ -23,7 +23,7 @@ class OnboardingReviewProfileController
   ) : super(OnboardingReviewProfileUiState());
 
   Future<void> fetchUser() async {
-    var user = await _userService.fetchUserProfile();
+    var user = await _userService.fetchUserInfo();
     var packages = await _sponsorshipPackageService
         .fetchSponsorshipPackageByUser(user.uid);
     state = OnboardingReviewProfileUiState(user: user, packages: packages);
@@ -31,11 +31,11 @@ class OnboardingReviewProfileController
 }
 
 class OnboardingReviewProfileUiState {
-  final LinxUser user;
+  final UserInfo user;
   final List<SponsorshipPackage> packages;
 
   OnboardingReviewProfileUiState({
-    this.user = const LinxUser(uid: ""),
+    this.user = const UserInfo(uid: ""),
     this.packages = const [],
   });
 }
