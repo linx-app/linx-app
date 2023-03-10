@@ -23,7 +23,7 @@ class ProfileBottomSheet extends StatelessWidget {
   final VoidCallback? onXPressed;
   final Request? request;
   final String mainButtonText;
-  final VoidCallback onMainButtonPressed;
+  final VoidCallback? onMainButtonPressed;
 
   const ProfileBottomSheet({
     super.key,
@@ -31,7 +31,7 @@ class ProfileBottomSheet extends StatelessWidget {
     this.request,
     this.onXPressed,
     required this.mainButtonText,
-    required this.onMainButtonPressed,
+    this.onMainButtonPressed,
   });
 
   @override
@@ -211,7 +211,7 @@ class ProfileBottomSheet extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: RoundedButton(
         style: greenButtonStyle(),
-        onPressed: onMainButtonPressed,
+        onPressed: () => onMainButtonPressed?.call(),
         text: mainButtonText,
       ),
     );

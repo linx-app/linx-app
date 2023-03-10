@@ -136,7 +136,14 @@ class WidgetTestingScreen extends ConsumerWidget {
             ),
             _widgetContainer(
               SmallProfileCard(
-                user: _fetchTestUser(matchPercentage: 70),
+                data: SmallProfileCardData(
+                  title: _testUserInfo.displayName,
+                  line1Text: _testUserInfo.location,
+                  line2Text: _testUserInfo.descriptors.first,
+                  outlineText: "10% match",
+                  imageUrl: _testUserInfo.profileImageUrls.first,
+                  hasNewBadge: true,
+                ),
                 onPressed: () {
                   _openProfileBottomSheet(context, 70);
                 },
