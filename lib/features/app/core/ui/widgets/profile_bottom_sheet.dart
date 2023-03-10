@@ -211,7 +211,7 @@ class ProfileBottomSheet extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: RoundedButton(
         style: greenButtonStyle(),
-        onPressed: () => onMainButtonPressed?.call(),
+        onPressed: onMainButtonPressed,
         text: mainButtonText,
       ),
     );
