@@ -37,6 +37,15 @@ class PitchRepository {
         .then((QuerySnapshot query) => _mapQueryToPitches(query));
   }
 
+  Future<List<PitchDTO>> fetchOutgoingPitches(String senderId) async {
+    return await _firestore
+        .collection(FirestorePaths.PITCHES)
+        .where(FirestorePaths.SENDER, isEqualTo: senderId)
+        .orderBy(FirestorePaths.CREATED_AT, descending: true)
+        .get()
+        .then((QuerySnapshot query) => _mapQueryToPitches(query));
+  }
+
   List<PitchDTO> _mapQueryToPitches(QuerySnapshot query) {
     var list = <PitchDTO>[];
 
