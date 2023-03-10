@@ -18,6 +18,7 @@ extension UserDTOExtension on UserDTO {
       profileImageUrls: profileImageUrls,
       pitchesTo: pitchesTo,
       searches: searches,
+      newMatches: newMatches,
     );
   }
 }

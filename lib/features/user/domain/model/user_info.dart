@@ -14,6 +14,7 @@ class UserInfo {
   final List<String> profileImageUrls;
   final List<String> pitchesTo;
   final List<String> searches;
+  final List<String> newMatches;
 
   const UserInfo({
     required this.uid,
@@ -29,6 +30,7 @@ class UserInfo {
     this.profileImageUrls = const [],
     this.pitchesTo = const [],
     this.searches = const [],
+    this.newMatches = const [],
   });
 }
 
