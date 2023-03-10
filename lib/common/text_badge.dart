@@ -1,40 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:linx/constants/text.dart';
+import 'package:linx/constants/colors.dart';
 
 class LinxTextBadge extends StatelessWidget {
-    final String badge_text;
-    final Color font_color;
-    final Color background_color;
-    final FontWeight? font_weight;
-    final double? font_size;
-    final double? border_radius;
+  final String text;
+  final Color fontColor;
+  final Color backgroundColor;
+  final FontWeight? fontWeight;
+  final double? fontSize;
+  final double? borderRadius;
 
-    const LinxTextBadge({
-        super.key,
-        required this.font_color,
-        required this.background_color,
-        this.font_weight,
-        this.font_size,
-        this.border_radius,
-    });
+  const LinxTextBadge({
+    super.key,
+    required this.text,
+    required this.fontColor,
+    required this.backgroundColor,
+    this.fontWeight,
+    this.fontSize,
+    this.borderRadius,
+  });
 
-    @override
-    Widget build(BuildContext context) {
-        return Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(border_radius))
-            ),
-            color: background_color,
-            padding: EdgeInsets.all(24)
-            child: Text(
-              badge_text, 
-              style: TextStyle(
-                color: font_color,
-                fontWeight: font_weight ?? FontWeight.w400,
-                fontSize: font_size ?? 12.0, //?? means specifying the null value
-              ),
-            ),
-        ); 
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? 0))),
+      color: backgroundColor,
+      padding: const EdgeInsets.all(24),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: fontColor,
+          fontWeight: fontWeight ?? FontWeight.w400,
+          fontSize: fontSize ?? 12.0, //?? means specifying the null value
+        ),
+      ),
+    );
   }
-
 }
+
+LinxTextBadge newTextBadge = const LinxTextBadge(
+  text: "NEW",
+  fontColor: LinxColors.white,
+  backgroundColor: LinxColors.green,
+  fontSize: 10.5,
+  fontWeight: FontWeight.w700,
+  borderRadius: 87.5,
+);
