@@ -55,7 +55,11 @@ class WidgetTestingScreen extends ConsumerWidget {
       packages: [],
       matchPercentage: 10,
     ),
-    receiver: const UserInfo(uid: "id"),
+    receiver:  LinxUser(
+      info: const UserInfo(uid: ""),
+      packages: [],
+      matchPercentage: 10,
+    ),
     createdAt: DateTime.now(),
     message:
         "This is a sample pitch for sample and test reasons, nothing more. I need to fill this space. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna adipiscing elit eiusmod  dolore magna, Lorem ipsum dolor sit amet, consectetur adipiscing elit,",

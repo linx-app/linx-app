@@ -26,8 +26,9 @@ class FetchRequestsService {
     this._sponsorshipPackageRepository,
   );
 
-  Future<List<Request>> fetchRequestsWithReceiver(UserInfo user) async {
-    var pitches = await _pitchRepository.fetchPitchesWithReceiver(user.uid);
+  Future<List<Request>> fetchRequestsWithReceiver(LinxUser user) async {
+    final uid = user.info.uid;
+    var pitches = await _pitchRepository.fetchPitchesWithReceiver(uid);
     pitches = pitches.take(10).toList();
 
     final sendingUsers = <LinxUser>[];
@@ -44,7 +45,7 @@ class FetchRequestsService {
       final displayUser = LinxUser(
         info: domainUser,
         packages: domainPackages,
-        matchPercentage: user.findMatchPercent(domainUser).toInt(),
+        matchPercentage: user.info.findMatchPercent(domainUser).toInt(),
       );
 
       sendingUsers.add(displayUser);

@@ -3,6 +3,7 @@ import 'package:linx/features/app/match/domain/create_a_match_service.dart';
 import 'package:linx/features/app/pitch/domain/fetch_requests_service.dart';
 import 'package:linx/features/app/request/domain/model/request.dart';
 import 'package:linx/features/authentication/domain/log_out_service.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/features/user/domain/user_service.dart';
 
@@ -22,7 +23,7 @@ class RequestScreenController extends StateNotifier<RequestScreenUiState?> {
   final CreateAMatchService _createAMatchService;
   final LogOutService _logOutService;
 
-  late UserInfo _currentUser;
+  late LinxUser _currentUser;
 
   RequestScreenController(
     this._userService,
@@ -34,7 +35,7 @@ class RequestScreenController extends StateNotifier<RequestScreenUiState?> {
   }
 
   void initialize() async {
-    _currentUser = await _userService.fetchUserInfo();
+    _currentUser = await _userService.fetchUser();
     fetchRequestsForBusinesses();
   }
 
@@ -45,19 +46,19 @@ class RequestScreenController extends StateNotifier<RequestScreenUiState?> {
     if (requests.length < 5) {
       state = RequestScreenUiState(
         topRequests: requests.take(requests.length).toList(),
-        currentUser: _currentUser,
+        currentUser: _currentUser.info,
       );
     } else {
       state = RequestScreenUiState(
         topRequests: requests.take(5).toList(),
         nextRequests: requests.getRange(5, requests.length).toList(),
-        currentUser: _currentUser,
+        currentUser: _currentUser.info,
       );
     }
   }
 
   void onImInterestedPressed({required UserInfo club}) async {
-    _createAMatchService.execute(business: _currentUser, club: club);
+    _createAMatchService.execute(business: _currentUser.info, club: club);
   }
 
   void logOut() async {

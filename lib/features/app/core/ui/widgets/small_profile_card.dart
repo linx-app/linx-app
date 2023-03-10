@@ -47,10 +47,10 @@ class SmallProfileCardData {
 
   static SmallProfileCardData fromRequest(Request request) {
     return SmallProfileCardData(
-      title: request.receiver.displayName,
-      line1Text: request.receiver.location,
-      line2Text: request.receiver.descriptors.first,
-      imageUrl: request.receiver.profileImageUrls.first,
+      title: request.receiver.info.displayName,
+      line1Text: request.receiver.info.location,
+      line2Text: request.receiver.info.descriptors.first,
+      imageUrl: request.receiver.info.profileImageUrls.first,
       outlineText: "Sent ${request.createdAt.toDisplayTime()}",
       hasNewBadge: false, // TODO: has new for request
     );
@@ -73,10 +73,6 @@ class SmallProfileCard extends StatelessWidget {
 
     return Stack(
       children: [
-        Container(
-          alignment: Alignment.topRight,
-          child: badge,
-        ),
         Card(
           shape: RoundedBorder.all(10),
           child: InkWell(
@@ -90,6 +86,10 @@ class SmallProfileCard extends StatelessWidget {
               ],
             ),
           ),
+        ),
+        Container(
+          alignment: Alignment.topRight,
+          child: badge,
         ),
       ],
     );

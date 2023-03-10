@@ -23,9 +23,10 @@ class LinxTextBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? 0))),
-      color: backgroundColor,
-      padding: const EdgeInsets.all(24),
+        color: backgroundColor,
+        borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? 0)),
+      ),
+      padding: const EdgeInsets.all(6),
       child: Text(
         text,
         style: TextStyle(
