@@ -1,0 +1,4 @@
+enum MatchesScreenState {
+  loading,
+  results;
+}

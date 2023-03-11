@@ -57,10 +57,12 @@ class MatchRepository {
   }
 
   Future<List<MatchDTO>> fetchMatches(UserInfo user) async {
-    final userTypeField = user.isClub() ? FirestorePaths.CLUB : FirestorePaths.BUSINESS;
+    final userTypeField =
+        user.isClub() ? FirestorePaths.CLUB : FirestorePaths.BUSINESS;
     return await _firestore
         .collection(FirestorePaths.MATCHES)
         .where(userTypeField, isEqualTo: user.uid)
+        .orderBy(FirestorePaths.CREATED_AT, descending: true)
         .get()
         .then((QuerySnapshot query) => _mapQueryToMatchDTO(query));
   }
@@ -69,8 +71,8 @@ class MatchRepository {
     final list = <MatchDTO>[];
 
     for (final element in query.docs) {
-        final obj = element.data() as Map<String, dynamic>;
-        list.add(MatchDTO.fromNetwork(element.id, obj));
+      final obj = element.data() as Map<String, dynamic>;
+      list.add(MatchDTO.fromNetwork(element.id, obj));
     }
 
     return list;
