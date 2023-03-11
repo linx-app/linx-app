@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/common/empty.dart';
 import 'package:linx/common/linx_loading_spinner.dart';
@@ -15,12 +14,15 @@ import 'package:linx/features/app/request/ui/widgets/request_screen_widgets.dart
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
-class RequestScreen extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    var state = ref.watch(requestScreenControllerProvider);
+class RequestScreen extends StatelessWidget {
+  final RequestScreenUiState? _state;
+  final RequestScreenController _controller;
 
-    if (state == null) {
+  RequestScreen(this._state, this._controller, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    if (_state == null) {
       return BaseScaffold(body: LinxLoadingSpinner());
     } else {
       return BaseScaffold(
@@ -32,8 +34,8 @@ class RequestScreen extends ConsumerWidget {
                 title: "Requests",
                 subtitle: "Review Today's Sponsorship Requests",
               ),
-              _buildRequestsCarousel(context, ref, state),
-              _buildRequestsList(context, ref, state),
+              _buildRequestsCarousel(context),
+              _buildRequestsList(context),
             ],
           ),
         ),
@@ -41,16 +43,12 @@ class RequestScreen extends ConsumerWidget {
     }
   }
 
-  Widget _buildRequestsCarousel(
-    BuildContext context,
-    WidgetRef ref,
-    RequestScreenUiState state,
-  ) {
+  Widget _buildRequestsCarousel(BuildContext context) {
     var pages = buildRequestsCarouselPages(
       context: context,
-      requests: state.topRequests,
+      requests: _state!.topRequests,
       onMainButtonPressed: (index) {
-        _onProfileCardSeePitchPressed(context, ref, index, state);
+        _onProfileCardSeePitchPressed(context, index);
       },
     );
 
@@ -71,18 +69,13 @@ class RequestScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildRequestsList(
-    BuildContext context,
-    WidgetRef ref,
-    RequestScreenUiState state,
-  ) {
+  Widget _buildRequestsList(BuildContext context) {
     var cards = buildRequestsList(
-      requests: state.nextRequests,
+      requests: _state!.nextRequests,
       onPressed: (index) {
         _onSmallCardPressed(
           context: context,
-          request: state.nextRequests[index],
-          ref: ref,
+          request: _state!.nextRequests[index],
         );
       },
     );
@@ -106,18 +99,13 @@ class RequestScreen extends ConsumerWidget {
     );
   }
 
-  void _onProfileCardSeePitchPressed(
-    BuildContext context,
-    WidgetRef ref,
-    int initialIndex,
-    RequestScreenUiState state,
-  ) {
+  void _onProfileCardSeePitchPressed(BuildContext context, int initialIndex) {
     var screen = ProfileModalScreen(
       initialIndex: initialIndex,
       users: const [],
-      requests: state.topRequests,
+      requests: _state!.topRequests,
       onMainButtonPressed: (user) {
-        _onImInterestedPressed(context, ref, user);
+        _onImInterestedPressed(context, user);
       },
       isCurrentUserClub: false,
     );
@@ -131,7 +119,6 @@ class RequestScreen extends ConsumerWidget {
   void _onSmallCardPressed({
     required BuildContext context,
     required Request request,
-    required WidgetRef ref,
   }) {
     var bottomSheet = SizedBox(
       height: context.height() * 0.80,
@@ -141,7 +128,7 @@ class RequestScreen extends ConsumerWidget {
         mainButtonText: "Send pitch",
         onXPressed: () => Navigator.maybePop(context),
         onMainButtonPressed: () {
-          _onImInterestedPressed(context, ref, request.sender);
+          _onImInterestedPressed(context, request.sender);
         },
       ),
     );
@@ -155,13 +142,8 @@ class RequestScreen extends ConsumerWidget {
     );
   }
 
-  void _onImInterestedPressed(
-    BuildContext context,
-    WidgetRef ref,
-    LinxUser club,
-  ) {
-    var notifier = ref.read(requestScreenControllerProvider.notifier);
-    notifier.onImInterestedPressed(club: club.info);
+  void _onImInterestedPressed(BuildContext context, LinxUser club) {
+    _controller.onImInterestedPressed(club: club.info);
     Navigator.of(context).pop();
   }
 }

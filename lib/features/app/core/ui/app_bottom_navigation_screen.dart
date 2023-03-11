@@ -10,6 +10,7 @@ import 'package:linx/features/app/discover/presentation/discover_screen_controll
 import 'package:linx/features/app/discover/ui/discover_screen.dart';
 import 'package:linx/features/app/match/ui/matches_screen.dart';
 import 'package:linx/features/app/pitch/ui/pitches_screen.dart';
+import 'package:linx/features/app/request/presentation/request_screen_controller.dart';
 import 'package:linx/features/app/request/ui/request_screen.dart';
 import 'package:linx/features/app/search/ui/search_screen.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
@@ -143,7 +144,9 @@ class AppBottomNavigationScreen extends ConsumerWidget {
       final controller = ref.watch(discoverScreenControllerProvider.notifier);
       return DiscoverScreen(state, controller);
     } else {
-      return RequestScreen();
+      final state = ref.watch(requestScreenControllerProvider);
+      final controller = ref.watch(requestScreenControllerProvider.notifier);
+      return RequestScreen(state, controller);
     }
   }
 
