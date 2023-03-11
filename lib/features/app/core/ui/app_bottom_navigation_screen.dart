@@ -5,59 +5,60 @@ import 'package:linx/common/linx_loading_spinner.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/chat/chat_home_screen.dart';
 import 'package:linx/features/app/core/presentation/app_bottom_nav_screen_controller.dart';
+import 'package:linx/features/app/core/presentation/model/in_app_state.dart';
+import 'package:linx/features/app/discover/presentation/discover_screen_controller.dart';
 import 'package:linx/features/app/discover/ui/discover_screen.dart';
 import 'package:linx/features/app/match/ui/matches_screen.dart';
 import 'package:linx/features/app/pitch/ui/pitches_screen.dart';
 import 'package:linx/features/app/request/ui/request_screen.dart';
 import 'package:linx/features/app/search/ui/search_screen.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_info.dart';
-import 'package:linx/features/user/domain/model/user_type.dart';
 
 final _bottomNavigationStateProvider = StateProvider<int>((ref) => 0);
 
 class AppBottomNavigationScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var selectedIndex = ref.watch(_bottomNavigationStateProvider);
-    var uiState = ref.watch(appBottomNavScreenControllerProvider);
+    final selectedIndex = ref.watch(_bottomNavigationStateProvider);
+    final uiState = ref.watch(appBottomNavScreenControllerProvider);
 
-    var bottomNavItems = uiState.currentUser?.type == UserType.club
-        ? _getClubBottomNavBarItems(selectedIndex)
-        : _getBusinessBottomNavBarItems(selectedIndex);
-    var body = _buildBody(uiState.currentUser, selectedIndex);
+    if (uiState.state == InAppState.loading) {
+      return LinxLoadingSpinner();
+    } else {
+      final user = uiState.currentUser!;
+      ref.read(currentUserProvider.notifier).state = user;
+      final bottomNavItems = user.info.isClub()
+          ? _getClubBottomNavBarItems(selectedIndex)
+          : _getBusinessBottomNavBarItems(selectedIndex);
+      final body = _buildBody(ref, user, selectedIndex);
 
-    return BaseScaffold(
-      bottomNav: BottomNavigationBar(
-        unselectedLabelStyle: _getLabelTextStyle(false),
-        selectedLabelStyle: _getLabelTextStyle(true),
-        selectedItemColor: _getSelectedColor(true),
-        unselectedItemColor: _getSelectedColor(false),
-        type: BottomNavigationBarType.fixed,
-        currentIndex: selectedIndex,
-        onTap: (index) => _onItemTapped(index, ref),
-        items: bottomNavItems,
-      ),
-      body: Center(child: body),
-    );
+      return BaseScaffold(
+        bottomNav: BottomNavigationBar(
+          unselectedLabelStyle: _getLabelTextStyle(false),
+          selectedLabelStyle: _getLabelTextStyle(true),
+          selectedItemColor: _getSelectedColor(true),
+          unselectedItemColor: _getSelectedColor(false),
+          type: BottomNavigationBarType.fixed,
+          currentIndex: selectedIndex,
+          onTap: (index) => _onItemTapped(index, ref),
+          items: bottomNavItems,
+        ),
+        body: Center(child: body),
+      );
+    }
   }
 
-  Widget _buildBody(UserInfo? info, int selectedIndex) {
-    Widget body;
-    if (info == null) {
-      body = LinxLoadingSpinner();
-    } else {
-      final isClub = info.isClub();
-      final firstScreen = isClub ? DiscoverScreen() : RequestScreen();
-      final secondScreen = isClub ? SearchScreen() : DiscoverScreen();
-      final thirdScreen = isClub ? PitchesScreen() : MatchesScreen();
-      List<Widget> pages = [
-        firstScreen,
-        secondScreen,
-        thirdScreen,
-        ChatHomeScreen(),
-      ];
-      body = pages.elementAt(selectedIndex);
-    }
+  Widget _buildBody(WidgetRef ref, LinxUser user, int selectedIndex) {
+    final isClub = user.info.isClub();
+    final thirdScreen = isClub ? PitchesScreen() : MatchesScreen();
+    List<Widget> pages = [
+      _buildFirstScreen(ref, user, isClub),
+      _buildSecondScreen(ref, user, isClub),
+      thirdScreen,
+      ChatHomeScreen(),
+    ];
+    final body = pages.elementAt(selectedIndex);
     return body;
   }
 
@@ -134,5 +135,25 @@ class AppBottomNavigationScreen extends ConsumerWidget {
         color: _getSelectedColor(isSelected),
         fontSize: 11.0,
         fontWeight: FontWeight.w500);
+  }
+
+  Widget _buildFirstScreen(WidgetRef ref, LinxUser user, bool isClub) {
+    if (isClub) {
+      final state = ref.watch(discoverScreenControllerProvider);
+      final controller = ref.watch(discoverScreenControllerProvider.notifier);
+      return DiscoverScreen(state, controller);
+    } else {
+      return RequestScreen();
+    }
+  }
+
+  Widget _buildSecondScreen(WidgetRef ref, LinxUser user, bool isClub) {
+    if (isClub) {
+      return SearchScreen();
+    } else {
+      final state = ref.watch(discoverScreenControllerProvider);
+      final controller = ref.watch(discoverScreenControllerProvider.notifier);
+      return DiscoverScreen(state, controller);
+    }
   }
 }
