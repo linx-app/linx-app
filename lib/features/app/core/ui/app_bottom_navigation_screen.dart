@@ -28,7 +28,6 @@ class AppBottomNavigationScreen extends ConsumerWidget {
       return LinxLoadingSpinner();
     } else {
       final user = uiState.currentUser!;
-      ref.read(currentUserProvider.notifier).state = user;
       final bottomNavItems = user.info.isClub()
           ? _getClubBottomNavBarItems(selectedIndex)
           : _getBusinessBottomNavBarItems(selectedIndex);
