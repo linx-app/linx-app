@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/user/data/model/user_dto.dart';
 import 'package:linx/features/user/domain/model/user_type.dart';
+import 'package:linx/firebase/firebase_extensions.dart';
 import 'package:linx/firebase/firebase_providers.dart';
 import 'package:linx/firebase/firestore_paths.dart';
 
@@ -148,6 +149,17 @@ class UserRepository {
   Future<void> addToRecentSearches(String uid, String search) async {
     await _firestore.collection(FirestorePaths.USERS).doc(uid).update({
       FirestorePaths.SEARCHES: FieldValue.arrayUnion([search])
+    });
+  }
+
+  Future<List<String>> fetchRecentSearches(String uid) async {
+    return await _firestore
+        .collection(FirestorePaths.USERS)
+        .doc(uid)
+        .get()
+        .then((doc) {
+      final data = doc.data() as Map<String, dynamic>;
+      return (data[FirestorePaths.SEARCHES] as List<dynamic>).toStrList();
     });
   }
 }

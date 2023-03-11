@@ -12,6 +12,7 @@ import 'package:linx/features/app/match/ui/matches_screen.dart';
 import 'package:linx/features/app/pitch/ui/pitches_screen.dart';
 import 'package:linx/features/app/request/presentation/request_screen_controller.dart';
 import 'package:linx/features/app/request/ui/request_screen.dart';
+import 'package:linx/features/app/search/presentation/search_screen_controller.dart';
 import 'package:linx/features/app/search/ui/search_screen.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_info.dart';
@@ -151,7 +152,9 @@ class AppBottomNavigationScreen extends ConsumerWidget {
 
   Widget _buildSecondScreen(WidgetRef ref, LinxUser user, bool isClub) {
     if (isClub) {
-      return SearchScreen();
+      final state = ref.watch(searchScreenControllerProvider);
+      final controller = ref.watch(searchScreenControllerProvider.notifier);
+      return SearchScreen(state, controller);
     } else {
       final state = ref.watch(discoverScreenControllerProvider);
       final controller = ref.watch(discoverScreenControllerProvider.notifier);

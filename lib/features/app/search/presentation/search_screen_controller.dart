@@ -1,33 +1,36 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
+import 'package:linx/features/app/core/presentation/app_bottom_nav_screen_controller.dart';
+import 'package:linx/features/app/core/ui/model/search_state.dart';
+import 'package:linx/features/app/search/domain/fetch_recent_searches_service.dart';
 import 'package:linx/features/app/search/domain/fetch_same_location_users_service.dart';
 import 'package:linx/features/app/search/domain/model/search_group.dart';
 import 'package:linx/features/app/search/domain/model/user_search_page.dart';
 import 'package:linx/features/app/search/domain/search_users_service.dart';
-import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
-import 'package:linx/features/app/core/ui/model/search_state.dart';
-import 'package:linx/features/user/domain/model/user_info.dart';
-import 'package:linx/features/user/domain/user_service.dart';
+import 'package:linx/features/user/domain/model/linx_user.dart';
 
 final searchScreenControllerProvider = StateNotifierProvider.autoDispose<
     SearchScreenController, SearchScreenUiState>(
   (ref) => SearchScreenController(
-    ref.read(UserService.provider),
+    ref.watch(currentUserProvider),
+    ref.read(FetchRecentSearchesService.provider),
     ref.read(FetchSameLocationUsersService.provider),
     ref.read(SearchUsersService.provider),
   ),
 );
 
 class SearchScreenController extends StateNotifier<SearchScreenUiState> {
-  final UserService _userService;
   final FetchSameLocationUsersService _fetchSameLocationUsers;
   final SearchUsersService _searchUsersService;
+  final FetchRecentSearchesService _fetchRecentSearchesService;
+  final LinxUser? _currentUser;
 
   late UserSearchPage? _currentPage;
   late List<SearchGroup> _groups;
-  late UserInfo _currentUser;
 
   SearchScreenController(
-    this._userService,
+    this._currentUser,
+    this._fetchRecentSearchesService,
     this._fetchSameLocationUsers,
     this._searchUsersService,
   ) : super(SearchScreenUiState(state: SearchState.loading)) {
@@ -35,8 +38,8 @@ class SearchScreenController extends StateNotifier<SearchScreenUiState> {
   }
 
   void initialize() async {
-    _currentUser = await _userService.fetchUserInfo();
-    _groups = await _fetchSameLocationUsers.execute(_currentUser);
+    if (_currentUser == null) return;
+    _groups = await _fetchSameLocationUsers.execute(_currentUser!.info);
     state = SearchScreenUiState(state: SearchState.initial, groups: _groups);
   }
 
@@ -55,10 +58,11 @@ class SearchScreenController extends StateNotifier<SearchScreenUiState> {
     );
   }
 
-  void onSearchInitiated() {
+  void onSearchInitiated() async {
+    final recents = await _fetchRecentSearchesService.execute(_currentUser!);
     state = SearchScreenUiState(
       state: SearchState.searching,
-      recentSearches: _currentUser.searches,
+      recentSearches: recents,
     );
   }
 
@@ -68,11 +72,10 @@ class SearchScreenController extends StateNotifier<SearchScreenUiState> {
       state = SearchScreenUiState(state: SearchState.initial, groups: _groups);
     } else {
       _currentPage =
-          await _searchUsersService.execute(_currentUser, searchField);
-      _currentUser = await _userService.fetchUserInfo();
+          await _searchUsersService.execute(_currentUser!.info, searchField);
 
       final length = _currentPage!.users.length;
-      final subtitle = "Results for \"$searchField\" ($length})";
+      final subtitle = "Results for \"$searchField\" ($length)";
 
       state = SearchScreenUiState(
         state: SearchState.results,
