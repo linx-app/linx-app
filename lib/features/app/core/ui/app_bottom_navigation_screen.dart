@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/common/linx_loading_spinner.dart';
 import 'package:linx/constants/colors.dart';
-import 'package:linx/features/app/chat/chat_home_screen.dart';
+import 'package:linx/features/app/chat/ui/chat_home_screen.dart';
 import 'package:linx/features/app/core/presentation/app_bottom_nav_screen_controller.dart';
 import 'package:linx/features/app/core/presentation/model/in_app_state.dart';
 import 'package:linx/features/app/discover/presentation/discover_screen_controller.dart';
