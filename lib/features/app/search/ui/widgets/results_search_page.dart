@@ -26,7 +26,7 @@ class ResultsSearchPage extends StatelessWidget {
     for (var i = 0; i < page.users.length; i++) {
       cards.add(
         SmallProfileCard(
-          user: page.users[i],
+          data: SmallProfileCardData.fromLinxUser(page.users[i]),
           onPressed: () => onSmallCardPressed(i),
         ),
       );

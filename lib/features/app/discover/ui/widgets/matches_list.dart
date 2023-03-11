@@ -11,7 +11,7 @@ List<SmallProfileCard> buildMatchesList({
   for (int i = 0; i < users.length; i++) {
     cards.add(
       SmallProfileCard(
-        user: users[i],
+        data: SmallProfileCardData.fromLinxUser(users[i]),
         onPressed: () => onPressed(i),
       ),
     );

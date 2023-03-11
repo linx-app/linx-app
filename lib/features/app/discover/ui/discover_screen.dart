@@ -200,7 +200,6 @@ class DiscoverScreen extends ConsumerWidget {
     WidgetRef ref,
     DiscoverScreenUiState state,
   ) {
-    print(state.recents);
     switch (state.state) {
       case SearchState.initial:
         return Column(

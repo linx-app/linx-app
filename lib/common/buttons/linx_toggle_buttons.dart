@@ -14,8 +14,14 @@ final toggleButtonIndexSelectedProvider = StateProvider.autoDispose((ref) => 0);
 class LinxToggleButtons extends ConsumerWidget {
   final ToggleButton firstButton;
   final ToggleButton secondButton;
+  final Function(int)? onNewTogglePressed;
 
-  const LinxToggleButtons(this.firstButton, this.secondButton, {super.key});
+  const LinxToggleButtons({
+    super.key,
+    required this.firstButton,
+    required this.secondButton,
+    this.onNewTogglePressed,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,6 +45,9 @@ class LinxToggleButtons extends ConsumerWidget {
           minWidth: (context.width() - 58.0) / 2,
         ),
         onPressed: (int index) {
+          if (selectedList[index] != true) {
+            onNewTogglePressed?.call(index);
+          }
           _onUserToggledPressed(index, ref);
         },
         children: [firstButton, secondButton],

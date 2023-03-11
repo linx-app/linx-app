@@ -33,6 +33,7 @@ class FirestorePaths {
   static const String NOTIFICATION_TOKEN = "notification_token";
   static const String PITCHES_TO = "pitches_to";
   static const String SEARCHES = "searches";
+  static const String NEW_MATCHES = "new_matches";
 
   /// PITCH COLLECTION ///
   static const String PITCHES = "pitches";
@@ -48,4 +49,5 @@ class FirestorePaths {
   static const String MATCHES = "matches";
   static const String BUSINESS = "business";
   static const String CLUB = "club";
+  static const String IS_NEW = "is_new";
 }

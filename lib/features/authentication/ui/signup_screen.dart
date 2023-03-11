@@ -66,8 +66,8 @@ class SignUpScreen extends OnboardingView {
 
   Widget _buildUserTypeToggle(BuildContext context, WidgetRef ref) {
     return const LinxToggleButtons(
-      ToggleButton(label: "Club/Team", index: 0),
-      ToggleButton(label: "Business", index: 1),
+      firstButton: ToggleButton(label: "Club/Team", index: 0),
+      secondButton: ToggleButton(label: "Business", index: 1),
     );
   }
 

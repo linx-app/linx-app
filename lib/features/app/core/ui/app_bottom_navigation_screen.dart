@@ -6,7 +6,8 @@ import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/chat/chat_home_screen.dart';
 import 'package:linx/features/app/core/presentation/app_bottom_nav_screen_controller.dart';
 import 'package:linx/features/app/discover/ui/discover_screen.dart';
-import 'package:linx/features/app/pitch/pitches_screen.dart';
+import 'package:linx/features/app/match/ui/matches_screen.dart';
+import 'package:linx/features/app/pitch/ui/pitches_screen.dart';
 import 'package:linx/features/app/request/ui/request_screen.dart';
 import 'package:linx/features/app/search/ui/search_screen.dart';
 import 'package:linx/features/user/domain/model/user_info.dart';
@@ -45,13 +46,14 @@ class AppBottomNavigationScreen extends ConsumerWidget {
     if (info == null) {
       body = LinxLoadingSpinner();
     } else {
-      var isClub = info.type == UserType.club;
-      var firstScreen = isClub ? DiscoverScreen() : RequestScreen();
-      var secondScreen = isClub ? SearchScreen() : DiscoverScreen();
+      final isClub = info.isClub();
+      final firstScreen = isClub ? DiscoverScreen() : RequestScreen();
+      final secondScreen = isClub ? SearchScreen() : DiscoverScreen();
+      final thirdScreen = isClub ? PitchesScreen() : MatchesScreen();
       List<Widget> pages = [
         firstScreen,
         secondScreen,
-        PitchesScreen(),
+        thirdScreen,
         ChatHomeScreen(),
       ];
       body = pages.elementAt(selectedIndex);

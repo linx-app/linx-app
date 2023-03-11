@@ -38,7 +38,7 @@ List<SmallProfileCard> buildRequestsList({
   for (int i = 0; i < requests.length; i++) {
     cards.add(
       SmallProfileCard(
-          user: requests[i].sender,
+          data: SmallProfileCardData.fromLinxUser(requests[i].sender),
           onPressed: () => onPressed(i),
       ),
     );

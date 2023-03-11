@@ -7,13 +7,13 @@ const double buttonRadius = 50.0;
 
 class RoundedButton extends StatelessWidget {
   final ButtonStyle style;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final String text;
 
   // ignore: use_key_in_widget_constructors
   const RoundedButton({
     required this.style,
-    required this.onPressed,
+    this.onPressed,
     required this.text,
   });
 

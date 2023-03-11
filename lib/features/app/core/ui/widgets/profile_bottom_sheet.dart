@@ -23,7 +23,7 @@ class ProfileBottomSheet extends StatelessWidget {
   final VoidCallback? onXPressed;
   final Request? request;
   final String mainButtonText;
-  final VoidCallback onMainButtonPressed;
+  final VoidCallback? onMainButtonPressed;
 
   const ProfileBottomSheet({
     super.key,
@@ -31,7 +31,7 @@ class ProfileBottomSheet extends StatelessWidget {
     this.request,
     this.onXPressed,
     required this.mainButtonText,
-    required this.onMainButtonPressed,
+    this.onMainButtonPressed,
   });
 
   @override
