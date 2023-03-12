@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/common/linx_loading_spinner.dart';
 import 'package:linx/common/rounded_border.dart';
@@ -9,15 +8,18 @@ import 'package:linx/features/app/core/ui/widgets/profile_bottom_sheet.dart';
 import 'package:linx/features/app/core/ui/widgets/small_profile_card.dart';
 import 'package:linx/features/app/match/presentation/matches_screen_controller.dart';
 import 'package:linx/features/app/match/ui/model/matches_screen_state.dart';
-import 'package:linx/features/app/match/domain/model/match.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
-class MatchesScreen extends ConsumerWidget {
+class MatchesScreen extends StatelessWidget {
+  final MatchesScreenUiState _state;
+  final MatchesScreenController _controller;
+
+  const MatchesScreen(this._state, this._controller, {super.key});
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final uiState = ref.watch(matchesScreenControllerProvider);
-    Widget body = _buildBody(context, ref, uiState);
+  Widget build(BuildContext context) {
+    Widget body = _buildBody(context);
 
     return BaseScaffold(
       body: SingleChildScrollView(
@@ -32,24 +34,20 @@ class MatchesScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildBody(
-    BuildContext context,
-    WidgetRef ref,
-    MatchesScreenUiState state,
-  ) {
-    switch (state.state) {
+  Widget _buildBody(BuildContext context,) {
+    switch (_state.state) {
       case MatchesScreenState.loading:
         return SizedBox(
           height: context.height() * 0.5,
           child: LinxLoadingSpinner(),
         );
       case MatchesScreenState.results:
-        return _buildMatchesList(context, state.matches);
+        return _buildMatchesList(context);
     }
   }
 
-  Widget _buildMatchesList(BuildContext context, List<Match> matches) {
-    final cards = matches.map((e) {
+  Widget _buildMatchesList(BuildContext context) {
+    final cards = _state.matches.map((e) {
       final data = SmallProfileCardData.fromMatch(e);
       return SmallProfileCard(
         data: data,

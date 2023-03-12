@@ -8,6 +8,7 @@ import 'package:linx/features/app/core/presentation/app_bottom_nav_screen_contro
 import 'package:linx/features/app/core/presentation/model/in_app_state.dart';
 import 'package:linx/features/app/discover/presentation/discover_screen_controller.dart';
 import 'package:linx/features/app/discover/ui/discover_screen.dart';
+import 'package:linx/features/app/match/presentation/matches_screen_controller.dart';
 import 'package:linx/features/app/match/ui/matches_screen.dart';
 import 'package:linx/features/app/pitch/presentation/pitches_screen_controller.dart';
 import 'package:linx/features/app/pitch/ui/pitches_screen.dart';
@@ -168,7 +169,9 @@ class AppBottomNavigationScreen extends ConsumerWidget {
       final controller = ref.watch(pitchesScreenControllerProvider.notifier);
       return PitchesScreen(state, controller);
     } else {
-      return MatchesScreen();
+      final state = ref.watch(matchesScreenControllerProvider);
+      final controller = ref.watch(matchesScreenControllerProvider.notifier);
+      return MatchesScreen(state, controller);
     }
   }
 }
