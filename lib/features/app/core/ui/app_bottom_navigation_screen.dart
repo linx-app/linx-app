@@ -9,6 +9,7 @@ import 'package:linx/features/app/core/presentation/model/in_app_state.dart';
 import 'package:linx/features/app/discover/presentation/discover_screen_controller.dart';
 import 'package:linx/features/app/discover/ui/discover_screen.dart';
 import 'package:linx/features/app/match/ui/matches_screen.dart';
+import 'package:linx/features/app/pitch/presentation/pitches_screen_controller.dart';
 import 'package:linx/features/app/pitch/ui/pitches_screen.dart';
 import 'package:linx/features/app/request/presentation/request_screen_controller.dart';
 import 'package:linx/features/app/request/ui/request_screen.dart';
@@ -52,11 +53,10 @@ class AppBottomNavigationScreen extends ConsumerWidget {
 
   Widget _buildBody(WidgetRef ref, LinxUser user, int selectedIndex) {
     final isClub = user.info.isClub();
-    final thirdScreen = isClub ? PitchesScreen() : MatchesScreen();
     List<Widget> pages = [
       _buildFirstScreen(ref, user, isClub),
       _buildSecondScreen(ref, user, isClub),
-      thirdScreen,
+      _buildThirdScreen(ref, user, isClub),
       ChatHomeScreen(),
     ];
     final body = pages.elementAt(selectedIndex);
@@ -159,6 +159,16 @@ class AppBottomNavigationScreen extends ConsumerWidget {
       final state = ref.watch(discoverScreenControllerProvider);
       final controller = ref.watch(discoverScreenControllerProvider.notifier);
       return DiscoverScreen(state, controller);
+    }
+  }
+
+  Widget _buildThirdScreen(WidgetRef ref, LinxUser user, bool isClub) {
+    if (isClub) {
+      final state = ref.watch(pitchesScreenControllerProvider);
+      final controller = ref.watch(pitchesScreenControllerProvider.notifier);
+      return PitchesScreen(state, controller);
+    } else {
+      return MatchesScreen();
     }
   }
 }

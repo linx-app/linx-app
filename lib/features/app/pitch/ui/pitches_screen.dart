@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/common/buttons/linx_toggle_buttons.dart';
 import 'package:linx/common/buttons/toggle_button.dart';
@@ -16,15 +15,18 @@ import 'package:linx/features/app/request/domain/model/request.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
-class PitchesScreen extends ConsumerWidget {
+class PitchesScreen extends StatelessWidget {
   final firstToggleButton = const ToggleButton(label: "Outgoing", index: 0);
   final secondToggleButton = const ToggleButton(label: "Incoming", index: 1);
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final uiState = ref.watch(pitchesScreenControllerProvider);
+  final PitchesScreenUiState _state;
+  final PitchesScreenController _controller;
 
-    Widget body = _buildBody(context, ref, uiState);
+  const PitchesScreen(this._state, this._controller, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    Widget body = _buildBody(context);
 
     return BaseScaffold(
       body: SingleChildScrollView(
@@ -32,7 +34,7 @@ class PitchesScreen extends ConsumerWidget {
           children: [
             SizedBox(height: context.height() * 0.1),
             const AppTitleBar(title: "Pitches"),
-            _buildToggleButtons(ref),
+            _buildToggleButtons(),
             body,
             SizedBox(height: context.height() * 0.05),
           ],
@@ -41,28 +43,26 @@ class PitchesScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildToggleButtons(WidgetRef ref) {
+  Widget _buildToggleButtons() {
     return Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: LinxToggleButtons(
-          firstButton: firstToggleButton,
-          secondButton: secondToggleButton,
-          onNewTogglePressed: (index) => _onTogglePressed(ref, index),
-        ));
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: LinxToggleButtons(
+        firstButton: firstToggleButton,
+        secondButton: secondToggleButton,
+        onNewTogglePressed: (index) => _onTogglePressed(index),
+      ),
+    );
   }
 
-  Widget _buildBody(
-    BuildContext context,
-    WidgetRef ref,
-    PitchesScreenUiState state,
-  ) {
-    switch (state.state) {
+  Widget _buildBody(BuildContext context) {
+    switch (_state.state) {
       case PitchesScreenState.loading:
-        return SizedBox(height: context.height() * 0.5, child: LinxLoadingSpinner());
+        return SizedBox(
+            height: context.height() * 0.5, child: LinxLoadingSpinner());
       case PitchesScreenState.outgoing:
-        return _buildOutgoingRequestsList(context, state.outgoingPitches);
+        return _buildOutgoingRequestsList(context, _state.outgoingPitches);
       case PitchesScreenState.incoming:
-        return _buildIncomingMatchesList(context, state.incomingMatches);
+        return _buildIncomingMatchesList(context, _state.incomingMatches);
     }
   }
 
@@ -139,8 +139,7 @@ class PitchesScreen extends ConsumerWidget {
     );
   }
 
-  void _onTogglePressed(WidgetRef ref, int index) {
-    final notifier = ref.read(pitchesScreenControllerProvider.notifier);
-    notifier.onTogglePressed(index);
+  void _onTogglePressed(int index) {
+    _controller.onTogglePressed(index);
   }
 }

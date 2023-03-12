@@ -4,12 +4,12 @@ import 'package:linx/common/buttons/toggle_button.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
-final toggleButtonListSelectedProvider = StateProvider.autoDispose((ref) {
+final toggleButtonListSelectedProvider = StateProvider((ref) {
   final indexSelected = ref.watch(toggleButtonIndexSelectedProvider);
   return indexSelected == 0 ? [true, false] : [false, true];
 });
 
-final toggleButtonIndexSelectedProvider = StateProvider.autoDispose((ref) => 0);
+final toggleButtonIndexSelectedProvider = StateProvider((ref) => 0);
 
 class LinxToggleButtons extends ConsumerWidget {
   final ToggleButton firstButton;
