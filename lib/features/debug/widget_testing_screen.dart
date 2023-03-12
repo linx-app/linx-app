@@ -8,6 +8,7 @@ import 'package:linx/common/linx_chip.dart';
 import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/chat/ui/model/chat_item_data.dart';
+import 'package:linx/features/app/chat/ui/widgets/chat_address_bar.dart';
 import 'package:linx/features/app/chat/ui/widgets/chat_item.dart';
 import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/app/core/ui/profile_modal_screen.dart';
@@ -69,6 +70,7 @@ class WidgetTestingScreen extends ConsumerWidget {
 
   final _chatItem = ChatItem(
     data: ChatItemData(
+      chatId: "id",
       imageUrl: "https://picsum.photos/500/300",
       name: "William's Fresh Cafe",
       lastMessage:
@@ -181,6 +183,7 @@ class WidgetTestingScreen extends ConsumerWidget {
                 _chatItem
               ]
             ),
+            _widgetContainer(ChatAddressBar()),
             SizedBox(height: context.height() * 0.05),
           ],
         ),

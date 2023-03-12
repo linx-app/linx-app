@@ -21,15 +21,12 @@ class LinxIconButton extends StatelessWidget {
     if (iconData == null && icon == null) return Empty();
 
     if (icon != null) {
-      return SizedBox(
-        height: size.height,
-        width: size.width,
+      return Material(
+        color: LinxColors.transparent,
         child: InkWell(
+          borderRadius: BorderRadius.circular(48),
           onTap: onPressed,
-          child: Image.asset(
-            "assets/sort.png",
-            color: LinxColors.subtitleGrey,
-          ),
+          child: icon,
         ),
       );
     } else {

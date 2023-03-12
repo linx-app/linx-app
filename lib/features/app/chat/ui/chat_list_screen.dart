@@ -3,6 +3,7 @@ import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/common/empty.dart';
 import 'package:linx/common/linx_loading_spinner.dart';
 import 'package:linx/features/app/chat/presentation/chat_list_screen_controller.dart';
+import 'package:linx/features/app/chat/ui/chat_creation_screen.dart';
 import 'package:linx/features/app/chat/ui/model/chat_item_data.dart';
 import 'package:linx/features/app/chat/ui/model/chat_list_screen_state.dart';
 import 'package:linx/features/app/chat/ui/widgets/chat_item.dart';
@@ -29,8 +30,8 @@ class ChatListScreen extends StatelessWidget {
             SizedBox(height: context.height() * 0.1),
             AppTitleBar(
               title: "Messages",
-              iconData: Icons.create,
-              onIconPressed: _onCreateChatPressed,
+              icon: Image.asset("create_message.png", height: 24, width: 24),
+              onIconPressed: () => _onCreateChatPressed(context),
             ),
             SearchBar(
               controller: _searchController,
@@ -60,10 +61,11 @@ class ChatListScreen extends StatelessWidget {
         .map((e) => ChatItemData.fromChat(_currentUser.info.type, e));
 
     final items = data.map(
-      (e) => ChatItem(
-        data: e,
-        onPressed: () => _onChatPressed(e.chatId),
-      ),
+          (e) =>
+          ChatItem(
+            data: e,
+            onPressed: () => _onChatPressed(e.chatId),
+          ),
     );
 
     return Column(children: [...items]);
@@ -71,8 +73,11 @@ class ChatListScreen extends StatelessWidget {
 
   void _onChatPressed(String chatId) {}
 
-  void _onCreateChatPressed() {
-
+  void _onCreateChatPressed(BuildContext context) {
+    final route = MaterialPageRoute(builder: (_) {
+      return ChatCreationScreen();
+    });
+    Navigator.of(context).push(route);
   }
 
   void _onSearchFocusChanged(bool hasFocus) {}

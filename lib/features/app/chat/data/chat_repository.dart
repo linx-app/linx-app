@@ -26,4 +26,30 @@ class ChatRepository {
       return chats;
     });
   }
+
+  Future<String?> fetchChat(String clubId, String businessId) async {
+    return _firestore
+        .collection(FirestorePaths.CHATS)
+        .where(FirestorePaths.CLUB, isEqualTo: clubId)
+        .where(FirestorePaths.BUSINESS, isEqualTo: businessId)
+        .get()
+        .then((query) {
+          if (query.docs.isEmpty) {
+            return null;
+          } else {
+            return query.docs.first.id;
+          }
+    });
+  }
+
+  Future<String> createNewChat(String clubId, String businessId) async {
+    final data = {
+      FirestorePaths.CLUB: clubId,
+      FirestorePaths.BUSINESS: businessId
+    };
+    return _firestore
+        .collection(FirestorePaths.CHATS)
+        .add(data)
+        .then((value) => value.id);
+  }
 }

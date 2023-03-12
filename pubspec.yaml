@@ -108,6 +108,8 @@ flutter:
     - sort.png
     - confirmation.png
     - empty_search.png
+    - send_message.png
+    - create_message.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
