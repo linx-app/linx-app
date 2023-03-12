@@ -1,0 +1,4 @@
+enum InAppState {
+  loading,
+  loaded;
+}

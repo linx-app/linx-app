@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/common/empty.dart';
 import 'package:linx/common/linx_loading_spinner.dart';
@@ -21,19 +20,24 @@ import 'package:linx/features/app/core/ui/search_bar.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
-class DiscoverScreen extends ConsumerWidget {
+class DiscoverScreen extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
   final String _searchText = "Search for a team or club...";
 
+  final DiscoverScreenUiState _state;
+  final DiscoverScreenController _controller;
+
+  DiscoverScreen(this._state, this._controller, {super.key});
+
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(discoverScreenControllerProvider);
-    final spacer = state.isCurrentUserClub
+  Widget build(BuildContext context) {
+    final spacer = _state.isCurrentUserClub
         ? Empty()
         : SizedBox(height: context.height() * 0.1);
-    final screenBar = state.isCurrentUserClub ? HomeAppBar() : Empty();
-    final searchBar = state.isCurrentUserClub ? Empty() : _buildSearchBar(ref);
-    final body = _buildScreenBody(context, ref, state);
+    final screenBar = _state.isCurrentUserClub ? HomeAppBar() : Empty();
+    final searchBar = _state.isCurrentUserClub ? Empty() : _buildSearchBar();
+    final body = _buildScreenBody(context);
 
     return BaseScaffold(
       body: SingleChildScrollView(
@@ -50,39 +54,32 @@ class DiscoverScreen extends ConsumerWidget {
     );
   }
 
-  SearchBar _buildSearchBar(WidgetRef ref) {
+  SearchBar _buildSearchBar() {
     return SearchBar(
       controller: _searchController,
       label: _searchText,
-      onFocusChanged: (focus) => _onSearchBarFocusChanged(ref, focus),
+      onFocusChanged: (focus) => _onSearchBarFocusChanged(focus),
       onXPressed: () {
         _searchController.clear();
-        ref
-            .read(discoverScreenControllerProvider.notifier)
-            .onSearchCompleted("");
+        _controller.onSearchCompleted("");
       },
     );
   }
 
-  void _onSearchBarFocusChanged(WidgetRef ref, bool hasFocus) {
-    final notifier = ref.read(discoverScreenControllerProvider.notifier);
+  void _onSearchBarFocusChanged(bool hasFocus) {
     if (hasFocus) {
-      notifier.onSearchInitiated();
+      _controller.onSearchInitiated();
     } else {
-      notifier.onSearchCompleted(_searchController.text);
+      _controller.onSearchCompleted(_searchController.text);
     }
   }
 
-  Widget _buildMatchesCarousel(
-    BuildContext context,
-    WidgetRef ref,
-    DiscoverScreenUiState state,
-  ) {
+  Widget _buildMatchesCarousel(BuildContext context,) {
     final pages = buildTopMatchesCarouselPages(
       context: context,
-      users: state.topMatches,
+      users: _state.topMatches,
       onMainButtonPressed: (index) {
-        _onProfileCardSeeDetailsPressed(context, ref, index, state);
+        _onProfileCardSeeDetailsPressed(context, index);
       },
     );
 
@@ -104,19 +101,11 @@ class DiscoverScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildMatchesList(
-    BuildContext context,
-    WidgetRef ref,
-    DiscoverScreenUiState state,
-  ) {
+  Widget _buildMatchesList(BuildContext context) {
     final cards = buildMatchesList(
-      users: state.nextMatches,
+      users: _state.nextMatches,
       onPressed: (index) {
-        _onSmallCardPressed(
-          context: context,
-          user: state.nextMatches[index],
-          ref: ref,
-        );
+        _onSmallCardPressed(context: context, user: _state.nextMatches[index]);
       },
     );
 
@@ -139,19 +128,14 @@ class DiscoverScreen extends ConsumerWidget {
     );
   }
 
-  void _onProfileCardSeeDetailsPressed(
-    BuildContext context,
-    WidgetRef ref,
-    int initialIndex,
-    DiscoverScreenUiState state,
-  ) {
+  void _onProfileCardSeeDetailsPressed(BuildContext context, int initialIndex) {
     final screen = ProfileModalScreen(
       initialIndex: initialIndex,
-      users: state.topMatches,
+      users: _state.topMatches,
       requests: const [],
-      isCurrentUserClub: state.isCurrentUserClub,
+      isCurrentUserClub: _state.isCurrentUserClub,
       onMainButtonPressed: (user) {
-        _onSendPitchPressed(user, context, ref);
+        _onSendPitchPressed(user, context);
       },
     );
     final builder = PageRouteBuilder(
@@ -161,11 +145,7 @@ class DiscoverScreen extends ConsumerWidget {
     Navigator.of(context).push(builder);
   }
 
-  void _onSendPitchPressed(
-    LinxUser receiver,
-    BuildContext context,
-    WidgetRef ref,
-  ) {
+  void _onSendPitchPressed(LinxUser receiver, BuildContext context) {
     final screen = SendAPitchScreen(receiver: receiver);
     final builder = PageRouteBuilder(pageBuilder: (_, __, ___) => screen);
     Navigator.of(context).push(builder);
@@ -174,7 +154,6 @@ class DiscoverScreen extends ConsumerWidget {
   void _onSmallCardPressed({
     required BuildContext context,
     required LinxUser user,
-    required WidgetRef ref,
   }) {
     final bottomSheet = SizedBox(
       height: context.height() * 0.80,
@@ -182,7 +161,7 @@ class DiscoverScreen extends ConsumerWidget {
         user: user,
         mainButtonText: "Send pitch",
         onXPressed: () => Navigator.maybePop(context),
-        onMainButtonPressed: () => _onSendPitchPressed(user, context, ref),
+        onMainButtonPressed: () => _onSendPitchPressed(user, context),
       ),
     );
 
@@ -195,30 +174,25 @@ class DiscoverScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildScreenBody(
-    BuildContext context,
-    WidgetRef ref,
-    DiscoverScreenUiState state,
-  ) {
-    switch (state.state) {
+  Widget _buildScreenBody(BuildContext context) {
+    switch (_state.state) {
       case SearchState.initial:
         return Column(
           children: [
-            _buildMatchesCarousel(context, ref, state),
-            _buildMatchesList(context, ref, state),
+            _buildMatchesCarousel(context),
+            _buildMatchesList(context),
           ],
         );
       case SearchState.results:
-        if (state.results!.users.isEmpty) {
+        if (_state.results!.users.isEmpty) {
           return EmptySearchPage();
         } else {
           return ResultsSearchPage(
-            page: state.results!,
-            subtitle: state.subtitle,
+            page: _state.results!,
+            subtitle: _state.subtitle,
             onSmallCardPressed: (index) => _onSmallCardPressed(
               context: context,
-              user: state.results!.users[index],
-              ref: ref,
+              user: _state.results!.users[index],
             ),
           );
         }
@@ -226,15 +200,14 @@ class DiscoverScreen extends ConsumerWidget {
         return LinxLoadingSpinner();
       case SearchState.searching:
         return RecentsSearchPage(
-          recents: state.recents,
-          onRecentsPressed: (search) => _onSearchCompleted(ref, search),
+          recents: _state.recents,
+          onRecentsPressed: (search) => _onSearchCompleted(search),
         );
     }
   }
 
-  void _onSearchCompleted(WidgetRef ref, String search) {
+  void _onSearchCompleted(String search) {
     _searchController.text = search;
-    final notifier = ref.read(discoverScreenControllerProvider.notifier);
-    notifier.onSearchCompleted(search);
+    _controller.onSearchCompleted(search);
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/common/linx_loading_spinner.dart';
 import 'package:linx/common/rounded_border.dart';
@@ -18,15 +17,18 @@ import 'package:linx/features/app/core/ui/search_bar.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
-class SearchScreen extends ConsumerWidget {
+class SearchScreen extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
   final String _searchText = "Search for a business...";
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final uiState = ref.watch(searchScreenControllerProvider);
+  final SearchScreenUiState _state;
+  final SearchScreenController _controller;
 
-    Widget body = _buildSearchBody(context, ref, uiState);
+  SearchScreen(this._state, this._controller, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    Widget body = _buildSearchBody(context);
 
     return BaseScaffold(
       body: SingleChildScrollView(
@@ -37,13 +39,12 @@ class SearchScreen extends ConsumerWidget {
             SearchBar(
                 controller: _searchController,
                 label: _searchText,
-                onFocusChanged: (focus) => _onSearchBarFocusChanged(ref, focus),
+                onFocusChanged: (focus) => _onSearchBarFocusChanged(focus),
                 onXPressed: () {
                   _searchController.clear();
-                  ref
-                      .read(searchScreenControllerProvider.notifier)
-                      .onSearchCompleted("");
-                }),
+                  _controller.onSearchCompleted("");
+                },
+            ),
             body,
           ],
         ),
@@ -55,79 +56,68 @@ class SearchScreen extends ConsumerWidget {
     return const AppTitleBar(title: "Search", iconData: Icons.filter_list);
   }
 
-  void _onSearchBarFocusChanged(WidgetRef ref, bool hasFocus) {
-    final notifier = ref.read(searchScreenControllerProvider.notifier);
+  void _onSearchBarFocusChanged(bool hasFocus) {
     if (hasFocus) {
-      notifier.onSearchInitiated();
+      _controller.onSearchInitiated();
     } else {
-      notifier.onSearchCompleted(_searchController.text);
+      _controller.onSearchCompleted(_searchController.text);
     }
   }
 
-  Widget _buildSearchBody(
-    BuildContext context,
-    WidgetRef ref,
-    SearchScreenUiState state,
-  ) {
-    switch (state.state) {
+  Widget _buildSearchBody(BuildContext context) {
+    switch (_state.state) {
       case SearchState.initial:
-        return _buildGroups(ref, state.groups);
+        return _buildGroups(_state.groups);
       case SearchState.results:
-        return _buildResults(context, ref, state);
+        return _buildResults(context);
       case SearchState.loading:
         return LinxLoadingSpinner();
       case SearchState.searching:
-        return _buildRecentSearches(ref, state.recentSearches);
+        return _buildRecentSearches(_state.recentSearches);
     }
   }
 
-  Widget _buildRecentSearches(WidgetRef ref, List<String> recents) {
+  Widget _buildRecentSearches(List<String> recents) {
     return RecentsSearchPage(
       recents: recents,
-      onRecentsPressed: (search) => _onSearchInitiated(ref, search),
+      onRecentsPressed: (search) => _onSearchInitiated(search),
     );
   }
 
-  Widget _buildGroups(WidgetRef ref, List<SearchGroup> groups) {
+  Widget _buildGroups(List<SearchGroup> groups) {
     return GroupSearchPage(
       groups: groups,
-      onGroupPressed: (group) => _onSearchCategoryPressed(ref, group),
+      onGroupPressed: (group) => _onSearchCategoryPressed(group),
     );
   }
 
-  Widget _buildResults(
-    BuildContext context,
-    WidgetRef ref,
-    SearchScreenUiState state,
-  ) {
-    if (state.results!.users.isEmpty) {
+  Widget _buildResults(BuildContext context) {
+    if (_state.results!.users.isEmpty) {
       return EmptySearchPage();
     } else {
       return ResultsSearchPage(
-        page: state.results!,
-        subtitle: state.subtitle,
+        page: _state.results!,
+        subtitle: _state.subtitle,
         onSmallCardPressed: (index) => _onProfileCardPressed(
           context: context,
-          ref: ref,
-          user: state.results!.users[index],
+          user: _state.results!.users[index],
         ),
       );
     }
   }
 
-  void _onSearchCategoryPressed(WidgetRef ref, SearchGroup groupSelected) {
-    final notifier = ref.read(searchScreenControllerProvider.notifier);
-    notifier.onSearchGroupSelected(groupSelected);
+  void _onSearchCategoryPressed(SearchGroup groupSelected) {
+    _controller.onSearchGroupSelected(groupSelected);
   }
 
-  void _onSearchInitiated(WidgetRef ref, String search) {
-    final notifier = ref.read(searchScreenControllerProvider.notifier);
-    notifier.onSearchCompleted(search);
+  void _onSearchInitiated(String search) {
+    _controller.onSearchCompleted(search);
+    _searchController.text = search;
+
   }
 
   void _onProfileCardPressed({
     required BuildContext context,
-    required WidgetRef ref,
     required LinxUser user,
   }) {
     var bottomSheet = SizedBox(
@@ -137,7 +127,7 @@ class SearchScreen extends ConsumerWidget {
         mainButtonText: "Send pitch",
         onXPressed: () => Navigator.maybePop(context),
         onMainButtonPressed: () {
-          _onSendPitchPressed(user, context, ref);
+          _onSendPitchPressed(user, context);
         },
       ),
     );
@@ -151,11 +141,7 @@ class SearchScreen extends ConsumerWidget {
     );
   }
 
-  void _onSendPitchPressed(
-    LinxUser receiver,
-    BuildContext context,
-    WidgetRef ref,
-  ) {
+  void _onSendPitchPressed(LinxUser receiver, BuildContext context) {
     final screen = SendAPitchScreen(receiver: receiver);
     final builder = PageRouteBuilder(pageBuilder: (_, __, ___) => screen);
     Navigator.of(context).push(builder);
