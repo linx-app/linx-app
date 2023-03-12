@@ -50,4 +50,16 @@ class FirestorePaths {
   static const String BUSINESS = "business";
   static const String CLUB = "club";
   static const String IS_NEW = "is_new";
+
+  /// CHAT COLLECTION ///
+  static const String CHATS = "chats";
+  static const String LAST_MESSAGE_ID = "last_message_id";
+  static const String LAST_MESSAGE_NEW = "last_message_new";
+
+  /// CHAT COLLECTION ///
+  static const String MESSAGES = "messages";
+  static const String CHAT_ID = "chat_id";
+  static const String CONTENT = "content";
+  static const String SENT_BY_USER_TYPE = "sent_by_user_type";
+
 }
