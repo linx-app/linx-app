@@ -7,6 +7,10 @@ import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/common/linx_chip.dart';
 import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
+import 'package:linx/features/app/chat/ui/model/chat_item_data.dart';
+import 'package:linx/features/app/chat/ui/widgets/chat_address_bar.dart';
+import 'package:linx/features/app/chat/ui/widgets/chat_item.dart';
+import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/app/core/ui/profile_modal_screen.dart';
 import 'package:linx/features/app/core/ui/widgets/profile_bottom_sheet.dart';
 import 'package:linx/features/app/core/ui/widgets/profile_card.dart';
@@ -14,7 +18,6 @@ import 'package:linx/features/app/core/ui/widgets/profile_modal_card.dart';
 import 'package:linx/features/app/core/ui/widgets/small_profile_card.dart';
 import 'package:linx/features/app/request/domain/model/request.dart';
 import 'package:linx/features/app/request/ui/widgets/request_screen_widgets.dart';
-import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/image_upload/ui/image_uploader.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_info.dart';
@@ -55,7 +58,7 @@ class WidgetTestingScreen extends ConsumerWidget {
       packages: [],
       matchPercentage: 10,
     ),
-    receiver:  LinxUser(
+    receiver: LinxUser(
       info: const UserInfo(uid: ""),
       packages: [],
       matchPercentage: 10,
@@ -63,6 +66,16 @@ class WidgetTestingScreen extends ConsumerWidget {
     createdAt: DateTime.now(),
     message:
         "This is a sample pitch for sample and test reasons, nothing more. I need to fill this space. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna adipiscing elit eiusmod  dolore magna, Lorem ipsum dolor sit amet, consectetur adipiscing elit,",
+  );
+
+  final _chatItem = ChatItem(
+    data: ChatItemData(
+      chatId: "id",
+      imageUrl: "https://picsum.photos/500/300",
+      name: "William's Fresh Cafe",
+      lastMessage:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna adipiscing elit",
+    ),
   );
 
   LinxUser _fetchTestUser({
@@ -163,6 +176,15 @@ class WidgetTestingScreen extends ConsumerWidget {
             _widgetContainer(
               ImageUploader((p0) {}),
             ),
+            Column(
+              children: [
+                _chatItem,
+                _chatItem,
+                _chatItem
+              ]
+            ),
+            _widgetContainer(ChatAddressBar()),
+            SizedBox(height: context.height() * 0.05),
           ],
         ),
       ),

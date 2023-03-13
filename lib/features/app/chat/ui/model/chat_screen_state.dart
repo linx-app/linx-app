@@ -1,0 +1,4 @@
+enum ChatScreenState {
+  loading,
+  loaded;
+}

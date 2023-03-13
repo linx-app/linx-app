@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/common/linx_loading_spinner.dart';
 import 'package:linx/constants/colors.dart';
-import 'package:linx/features/app/chat/chat_home_screen.dart';
+import 'package:linx/features/app/chat/presentation/chat_list_screen_controller.dart';
+import 'package:linx/features/app/chat/ui/chat_list_screen.dart';
 import 'package:linx/features/app/core/presentation/app_bottom_nav_screen_controller.dart';
 import 'package:linx/features/app/core/presentation/model/in_app_state.dart';
 import 'package:linx/features/app/discover/presentation/discover_screen_controller.dart';
@@ -58,7 +59,7 @@ class AppBottomNavigationScreen extends ConsumerWidget {
       _buildFirstScreen(ref, user, isClub),
       _buildSecondScreen(ref, user, isClub),
       _buildThirdScreen(ref, user, isClub),
-      ChatHomeScreen(),
+      _buildFourthScreen(ref, user, isClub),
     ];
     final body = pages.elementAt(selectedIndex);
     return body;
@@ -173,5 +174,11 @@ class AppBottomNavigationScreen extends ConsumerWidget {
       final controller = ref.watch(matchesScreenControllerProvider.notifier);
       return MatchesScreen(state, controller);
     }
+  }
+
+  Widget _buildFourthScreen(WidgetRef ref, LinxUser user, bool isClub) {
+    final state = ref.watch(chatListScreenControllerProvider);
+    final controller = ref.watch(chatListScreenControllerProvider.notifier);
+    return ChatListScreen(user, state, controller);
   }
 }
