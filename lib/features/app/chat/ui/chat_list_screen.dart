@@ -4,6 +4,7 @@ import 'package:linx/common/empty.dart';
 import 'package:linx/common/linx_loading_spinner.dart';
 import 'package:linx/features/app/chat/presentation/chat_list_screen_controller.dart';
 import 'package:linx/features/app/chat/ui/chat_creation_screen.dart';
+import 'package:linx/features/app/chat/ui/chat_screen.dart';
 import 'package:linx/features/app/chat/ui/model/chat_item_data.dart';
 import 'package:linx/features/app/chat/ui/model/chat_list_screen_state.dart';
 import 'package:linx/features/app/chat/ui/widgets/chat_item.dart';
@@ -38,25 +39,25 @@ class ChatListScreen extends StatelessWidget {
               label: "Search",
               onFocusChanged: _onSearchFocusChanged,
             ),
-            _buildBody()
+            _buildBody(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext context) {
     switch (_state.state) {
       case ChatListScreenState.loading:
         return LinxLoadingSpinner();
       case ChatListScreenState.results:
-        return _buildChatList();
+        return _buildChatList(context);
       case ChatListScreenState.searching:
         return Empty();
     }
   }
 
-  Widget _buildChatList() {
+  Widget _buildChatList(BuildContext context) {
     final data = _state.chats
         .map((e) => ChatItemData.fromChat(_currentUser.info.type, e));
 
@@ -64,14 +65,18 @@ class ChatListScreen extends StatelessWidget {
           (e) =>
           ChatItem(
             data: e,
-            onPressed: () => _onChatPressed(e.chatId),
+            onPressed: () => _onChatPressed(context, e.chatId),
           ),
     );
 
     return Column(children: [...items]);
   }
 
-  void _onChatPressed(String chatId) {}
+  void _onChatPressed(BuildContext context, String chatId) {
+    _controller.onChatSelected(chatId);
+    final route = MaterialPageRoute(builder: (_) => ChatScreen());
+    Navigator.of(context).push(route);
+  }
 
   void _onCreateChatPressed(BuildContext context) {
     final route = MaterialPageRoute(builder: (_) {

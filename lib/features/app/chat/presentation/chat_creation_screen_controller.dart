@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/app/chat/domain/fetch_chat_user_suggestions_service.dart';
 import 'package:linx/features/app/chat/domain/model/chat_user_suggestion.dart';
 import 'package:linx/features/app/chat/domain/send_message_service.dart';
+import 'package:linx/features/app/chat/presentation/chat_screen_controller.dart';
 import 'package:linx/features/app/chat/ui/model/chat_creation_screen_state.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_info.dart';
@@ -13,6 +14,7 @@ final chatCreationScreenControllerProvider = StateNotifierProvider.autoDispose<
     ref.read(UserService.provider),
     ref.read(FetchChatUserSuggestionsService.provider),
     ref.read(SendMessageService.provider),
+    ref.read(selectedChatIdUpdater),
   ),
 );
 
@@ -21,6 +23,7 @@ class ChatCreationScreenController
   final UserService _userService;
   final FetchChatUserSuggestionsService _fetchChatUserSuggestionsService;
   final SendMessageService _sendMessageService;
+  final Function(String?) _updateSelectedChatId;
 
   late LinxUser _currentUser;
   late List<ChatUserSuggestion> _fullSuggestionList;
@@ -30,6 +33,7 @@ class ChatCreationScreenController
     this._userService,
     this._fetchChatUserSuggestionsService,
     this._sendMessageService,
+    this._updateSelectedChatId,
   ) : super(ChatCreationScreenUiState()) {
     _initialize();
   }
@@ -57,12 +61,13 @@ class ChatCreationScreenController
 
   Future<bool> onMessageSendPressed(String message) async {
     if (_selectedUser != null) {
-      await _sendMessageService.execute(
+      final chatId = await _sendMessageService.execute(
         _currentUser.info.isClub(),
         _currentUser.info.uid,
         _selectedUser!.userId,
         message,
       );
+      _updateSelectedChatId.call(chatId);
       return true;
     }
     return false;
