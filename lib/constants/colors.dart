@@ -48,4 +48,7 @@ abstract class LinxColors {
   static const Color red = Color(0xFFBE3030);
 
   static const Color grey6 = Color(0xFFF2F2F2);
+
+  static const Color messageBubbleGrey = Color(0xFFDADADA);
+  static const Color messageBubbleGreen = Color(0xFF29B38A);
 }

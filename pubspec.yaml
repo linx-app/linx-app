@@ -44,6 +44,7 @@ dependencies:
   # UI
   dotted_border: ^2.0.0+3
   dots_indicator: ^2.1.0
+  chat_bubbles: ^1.4.1
 
   # Riverpod
   flutter_riverpod: ^2.1.1
