@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:linx/common/separator_line.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/chat/ui/model/chat_item_data.dart';
-import 'package:linx/utils/ui_extensions.dart';
 
 class ChatItem extends StatelessWidget {
   final _nameTextStyle = const TextStyle(
@@ -26,18 +26,21 @@ class ChatItem extends StatelessWidget {
       onTap: onPressed,
       child: Column(
         children: [
-          _buildSeparatorLine(context),
+          const SeparatorLine(),
           Row(
             children: [
               _buildProfileImage(),
               Expanded(child: _buildChatDetails()),
               Container(
-                padding: EdgeInsets.only(right: 24),
-                child: const Icon(Icons.chevron_right),
+                padding: const EdgeInsets.only(right: 24),
+                child: const Icon(
+                  Icons.chevron_right,
+                  color: LinxColors.locationTextGrey,
+                ),
               ),
             ],
           ),
-          _buildSeparatorLine(context),
+          const SeparatorLine(),
         ],
       ),
     );
@@ -56,8 +59,8 @@ class ChatItem extends StatelessWidget {
 
   Container _buildChatDetails() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12),
-      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      alignment: Alignment.centerLeft,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,14 +79,6 @@ class ChatItem extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildSeparatorLine(BuildContext context) {
-    return Container(
-      height: 1,
-      width: context.width(),
-      color: LinxColors.grey6,
     );
   }
 }
