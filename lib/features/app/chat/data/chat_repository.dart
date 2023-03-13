@@ -12,7 +12,26 @@ class ChatRepository {
 
   ChatRepository(this._firestore);
 
-  Future<List<ChatDTO>> fetchAllChats(bool isClub, String uid) async {
+  Stream<List<ChatDTO>> subscribeToChats(bool isClub, String uid) {
+    final userIdField = isClub ? FirestorePaths.CLUB : FirestorePaths.BUSINESS;
+    return _firestore
+        .collection(FirestorePaths.CHATS)
+        .where(userIdField, isEqualTo: uid)
+        .snapshots()
+        .map((event) {
+      final chats = <ChatDTO>[];
+      for (var change in event.docChanges) {
+        final doc = change.doc;
+        final data = doc.data();
+        if (data != null) {
+          chats.add(ChatDTO.fromNetwork(doc.id, data));
+        }
+      }
+      return chats;
+    });
+  }
+
+  Future<List<ChatDTO>> fetchAllChats(bool isClub, String uid) {
     final userIdField = isClub ? FirestorePaths.CLUB : FirestorePaths.BUSINESS;
     return _firestore
         .collection(FirestorePaths.CHATS)
@@ -34,12 +53,27 @@ class ChatRepository {
         .where(FirestorePaths.BUSINESS, isEqualTo: businessId)
         .get()
         .then((query) {
-          if (query.docs.isEmpty) {
-            return null;
-          } else {
-            return query.docs.first.id;
-          }
+      if (query.docs.isEmpty) {
+        return null;
+      } else {
+        return query.docs.first.id;
+      }
     });
+  }
+
+  Future<ChatDTO> fetchChatById(String chatId) async {
+    return _firestore
+        .collection(FirestorePaths.CHATS)
+        .doc(chatId)
+        .get()
+        .then((value) => ChatDTO.fromNetwork(value.id, value.data()!));
+  }
+
+  Future<void> updateLastMessageId(String chatId, String messageId) async {
+    _firestore
+        .collection(FirestorePaths.CHATS)
+        .doc(chatId)
+        .update({FirestorePaths.LAST_MESSAGE_ID: messageId});
   }
 
   Future<String> createNewChat(String clubId, String businessId) async {
