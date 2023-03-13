@@ -26,6 +26,33 @@ class MessageRepository {
         );
   }
 
+  Future<List<MessageDTO>> fetchMessagesFromChat(String chatId) async {
+    return await _firestore
+        .collection(FirestorePaths.MESSAGES)
+        .where(FirestorePaths.CHAT_ID, isEqualTo: chatId)
+        .orderBy(FirestorePaths.CREATED_AT)
+        .get()
+        .then((query) => _mapQueryToMessages(query));
+  }
+
+  Stream<List<MessageDTO>> subscribeToNewMessages(String chatId) {
+    return _firestore
+        .collection(FirestorePaths.MESSAGES)
+        .where(FirestorePaths.CHAT_ID, isEqualTo: chatId)
+        .orderBy(FirestorePaths.CREATED_AT)
+        .snapshots()
+        .map((event) {
+      final messages = <MessageDTO>[];
+      for (final change in event.docChanges) {
+        final data = change.doc.data();
+        if (data != null) {
+          messages.add(MessageDTO.fromNetwork(change.doc.id, data));
+        }
+      }
+      return messages;
+    });
+  }
+
   Future<String> createNewMessage(
     String chatId,
     String content,
@@ -42,5 +69,17 @@ class MessageRepository {
         .collection(FirestorePaths.MESSAGES)
         .add(data)
         .then((value) => value.id);
+  }
+
+  List<MessageDTO> _mapQueryToMessages(QuerySnapshot query) {
+    final messages = <MessageDTO>[];
+    for (final doc in query.docs) {
+      final data = doc.data();
+      if (data != null) {
+        messages
+            .add(MessageDTO.fromNetwork(doc.id, data as Map<String, dynamic>));
+      }
+    }
+    return messages;
   }
 }
