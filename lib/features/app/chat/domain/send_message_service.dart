@@ -13,7 +13,7 @@ class SendMessageService {
 
   SendMessageService(this._messageRepository, this._chatRepository);
 
-  Future<void> execute(
+  Future<String> execute(
     bool isCurrentClub,
     String senderId,
     String receiverId,
@@ -31,6 +31,8 @@ class SendMessageService {
       chatId = attempt;
     }
 
-    _messageRepository.createNewMessage(chatId, message, isCurrentClub);
+    final messageId = await _messageRepository.createNewMessage(chatId, message, isCurrentClub);
+    await _chatRepository.updateLastMessageId(chatId, messageId);
+    return chatId;
   }
 }
