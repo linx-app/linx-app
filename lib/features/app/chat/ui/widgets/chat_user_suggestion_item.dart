@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:linx/common/separator_line.dart';
 import 'package:linx/constants/colors.dart';
-import 'package:linx/utils/ui_extensions.dart';
 
 class ChatUserSuggestionItem extends StatelessWidget {
   final String name;
@@ -26,12 +26,9 @@ class ChatUserSuggestionItem extends StatelessWidget {
         children: [
           Container(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              child: Text(name, style: _style)),
-          Container(
-            width: context.width(),
-            height: 1,
-            color: LinxColors.stroke,
-          )
+              child: Text(name, style: _style),
+          ),
+          const SeparatorLine(),
         ],
       ),
     );
