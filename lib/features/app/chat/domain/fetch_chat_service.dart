@@ -8,9 +8,9 @@ import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/utils/transformations/chat_transformation_extensions.dart';
 import 'package:linx/utils/transformations/user_transformation_extensions.dart';
 
-class FetchAllChatsService {
+class FetchChatService {
   static final provider = Provider(
-    (ref) => FetchAllChatsService(
+    (ref) => FetchChatService(
       ref.read(ChatRepository.provider),
       ref.read(UserRepository.provider),
       ref.read(MessageRepository.provider),
@@ -21,37 +21,26 @@ class FetchAllChatsService {
   final UserRepository _userRepository;
   final MessageRepository _messageRepository;
 
-  FetchAllChatsService(
+  FetchChatService(
     this._chatRepository,
     this._userRepository,
     this._messageRepository,
   );
 
-  Future<List<Chat>> execute(LinxUser currentUser) async {
+  Future<Chat> execute(String chatId, LinxUser currentUser) async {
+    final networkChat = await _chatRepository.fetchChatById(chatId);
     final isClub = currentUser.info.isClub();
-    final uid = currentUser.info.uid;
-    final networkChats = await _chatRepository.fetchAllChats(isClub, uid);
-    final domainChats = <Chat>[];
+    final otherUid = isClub ? networkChat.businessId : networkChat.clubId;
+    final otherNetworkUser = await _userRepository.fetchUserProfile(otherUid);
+    final otherUser = otherNetworkUser.toDomain();
+    final message =
+        await _messageRepository.fetchMessage(networkChat.lastMessageId);
 
-    for (final chat in networkChats) {
-      final networkLastMessage =
-          await _messageRepository.fetchMessage(chat.lastMessageId);
-      final domainLastMessage = networkLastMessage.toDomain();
-
-      final otherUserId = isClub ? chat.businessId : chat.clubId;
-      final otherUserNetwork = await _userRepository.fetchUserProfile(otherUserId);
-      final otherUserDomain = otherUserNetwork.toDomain();
-
-      domainChats.add(
-        Chat(
-          chatId: chat.chatId,
-          club: isClub ? currentUser.info : otherUserDomain,
-          business: isClub ? otherUserDomain : currentUser.info,
-          lastMessage: domainLastMessage
-        )
-      );
-    }
-
-    return domainChats;
+    return Chat(
+      chatId: chatId,
+      club: isClub ? currentUser.info : otherUser,
+      business: isClub ? otherUser : currentUser.info,
+      lastMessage: message.toDomain(),
+    );
   }
 }
