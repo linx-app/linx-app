@@ -19,6 +19,14 @@ final firebaseStorageProvider =
 final fcmTokenProvider =
     Provider((ref) => FirebaseMessaging.instance.getToken());
 
-final fcmProvider = Provider<FirebaseMessaging>((ref) => FirebaseMessaging.instance);
+final fcmProvider =
+    Provider<FirebaseMessaging>((ref) => FirebaseMessaging.instance);
 
-final fcmMessages = Provider<Stream<RemoteMessage>>((ref) => FirebaseMessaging.onMessage);
+final fcmForegroundMessages =
+    Provider<Stream<RemoteMessage>>((ref) => FirebaseMessaging.onMessage);
+
+final fcmBackgroundOpenedMessages = Provider<Stream<RemoteMessage>>(
+    (ref) => FirebaseMessaging.onMessageOpenedApp);
+
+final fcmTerminatedMessages = Provider<Future<RemoteMessage?>>(
+    (ref) => ref.read(fcmProvider).getInitialMessage());
