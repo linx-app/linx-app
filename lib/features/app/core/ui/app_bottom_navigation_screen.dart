@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
+import 'package:linx/common/empty.dart';
 import 'package:linx/common/linx_loading_spinner.dart';
+import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/chat/presentation/chat_list_screen_controller.dart';
 import 'package:linx/features/app/chat/ui/chat_list_screen.dart';
+import 'package:linx/features/app/chat/ui/chat_screen.dart';
 import 'package:linx/features/app/core/presentation/app_bottom_nav_screen_controller.dart';
 import 'package:linx/features/app/core/presentation/model/in_app_state.dart';
+import 'package:linx/features/app/core/ui/widgets/new_match_bottom_sheet.dart';
 import 'package:linx/features/app/discover/presentation/discover_screen_controller.dart';
 import 'package:linx/features/app/discover/ui/discover_screen.dart';
 import 'package:linx/features/app/match/presentation/matches_screen_controller.dart';
@@ -17,12 +21,17 @@ import 'package:linx/features/app/request/presentation/request_screen_controller
 import 'package:linx/features/app/request/ui/request_screen.dart';
 import 'package:linx/features/app/search/presentation/search_screen_controller.dart';
 import 'package:linx/features/app/search/ui/search_screen.dart';
+import 'package:linx/features/notifications/domain/model/fcm_notification.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_info.dart';
+import 'package:linx/utils/ui_extensions.dart';
 
 final _bottomNavigationStateProvider = StateProvider<int>((ref) => 0);
 
 class AppBottomNavigationScreen extends ConsumerWidget {
+  final _notificationBadgeStyle = const TextStyle(
+      fontSize: 10, fontWeight: FontWeight.w500, color: LinxColors.white);
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedIndex = ref.watch(_bottomNavigationStateProvider);
@@ -32,8 +41,9 @@ class AppBottomNavigationScreen extends ConsumerWidget {
       return LinxLoadingSpinner();
     } else {
       final user = uiState.currentUser!;
+      _handleNotifications(context, ref, uiState.notification);
       final bottomNavItems = user.info.isClub()
-          ? _getClubBottomNavBarItems(selectedIndex)
+          ? _getClubBottomNavBarItems(selectedIndex, user)
           : _getBusinessBottomNavBarItems(selectedIndex);
       final body = _buildBody(ref, user, selectedIndex);
 
@@ -69,7 +79,12 @@ class AppBottomNavigationScreen extends ConsumerWidget {
     ref.read(_bottomNavigationStateProvider.notifier).state = index;
   }
 
-  List<BottomNavigationBarItem> _getClubBottomNavBarItems(int selectedIndex) {
+  List<BottomNavigationBarItem> _getClubBottomNavBarItems(
+    int selectedIndex,
+    LinxUser user,
+  ) {
+    final newPitches = user.info.newMatches;
+
     return [
       BottomNavigationBarItem(
         icon: _iconWidget(path: "leaf.png", isSelected: selectedIndex == 0),
@@ -80,7 +95,11 @@ class AppBottomNavigationScreen extends ConsumerWidget {
         label: "Search",
       ),
       BottomNavigationBarItem(
-        icon: _iconWidget(path: "pitch.png", isSelected: selectedIndex == 2),
+        icon: _iconWidget(
+          path: "pitch.png",
+          isSelected: selectedIndex == 2,
+          newAmount: newPitches.length,
+        ),
         label: "Pitches",
       ),
       BottomNavigationBarItem(
@@ -112,13 +131,36 @@ class AppBottomNavigationScreen extends ConsumerWidget {
     ];
   }
 
-  SizedBox _iconWidget({required String path, bool isSelected = false}) {
+  SizedBox _iconWidget({
+    required String path,
+    bool isSelected = false,
+    int newAmount = 0,
+  }) {
+    final badge = newAmount == 0
+        ? Empty()
+        : Container(
+            alignment: Alignment.topRight,
+            child: CircleAvatar(
+              radius: 8,
+              backgroundColor: LinxColors.red,
+              child: Center(
+                child: Text("$newAmount", style: _notificationBadgeStyle),
+              ),
+            ),
+          );
     return SizedBox(
       height: 24,
       width: 24,
-      child: Image.asset(
-        "assets/$path",
-        color: _getSelectedColor(isSelected),
+      child: Stack(
+        children: [
+          Center(
+            child: Image.asset(
+              "assets/$path",
+              color: _getSelectedColor(isSelected),
+            ),
+          ),
+          badge,
+        ],
       ),
     );
   }
@@ -180,5 +222,47 @@ class AppBottomNavigationScreen extends ConsumerWidget {
     final state = ref.watch(chatListScreenControllerProvider);
     final controller = ref.watch(chatListScreenControllerProvider.notifier);
     return ChatListScreen(user, state, controller);
+  }
+
+  void _handleNotifications(
+    BuildContext context,
+    WidgetRef ref,
+    FCMNotification? notif,
+  ) {
+    if (notif == null) return;
+    if (notif is NewMessageNotification) {
+      if (notif.wasClickedOnBackground) {
+        final route = MaterialPageRoute(builder: (_) => ChatScreen());
+        Navigator.of(context).push(route);
+      }
+    } else if (notif is NewMatchNotification) {
+      if (notif.wasClickedOnBackground) {
+        _onItemTapped(2, ref);
+      }
+      _showNewMatchBottomSheet(context, notif);
+    } else if (notif is NewPitchNotification) {
+      if (notif.wasClickedOnBackground) {
+        _onItemTapped(2, ref);
+      }
+    }
+  }
+
+  void _showNewMatchBottomSheet(
+    BuildContext context,
+    NewMatchNotification notif,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => Container(
+        height: context.height() * 0.80,
+        child: NewMatchBottomSheet(
+          notification: notif,
+          onButtonPressed: () {},
+        ),
+      ),
+      barrierColor: Colors.black.withOpacity(0.60),
+      shape: RoundedBorder.clockwise(10, 10, 0, 0),
+    );
   }
 }
