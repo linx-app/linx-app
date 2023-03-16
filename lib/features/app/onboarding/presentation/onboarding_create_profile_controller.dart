@@ -7,8 +7,7 @@ import 'package:linx/features/user/domain/user_profile_image_service.dart';
 import 'package:linx/features/user/domain/user_service.dart';
 
 final onboardingCreateProfileController = StateNotifierProvider<
-    OnboardingCreateProfileController,
-    OnboardingCreateProfileUiState>((ref) {
+    OnboardingCreateProfileController, OnboardingCreateProfileUiState>((ref) {
   return OnboardingCreateProfileController(
     ref.read(ImageUploadService.provider),
     ref.read(UserProfileImageService.provider),
@@ -24,10 +23,12 @@ class OnboardingCreateProfileController
   final UserService _userService;
   final UserInfoService _userInfoService;
 
-  OnboardingCreateProfileController(this._imageUploadService,
-      this._userProfileImageService,
-      this._userService,
-      this._userInfoService,) : super(OnboardingCreateProfileUiState());
+  OnboardingCreateProfileController(
+    this._imageUploadService,
+    this._userProfileImageService,
+    this._userService,
+    this._userInfoService,
+  ) : super(OnboardingCreateProfileUiState());
 
   Future<void> updateUserInfo(String biography) async {
     await _userInfoService.updateUserBiography(biography);
@@ -49,6 +50,9 @@ class OnboardingCreateProfileController
     if (url != null) {
       await _userProfileImageService.uploadProfileImage(url);
       _replaceLoading(url);
+    } else {
+      await _userProfileImageService
+          .uploadProfileImage("https://picsum.photos/200/500");
     }
   }
 
@@ -69,8 +73,7 @@ class OnboardingCreateProfileController
     state = OnboardingCreateProfileUiState(
       profileImageUrls: [
         for (final String? link in images)
-          if (link == "Loading") url else
-            link
+          if (link == "Loading") url else link
       ],
       biography: state.biography,
     );

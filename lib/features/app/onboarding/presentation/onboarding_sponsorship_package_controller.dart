@@ -44,16 +44,28 @@ class OnboardingSponsorshipPackageController
 
       packages.add(
         SponsorshipPackage(
-            name: packageNames[i],
-            ownBenefit: ownBenefits[i],
-            partnerBenefit: partnerBenefits[i],
-            user: _user,
+          name: packageNames[i],
+          ownBenefit: ownBenefits[i],
+          partnerBenefit: partnerBenefits[i],
+          user: _user,
         ),
       );
     }
 
-    await _userInfoService.updateSponsorshipPackageCount(_user.uid, packages.length);
-    await _sponsorshipPackageService.updateSponsorshipPackages(packages);
+    await _userInfoService.updateSponsorshipPackageCount(
+        _user.uid, packages.length);
+    if (packages.isNotEmpty) {
+      await _sponsorshipPackageService.updateSponsorshipPackages(packages);
+    } else {
+      await _sponsorshipPackageService.updateSponsorshipPackages([
+        SponsorshipPackage(
+          name: "Gold tier",
+          ownBenefit: "I get something from you",
+          partnerBenefit: "You get something from me",
+          user: _user,
+        )
+      ]);
+    }
   }
 
   Future<void> fetchSponsorshipPackages() async {

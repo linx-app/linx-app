@@ -59,16 +59,17 @@ class UserRepository {
       {
         FirestorePaths.NAME: name,
         FirestorePaths.PHONE_NUMBER: phoneNumber,
-        FirestorePaths.LOCATION: location,
+        FirestorePaths.LOCATION: location ?? "Waterloo, ON",
       },
     );
   }
 
   Future<void> updateUserBiography(String uid, String biography) async {
+    final bio = biography.isNotEmpty ? biography : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.";
     _firestore
         .collection(FirestorePaths.USERS)
         .doc(uid)
-        .update({FirestorePaths.BIOGRAPHY: biography});
+        .update({FirestorePaths.BIOGRAPHY: bio});
   }
 
   Future<void> updateUserInterests(String uid, Set<String> interests) async {
