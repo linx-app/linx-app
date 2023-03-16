@@ -27,14 +27,24 @@ class PitchRepository {
     });
   }
 
-  Future<List<PitchDTO>> fetchPitchesWithReceiver(String receiverId) async {
-    return await _firestore
+  Stream<List<PitchDTO>> subscribeToIncomingPitches(String receiverId) {
+    return _firestore
         .collection(FirestorePaths.PITCHES)
         .where(FirestorePaths.RECEIVER, isEqualTo: receiverId)
         .where(FirestorePaths.DISMISSED, isEqualTo: false)
         .limit(10)
-        .get()
-        .then((QuerySnapshot query) => _mapQueryToPitches(query));
+        .snapshots()
+        .map((event) {
+      final list = <PitchDTO>[];
+      for (final changes in event.docChanges) {
+        final doc = changes.doc;
+        final data = doc.data();
+        if (data != null) {
+          list.add(_mapDocToPitch(doc.id, data));
+        }
+      }
+      return list;
+    });
   }
 
   Future<List<PitchDTO>> fetchOutgoingPitches(String senderId) async {
@@ -65,18 +75,20 @@ class PitchRepository {
 
     for (var doc in query.docs) {
       var obj = doc.data() as Map<String, dynamic>;
-      list.add(
-        PitchDTO(
-          id: doc.id,
-          createdDate: obj[FirestorePaths.CREATED_AT] ?? 0,
-          message: obj[FirestorePaths.MESSAGE] ?? "",
-          receiverId: obj[FirestorePaths.RECEIVER] ?? "",
-          senderId: obj[FirestorePaths.SENDER] ?? "",
-          viewed: obj[FirestorePaths.VIEWED] ?? false,
-        ),
-      );
+      list.add(_mapDocToPitch(doc.id, obj));
     }
 
     return list;
+  }
+
+  PitchDTO _mapDocToPitch(String id, Map<String, dynamic> obj) {
+    return PitchDTO(
+      id: id,
+      createdDate: obj[FirestorePaths.CREATED_AT] ?? 0,
+      message: obj[FirestorePaths.MESSAGE] ?? "",
+      receiverId: obj[FirestorePaths.RECEIVER] ?? "",
+      senderId: obj[FirestorePaths.SENDER] ?? "",
+      viewed: obj[FirestorePaths.VIEWED] ?? false,
+    );
   }
 }

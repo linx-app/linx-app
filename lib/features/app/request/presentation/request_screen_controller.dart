@@ -12,7 +12,7 @@ final requestScreenControllerProvider = StateNotifierProvider.autoDispose<
     RequestScreenController, RequestScreenUiState?>(
   (ref) => RequestScreenController(
     ref.watch(currentUserProvider),
-    ref.read(FetchRequestsService.provider),
+    ref.read(SubscribeToIncomingPitchesService.provider),
     ref.read(CreateAMatchService.provider),
     ref.read(LogOutService.provider),
     ref.read(ViewRequestService.provider),
@@ -20,7 +20,7 @@ final requestScreenControllerProvider = StateNotifierProvider.autoDispose<
 );
 
 class RequestScreenController extends StateNotifier<RequestScreenUiState?> {
-  final FetchRequestsService _fetchRequestsService;
+  final SubscribeToIncomingPitchesService _subscribeToIncomingPitchesService;
   final CreateAMatchService _createAMatchService;
   final LogOutService _logOutService;
   final LinxUser? _currentUser;
@@ -30,22 +30,19 @@ class RequestScreenController extends StateNotifier<RequestScreenUiState?> {
 
   RequestScreenController(
     this._currentUser,
-    this._fetchRequestsService,
+    this._subscribeToIncomingPitchesService,
     this._createAMatchService,
     this._logOutService,
     this._viewRequestService,
   ) : super(null) {
-    initialize();
+    _subscribeToRequests();
   }
 
-  void initialize() async {
-    fetchRequestsForBusinesses();
-  }
-
-  void fetchRequestsForBusinesses() async {
-    _requests =
-        await _fetchRequestsService.fetchRequestsWithReceiver(_currentUser!);
-    _setRequestState();
+  void _subscribeToRequests() async {
+    _subscribeToIncomingPitchesService.execute(_currentUser!).listen((event) {
+      _requests = event;
+      _setRequestState();
+    });
   }
 
   void onImInterestedPressed({required UserInfo club}) async {
