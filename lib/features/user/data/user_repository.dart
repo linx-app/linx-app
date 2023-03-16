@@ -163,4 +163,25 @@ class UserRepository {
       return (data[FirestorePaths.SEARCHES] as List<dynamic>).toStrList();
     });
   }
+
+  Future<void> addReceiverToPitchesTo(
+    String senderId,
+    String receiverId,
+  ) async {
+    await _firestore.collection(FirestorePaths.USERS).doc(senderId).update({
+      FirestorePaths.PITCHES_TO: FieldValue.arrayUnion([receiverId]),
+    });
+  }
+  
+  Future<void> incrementNumberOfNewPitches(String receiverId) async {
+    await _firestore.collection(FirestorePaths.USERS).doc(receiverId).update({
+      FirestorePaths.NUMBER_OF_NEW_PITCHES: FieldValue.increment(1)
+    });
+  }
+
+  Future<void> decrementNumberOfNewPitches(String userId) async {
+    await _firestore.collection(FirestorePaths.USERS).doc(userId).update({
+      FirestorePaths.NUMBER_OF_NEW_PITCHES: FieldValue.increment(-1)
+    });
+  }
 }

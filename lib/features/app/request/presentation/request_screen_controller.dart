@@ -3,6 +3,7 @@ import 'package:linx/features/app/core/presentation/app_bottom_nav_screen_contro
 import 'package:linx/features/app/match/domain/create_a_match_service.dart';
 import 'package:linx/features/app/pitch/domain/fetch_requests_service.dart';
 import 'package:linx/features/app/request/domain/model/request.dart';
+import 'package:linx/features/app/request/domain/view_request_service.dart';
 import 'package:linx/features/authentication/domain/log_out_service.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_info.dart';
@@ -14,6 +15,7 @@ final requestScreenControllerProvider = StateNotifierProvider.autoDispose<
     ref.read(FetchRequestsService.provider),
     ref.read(CreateAMatchService.provider),
     ref.read(LogOutService.provider),
+    ref.read(ViewRequestService.provider),
   ),
 );
 
@@ -22,6 +24,7 @@ class RequestScreenController extends StateNotifier<RequestScreenUiState?> {
   final CreateAMatchService _createAMatchService;
   final LogOutService _logOutService;
   final LinxUser? _currentUser;
+  final ViewRequestService _viewRequestService;
 
   late List<Request> _requests;
 
@@ -30,6 +33,7 @@ class RequestScreenController extends StateNotifier<RequestScreenUiState?> {
     this._fetchRequestsService,
     this._createAMatchService,
     this._logOutService,
+    this._viewRequestService,
   ) : super(null) {
     initialize();
   }
@@ -39,7 +43,8 @@ class RequestScreenController extends StateNotifier<RequestScreenUiState?> {
   }
 
   void fetchRequestsForBusinesses() async {
-    _requests = await _fetchRequestsService.fetchRequestsWithReceiver(_currentUser!);
+    _requests =
+        await _fetchRequestsService.fetchRequestsWithReceiver(_currentUser!);
     _setRequestState();
   }
 
@@ -66,6 +71,10 @@ class RequestScreenController extends StateNotifier<RequestScreenUiState?> {
 
   void logOut() async {
     _logOutService.execute();
+  }
+
+  void onRequestViewed(Request request) async {
+    await _viewRequestService.execute(request);
   }
 }
 

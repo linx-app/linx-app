@@ -16,6 +16,7 @@ class UserDTO {
   final List<String> pitchesTo;
   final List<String> searches;
   final List<String> newMatches;
+  final int numberOfNewPitches;
 
   UserDTO({
     required this.uid,
@@ -32,6 +33,7 @@ class UserDTO {
     this.pitchesTo = const [],
     this.searches = const [],
     this.newMatches = const [],
+    this.numberOfNewPitches = 0,
   });
 
   static UserDTO fromNetwork(String id, Map<String, dynamic> map) {
@@ -57,6 +59,7 @@ class UserDTO {
       searches: last5Searches,
       newMatches: ((map[FirestorePaths.NEW_MATCHES] ?? []) as List<dynamic>)
           .toStrList(),
+      numberOfNewPitches: map[FirestorePaths.NUMBER_OF_NEW_PITCHES] ?? 0,
     );
   }
 }
