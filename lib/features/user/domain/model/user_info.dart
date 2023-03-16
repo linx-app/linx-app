@@ -15,6 +15,7 @@ class UserInfo {
   final List<String> pitchesTo;
   final List<String> searches;
   final List<String> newMatches;
+  final int numberOfNewPitches;
 
   const UserInfo({
     required this.uid,
@@ -31,6 +32,7 @@ class UserInfo {
     this.pitchesTo = const [],
     this.searches = const [],
     this.newMatches = const [],
+    this.numberOfNewPitches = 0,
   });
 }
 

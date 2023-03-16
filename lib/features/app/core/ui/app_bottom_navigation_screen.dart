@@ -24,7 +24,6 @@ import 'package:linx/features/app/search/ui/search_screen.dart';
 import 'package:linx/features/notifications/domain/model/fcm_notification.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_info.dart';
-import 'package:linx/utils/ui_extensions.dart';
 
 final _bottomNavigationStateProvider = StateProvider<int>((ref) => 0);
 
@@ -44,7 +43,7 @@ class AppBottomNavigationScreen extends ConsumerWidget {
       _handleNotifications(context, ref, uiState.notification);
       final bottomNavItems = user.info.isClub()
           ? _getClubBottomNavBarItems(selectedIndex, user)
-          : _getBusinessBottomNavBarItems(selectedIndex);
+          : _getBusinessBottomNavBarItems(selectedIndex, user);
       final body = _buildBody(ref, user, selectedIndex);
 
       return BaseScaffold(
@@ -83,7 +82,7 @@ class AppBottomNavigationScreen extends ConsumerWidget {
     int selectedIndex,
     LinxUser user,
   ) {
-    final newPitches = user.info.newMatches;
+    final newMatches = user.info.newMatches;
 
     return [
       BottomNavigationBarItem(
@@ -98,7 +97,7 @@ class AppBottomNavigationScreen extends ConsumerWidget {
         icon: _iconWidget(
           path: "pitch.png",
           isSelected: selectedIndex == 2,
-          newAmount: newPitches.length,
+          newAmount: newMatches.length,
         ),
         label: "Pitches",
       ),
@@ -110,7 +109,11 @@ class AppBottomNavigationScreen extends ConsumerWidget {
   }
 
   List<BottomNavigationBarItem> _getBusinessBottomNavBarItems(
-      int selectedIndex) {
+    int selectedIndex,
+    LinxUser user,
+  ) {
+    final newPitches = user.info.numberOfNewPitches;
+
     return [
       BottomNavigationBarItem(
         icon: _iconWidget(path: "leaf.png", isSelected: selectedIndex == 0),
@@ -121,7 +124,11 @@ class AppBottomNavigationScreen extends ConsumerWidget {
         label: "Discover",
       ),
       BottomNavigationBarItem(
-        icon: _iconWidget(path: "match.png", isSelected: selectedIndex == 2),
+        icon: _iconWidget(
+          path: "match.png",
+          isSelected: selectedIndex == 2,
+          newAmount: newPitches,
+        ),
         label: "Matches",
       ),
       BottomNavigationBarItem(
@@ -254,12 +261,13 @@ class AppBottomNavigationScreen extends ConsumerWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) => Container(
-        height: context.height() * 0.80,
-        child: NewMatchBottomSheet(
-          notification: notif,
-          onButtonPressed: () {},
-        ),
+      builder: (context) => Wrap(
+        children: [
+          NewMatchBottomSheet(
+            notification: notif,
+            onButtonPressed: () {},
+          ),
+        ],
       ),
       barrierColor: Colors.black.withOpacity(0.60),
       shape: RoundedBorder.clockwise(10, 10, 0, 0),

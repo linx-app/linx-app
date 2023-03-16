@@ -184,10 +184,9 @@ class WidgetTestingScreen extends ConsumerWidget {
             _widgetContainer(const ChatAddressBar()),
             _widgetContainer(
               RoundedButton(
-                style: greenButtonStyle(),
-                onPressed: () => _openNewMatchBottomSheet(context),
-                text: "Show new match bottom sheet"
-              ),
+                  style: greenButtonStyle(),
+                  onPressed: () => _openNewMatchBottomSheet(context),
+                  text: "Show new match bottom sheet"),
             ),
             SizedBox(height: context.height() * 0.05),
           ],
@@ -261,12 +260,13 @@ class WidgetTestingScreen extends ConsumerWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) => Container(
-        height: context.height() * 0.80,
-        child: NewMatchBottomSheet(
-          notification: notif,
-          onButtonPressed: () {},
-        ),
+      builder: (context) => Wrap(
+        children: [
+          NewMatchBottomSheet(
+            notification: notif,
+            onButtonPressed: () {},
+          ),
+        ],
       ),
       barrierColor: Colors.black.withOpacity(0.60),
       shape: RoundedBorder.clockwise(10, 10, 0, 0),

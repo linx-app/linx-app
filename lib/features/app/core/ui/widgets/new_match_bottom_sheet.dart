@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:linx/common/buttons/rounded_button.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/notifications/domain/model/fcm_notification.dart';
-import 'package:linx/utils/ui_extensions.dart';
 
 class NewMatchBottomSheet extends StatelessWidget {
   final NewMatchNotification notification;
@@ -17,7 +16,6 @@ class NewMatchBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: context.height() * 0.80,
       child: Column(
         children: [
           _buildProfileImage(context),
@@ -31,7 +29,7 @@ class NewMatchBottomSheet extends StatelessWidget {
 
   Container _buildProfileImage(BuildContext context) {
     return Container(
-      height: 232,
+      height: 170,
       width: double.infinity,
       padding: const EdgeInsets.all(10),
       alignment: Alignment.topRight,
@@ -52,13 +50,16 @@ class NewMatchBottomSheet extends StatelessWidget {
     final title = "${notification.name} matched with you!";
     return Container(
       alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Text(
-        title,
-        style: const TextStyle(
-          color: LinxColors.subtitleGrey,
-          fontWeight: FontWeight.w600,
-          fontSize: 22.0,
+      padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 20),
+      child: Center(
+        child: Text(
+          title,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: LinxColors.subtitleGrey,
+            fontWeight: FontWeight.w600,
+            fontSize: 22.0,
+          ),
         ),
       ),
     );
@@ -69,9 +70,10 @@ class NewMatchBottomSheet extends StatelessWidget {
         "Reach out to them now to see how to get your sponsorship started.";
     return Container(
       alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 35),
       child: const Text(
         description,
+        textAlign: TextAlign.center,
         style: TextStyle(
           color: LinxColors.locationTextGrey,
           fontWeight: FontWeight.w400,
