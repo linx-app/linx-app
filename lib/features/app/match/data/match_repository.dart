@@ -76,4 +76,24 @@ class MatchRepository {
       return list;
     });
   }
+
+  Future<List<MatchDTO>> fetchAllMatches(UserInfo user) async {
+    final userTypeField = user.isClub() ? FirestorePaths.CLUB : FirestorePaths
+        .BUSINESS;
+    return await _firestore
+        .collection(FirestorePaths.MATCHES)
+        .where(userTypeField, isEqualTo: user.uid)
+        .orderBy(FirestorePaths.CREATED_AT, descending: true)
+        .get()
+        .then((QuerySnapshot query) {
+      final list = <MatchDTO>[];
+      for (final doc in query.docs) {
+        final data = doc.data();
+        if (data != null) {
+          list.add(MatchDTO.fromNetwork(doc.id, data as Map<String, dynamic>));
+        }
+      }
+      return list;
+    });
+  }
 }
