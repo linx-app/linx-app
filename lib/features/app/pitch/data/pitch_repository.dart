@@ -34,26 +34,16 @@ class PitchRepository {
         .where(FirestorePaths.DISMISSED, isEqualTo: false)
         .limit(10)
         .snapshots()
-        .map((event) {
-      final list = <PitchDTO>[];
-      for (final changes in event.docChanges) {
-        final doc = changes.doc;
-        final data = doc.data();
-        if (data != null) {
-          list.add(_mapDocToPitch(doc.id, data));
-        }
-      }
-      return list;
-    });
+        .map(_mapSnapshotToPitches);
   }
 
-  Future<List<PitchDTO>> fetchOutgoingPitches(String senderId) async {
-    return await _firestore
+  Stream<List<PitchDTO>> subscribeToOutgoingPitches(String senderId) {
+    return _firestore
         .collection(FirestorePaths.PITCHES)
         .where(FirestorePaths.SENDER, isEqualTo: senderId)
         .orderBy(FirestorePaths.CREATED_AT, descending: true)
-        .get()
-        .then((QuerySnapshot query) => _mapQueryToPitches(query));
+        .snapshots()
+        .map(_mapSnapshotToPitches);
   }
 
   Future<void> changeViewedFlag(String pitchId) async {
@@ -70,14 +60,15 @@ class PitchRepository {
         .update({FirestorePaths.DISMISSED: true});
   }
 
-  List<PitchDTO> _mapQueryToPitches(QuerySnapshot query) {
-    var list = <PitchDTO>[];
-
-    for (var doc in query.docs) {
-      var obj = doc.data() as Map<String, dynamic>;
-      list.add(_mapDocToPitch(doc.id, obj));
+  List<PitchDTO> _mapSnapshotToPitches(QuerySnapshot<Map<String, dynamic>> query){
+    final list = <PitchDTO>[];
+    for (final changes in query.docChanges) {
+      final doc = changes.doc;
+      final data = doc.data();
+      if (data != null) {
+        list.add(_mapDocToPitch(doc.id, data));
+      }
     }
-
     return list;
   }
 

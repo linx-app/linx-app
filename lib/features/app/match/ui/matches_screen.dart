@@ -66,7 +66,7 @@ class MatchesScreen extends StatelessWidget {
       height: context.height() * 0.80,
       child: ProfileBottomSheet(
         user: user,
-        mainButtonText: "I'm interested",
+        mainButtonText: "Send message",
         onXPressed: () => Navigator.maybePop(context),
         onMainButtonPressed: () {
           Navigator.maybePop(context);

@@ -56,25 +56,24 @@ class MatchRepository {
     return list;
   }
 
-  Future<List<MatchDTO>> fetchMatches(UserInfo user) async {
+  Stream<List<MatchDTO>> subscribeToMatches(UserInfo user) {
     final userTypeField =
         user.isClub() ? FirestorePaths.CLUB : FirestorePaths.BUSINESS;
-    return await _firestore
+    return _firestore
         .collection(FirestorePaths.MATCHES)
         .where(userTypeField, isEqualTo: user.uid)
         .orderBy(FirestorePaths.CREATED_AT, descending: true)
-        .get()
-        .then((QuerySnapshot query) => _mapQueryToMatchDTO(query));
-  }
-
-  List<MatchDTO> _mapQueryToMatchDTO(QuerySnapshot query) {
-    final list = <MatchDTO>[];
-
-    for (final element in query.docs) {
-      final obj = element.data() as Map<String, dynamic>;
-      list.add(MatchDTO.fromNetwork(element.id, obj));
-    }
-
-    return list;
+        .snapshots()
+        .map((QuerySnapshot query) {
+      final list = <MatchDTO>[];
+      for (final changes in query.docChanges) {
+        final doc = changes.doc;
+        final data = doc.data();
+        if (data != null) {
+          list.add(MatchDTO.fromNetwork(doc.id, data as Map<String, dynamic>));
+        }
+      }
+      return list;
+    });
   }
 }
