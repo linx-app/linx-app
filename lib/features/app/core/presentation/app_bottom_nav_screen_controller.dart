@@ -9,35 +9,23 @@ import 'package:linx/features/notifications/domain/model/fcm_notification.dart';
 import 'package:linx/features/notifications/domain/subscribe_to_background_notifications_service.dart';
 import 'package:linx/features/notifications/domain/subscribe_to_foreground_notifications_service.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
-import 'package:linx/features/user/domain/user_service.dart';
+import 'package:linx/features/user/domain/subscribe_to_current_user_service.dart';
 
 final appBottomNavScreenControllerProvider = StateNotifierProvider.autoDispose<
     AppBottomNavScreenController, AppBottomNavScreenUiState>((ref) {
   return AppBottomNavScreenController(
-    ref.watch(currentUserProvider),
     ref.read(FetchNotificationPermissionsService.provider),
     ref.read(SubscribeToForegroundNotificationsService.provider),
     ref.read(SubscribeToBackgroundNotificationsService.provider),
     ref.read(FetchCachedNotificationsService.provider),
     ref.read(LogOutService.provider),
-    ref.read(updateCurrentUserProvider),
     ref.read(selectedChatIdUpdater),
+    ref.read(SubscribeToCurrentUserService.provider)
   );
-});
-
-final currentUserProvider = StateProvider.autoDispose<LinxUser?>((ref) => null);
-
-final updateCurrentUserProvider = Provider<Function()>((ref) {
-  return (() async {
-    final userNotifier = ref.read(currentUserProvider.notifier);
-    userNotifier.state = await ref.read(UserService.provider).fetchUser();
-  });
 });
 
 class AppBottomNavScreenController
     extends StateNotifier<AppBottomNavScreenUiState> {
-  final LinxUser? _currentUser;
-  final Function() _updateCurrentUser;
   final Function(String) _updateSelectedChatId;
   final FetchNotificationPermissionsService
       _fetchNotificationPermissionsService;
@@ -46,18 +34,19 @@ class AppBottomNavScreenController
   final SubscribeToBackgroundNotificationsService
       _subscribeToBackgroundNotificationsService;
   final FetchCachedNotificationsService _fetchCachedNotificationsService;
-
+  final SubscribeToCurrentUserService _subscribeToCurrentUserService;
   final LogOutService _logOutService;
 
+  late LinxUser _currentUser;
+
   AppBottomNavScreenController(
-    this._currentUser,
     this._fetchNotificationPermissionsService,
     this._subscribeToForegroundNotificationsService,
     this._subscribeToBackgroundNotificationsService,
     this._fetchCachedNotificationsService,
     this._logOutService,
-    this._updateCurrentUser,
     this._updateSelectedChatId,
+    this._subscribeToCurrentUserService,
   ) : super(AppBottomNavScreenUiState()) {
     initialize();
   }
@@ -75,15 +64,15 @@ class AppBottomNavScreenController
       _handleNotifications(await _fetchCachedNotificationsService.execute());
     }
 
-    if (_currentUser != null) {
+    _subscribeToCurrentUserService.execute().listen((event) {
+      _currentUser = event;
       state = AppBottomNavScreenUiState(
         state: InAppState.loaded,
-        currentUser: _currentUser!,
+        currentUser: _currentUser,
       );
-    } else {
-      _updateCurrentUser.call();
-    }
+    });
   }
+
 
   void logOut() async {
     _logOutService.execute();

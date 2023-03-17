@@ -19,6 +19,18 @@ class UserRepository {
 
   UserRepository(this._firestore, this._fcmToken);
 
+  Stream<UserDTO> subscribeToCurrentUser(String userId) {
+    return _firestore
+        .collection(FirestorePaths.USERS)
+        .doc(userId)
+        .snapshots()
+        .map((event) {
+      final data = event.data();
+      if (data == null) throw Error();
+      return UserDTO.fromNetwork(event.id, data);
+    });
+  }
+
   Future<void> initializeUser({
     required String uid,
     required String type,
@@ -65,7 +77,9 @@ class UserRepository {
   }
 
   Future<void> updateUserBiography(String uid, String biography) async {
-    final bio = biography.isNotEmpty ? biography : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.";
+    final bio = biography.isNotEmpty
+        ? biography
+        : "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.";
     _firestore
         .collection(FirestorePaths.USERS)
         .doc(uid)
@@ -172,17 +186,15 @@ class UserRepository {
       FirestorePaths.PITCHES_TO: FieldValue.arrayUnion([receiverId]),
     });
   }
-  
+
   Future<void> incrementNumberOfNewPitches(String receiverId) async {
-    await _firestore.collection(FirestorePaths.USERS).doc(receiverId).update({
-      FirestorePaths.NUMBER_OF_NEW_PITCHES: FieldValue.increment(1)
-    });
+    await _firestore.collection(FirestorePaths.USERS).doc(receiverId).update(
+        {FirestorePaths.NUMBER_OF_NEW_PITCHES: FieldValue.increment(1)});
   }
 
   Future<void> decrementNumberOfNewPitches(String userId) async {
-    await _firestore.collection(FirestorePaths.USERS).doc(userId).update({
-      FirestorePaths.NUMBER_OF_NEW_PITCHES: FieldValue.increment(-1)
-    });
+    await _firestore.collection(FirestorePaths.USERS).doc(userId).update(
+        {FirestorePaths.NUMBER_OF_NEW_PITCHES: FieldValue.increment(-1)});
   }
 
   Future<void> removeNewMatchId(String userId, String matchId) async {

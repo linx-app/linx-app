@@ -1,40 +1,40 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:linx/features/app/core/presentation/app_bottom_nav_screen_controller.dart';
-import 'package:linx/features/app/match/domain/subscribe_to_matches_service.dart';
 import 'package:linx/features/app/match/domain/model/match.dart';
+import 'package:linx/features/app/match/domain/subscribe_to_matches_service.dart';
 import 'package:linx/features/app/match/domain/view_match_service.dart';
 import 'package:linx/features/app/match/ui/model/matches_screen_state.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/subscribe_to_current_user_service.dart';
 
 final matchesScreenControllerProvider = StateNotifierProvider.autoDispose<
     MatchesScreenController, MatchesScreenUiState>(
   (ref) => MatchesScreenController(
     ref.read(SubscribeToMatchesService.provider),
-    ref.watch(currentUserProvider),
     ref.read(ViewMatchService.provider),
+    ref.read(SubscribeToCurrentUserService.provider),
   ),
 );
 
 class MatchesScreenController extends StateNotifier<MatchesScreenUiState> {
   final SubscribeToMatchesService _subscribeToMatchesService;
   final ViewMatchService _viewMatchService;
-  final LinxUser? _currentUser;
+  final SubscribeToCurrentUserService _subscribeToCurrentUserService;
 
   MatchesScreenController(
     this._subscribeToMatchesService,
-    this._currentUser,
-      this._viewMatchService,
+    this._viewMatchService,
+    this._subscribeToCurrentUserService,
   ) : super(MatchesScreenUiState()) {
     _initialize();
   }
 
   void _initialize() async {
-    if (_currentUser == null) return;
-    _subscribeToMatchesService.execute(_currentUser!.info).listen((event) {
-      state = MatchesScreenUiState(
-        state: MatchesScreenState.results,
-        matches: event,
-      );
+    _subscribeToCurrentUserService.execute().listen((event) {
+      _subscribeToMatchesService.execute(event.info).listen((event) {
+        state = MatchesScreenUiState(
+          state: MatchesScreenState.results,
+          matches: event,
+        );
+      });
     });
   }
 
