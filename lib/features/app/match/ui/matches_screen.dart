@@ -8,7 +8,7 @@ import 'package:linx/features/app/core/ui/widgets/profile_bottom_sheet.dart';
 import 'package:linx/features/app/core/ui/widgets/small_profile_card.dart';
 import 'package:linx/features/app/match/presentation/matches_screen_controller.dart';
 import 'package:linx/features/app/match/ui/model/matches_screen_state.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/app/match/domain/model/match.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class MatchesScreen extends StatelessWidget {
@@ -51,7 +51,7 @@ class MatchesScreen extends StatelessWidget {
       final data = SmallProfileCardData.fromMatch(e);
       return SmallProfileCard(
         data: data,
-        onPressed: () => _onMatchPressed(context, e.user),
+        onPressed: () => _onMatchPressed(context, e),
       );
     });
 
@@ -61,11 +61,11 @@ class MatchesScreen extends StatelessWidget {
     );
   }
 
-  void _onMatchPressed(BuildContext context, LinxUser user) {
+  void _onMatchPressed(BuildContext context, Match match) {
     final bottomSheet = SizedBox(
       height: context.height() * 0.80,
       child: ProfileBottomSheet(
-        user: user,
+        user: match.user,
         mainButtonText: "Send message",
         onXPressed: () => Navigator.maybePop(context),
         onMainButtonPressed: () {
@@ -74,6 +74,8 @@ class MatchesScreen extends StatelessWidget {
         },
       ),
     );
+
+    _controller.onViewMatch(match.id);
 
     showModalBottomSheet(
       context: context,

@@ -184,4 +184,10 @@ class UserRepository {
       FirestorePaths.NUMBER_OF_NEW_PITCHES: FieldValue.increment(-1)
     });
   }
+
+  Future<void> removeNewMatchId(String userId, String matchId) async {
+    await _firestore.collection(FirestorePaths.USERS).doc(userId).update({
+      FirestorePaths.NEW_MATCHES: FieldValue.arrayRemove([matchId]),
+    });
+  }
 }

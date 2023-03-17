@@ -78,8 +78,8 @@ class MatchRepository {
   }
 
   Future<List<MatchDTO>> fetchAllMatches(UserInfo user) async {
-    final userTypeField = user.isClub() ? FirestorePaths.CLUB : FirestorePaths
-        .BUSINESS;
+    final userTypeField =
+        user.isClub() ? FirestorePaths.CLUB : FirestorePaths.BUSINESS;
     return await _firestore
         .collection(FirestorePaths.MATCHES)
         .where(userTypeField, isEqualTo: user.uid)
@@ -95,5 +95,12 @@ class MatchRepository {
       }
       return list;
     });
+  }
+
+  Future<void> changeIsNewStatus(String matchId) async {
+    await _firestore
+        .collection(FirestorePaths.MATCHES)
+        .doc(matchId)
+        .update({FirestorePaths.IS_NEW: false});
   }
 }
