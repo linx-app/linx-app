@@ -87,6 +87,8 @@ class RequestScreen extends StatelessWidget {
       icon: Image.asset(
         "assets/sort.png",
         color: LinxColors.subtitleGrey,
+        width: 24,
+        height: 24,
       ),
     );
 
@@ -132,6 +134,8 @@ class RequestScreen extends StatelessWidget {
         },
       ),
     );
+
+    _controller.onRequestViewed(request);
 
     showModalBottomSheet(
       context: context,

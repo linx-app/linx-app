@@ -3,6 +3,8 @@ import 'package:linx/common/base_scaffold.dart';
 import 'package:linx/common/linx_loading_spinner.dart';
 import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
+import 'package:linx/features/app/core/ui/model/search_state.dart';
+import 'package:linx/features/app/core/ui/search_bar.dart';
 import 'package:linx/features/app/core/ui/widgets/app_title_bar.dart';
 import 'package:linx/features/app/core/ui/widgets/profile_bottom_sheet.dart';
 import 'package:linx/features/app/discover/ui/send_a_pitch_screen.dart';
@@ -12,19 +14,17 @@ import 'package:linx/features/app/search/ui/widgets/empty_search_page.dart';
 import 'package:linx/features/app/search/ui/widgets/groups_search_page.dart';
 import 'package:linx/features/app/search/ui/widgets/recents_search_page.dart';
 import 'package:linx/features/app/search/ui/widgets/results_search_page.dart';
-import 'package:linx/features/app/core/ui/model/search_state.dart';
-import 'package:linx/features/app/core/ui/search_bar.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class SearchScreen extends StatelessWidget {
-  final TextEditingController _searchController = TextEditingController();
   final String _searchText = "Search for a business...";
-
+  final TextEditingController _searchController;
   final SearchScreenUiState _state;
   final SearchScreenController _controller;
 
-  SearchScreen(this._state, this._controller, {super.key});
+  SearchScreen(this._state, this._controller, this._searchController,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,13 +37,13 @@ class SearchScreen extends StatelessWidget {
             SizedBox(height: context.height() * 0.1),
             _buildTitle(),
             SearchBar(
-                controller: _searchController,
-                label: _searchText,
-                onFocusChanged: (focus) => _onSearchBarFocusChanged(focus),
-                onXPressed: () {
-                  _searchController.clear();
-                  _controller.onSearchCompleted("");
-                },
+              controller: _searchController,
+              label: _searchText,
+              onFocusChanged: (focus) => _onSearchBarFocusChanged,
+              onXPressed: () {
+                _searchController.clear();
+                _controller.onSearchCompleted("");
+              },
             ),
             body,
           ],
@@ -113,7 +113,6 @@ class SearchScreen extends StatelessWidget {
   void _onSearchInitiated(String search) {
     _controller.onSearchCompleted(search);
     _searchController.text = search;
-
   }
 
   void _onProfileCardPressed({

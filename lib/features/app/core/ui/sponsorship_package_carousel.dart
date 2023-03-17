@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:linx/common/sponsorship_package_card.dart';
+import 'package:linx/features/app/core/ui/widgets/sponsorship_package_card.dart';
 import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
 
 class SponsorshipPackageCarousel extends StatelessWidget {

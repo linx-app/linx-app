@@ -12,6 +12,7 @@ import 'package:linx/features/app/chat/ui/widgets/chat_address_bar.dart';
 import 'package:linx/features/app/chat/ui/widgets/chat_item.dart';
 import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/app/core/ui/profile_modal_screen.dart';
+import 'package:linx/features/app/core/ui/widgets/new_match_bottom_sheet.dart';
 import 'package:linx/features/app/core/ui/widgets/profile_bottom_sheet.dart';
 import 'package:linx/features/app/core/ui/widgets/profile_card.dart';
 import 'package:linx/features/app/core/ui/widgets/profile_modal_card.dart';
@@ -19,6 +20,7 @@ import 'package:linx/features/app/core/ui/widgets/small_profile_card.dart';
 import 'package:linx/features/app/request/domain/model/request.dart';
 import 'package:linx/features/app/request/ui/widgets/request_screen_widgets.dart';
 import 'package:linx/features/image_upload/ui/image_uploader.dart';
+import 'package:linx/features/notifications/domain/model/fcm_notification.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_info.dart';
 import 'package:linx/utils/ui_extensions.dart';
@@ -53,6 +55,8 @@ class WidgetTestingScreen extends ConsumerWidget {
   );
 
   final _testRequest = Request(
+    id: "id",
+    hasBeenViewed: false,
     sender: LinxUser(
       info: const UserInfo(uid: ""),
       packages: [],
@@ -74,7 +78,8 @@ class WidgetTestingScreen extends ConsumerWidget {
       imageUrl: "https://picsum.photos/500/300",
       name: "William's Fresh Cafe",
       lastMessage:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna adipiscing elit",
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna adipiscing elit",
+      isNew: false,
     ),
   );
 
@@ -180,10 +185,25 @@ class WidgetTestingScreen extends ConsumerWidget {
               children: [
                 _chatItem,
                 _chatItem,
-                _chatItem
-              ]
+                ChatItem(
+                  data: ChatItemData(
+                    chatId: "id",
+                    imageUrl: "https://picsum.photos/500/300",
+                    name: "William's Fresh Cafe",
+                    lastMessage:
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna adipiscing elit",
+                    isNew: true,
+                  ),
+                ),
+              ],
             ),
-            _widgetContainer(ChatAddressBar()),
+            _widgetContainer(const ChatAddressBar()),
+            _widgetContainer(
+              RoundedButton(
+                  style: greenButtonStyle(),
+                  onPressed: () => _openNewMatchBottomSheet(context),
+                  text: "Show new match bottom sheet"),
+            ),
             SizedBox(height: context.height() * 0.05),
           ],
         ),
@@ -242,6 +262,30 @@ class WidgetTestingScreen extends ConsumerWidget {
   void _showConfirmationSnackbar(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       buildMatchConfirmationSnackbar("William's"),
+    );
+  }
+
+  void _openNewMatchBottomSheet(BuildContext context) {
+    final notif = NewMatchNotification(
+      "uid",
+      "Morty's pub",
+      "https://picsum.photos/500/300",
+      true,
+    );
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => Wrap(
+        children: [
+          NewMatchBottomSheet(
+            notification: notif,
+            onButtonPressed: () {},
+          ),
+        ],
+      ),
+      barrierColor: Colors.black.withOpacity(0.60),
+      shape: RoundedBorder.clockwise(10, 10, 0, 0),
     );
   }
 }

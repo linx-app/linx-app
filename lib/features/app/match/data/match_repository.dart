@@ -15,15 +15,15 @@ class MatchRepository {
 
   MatchRepository(this._firestore);
 
-  Future<List<UserDTO>> fetchUsersWithMatchingInterests(UserInfo user) async {
+  Stream<List<UserDTO>> fetchUsersWithMatchingInterests(UserInfo user) {
     final type = user.isClub() ? UserType.business : UserType.club;
-    var interests = user.interests.take(10).toList();
-    return await _firestore
+    final interests = user.interests.take(10).toList();
+    return _firestore
         .collection(FirestorePaths.USERS)
         .where(FirestorePaths.INTERESTS, arrayContainsAny: interests)
         .where(FirestorePaths.TYPE, isEqualTo: type.name)
-        .get()
-        .then((QuerySnapshot query) => _mapQueryToUserDTO(query, user));
+        .snapshots()
+        .map((QuerySnapshot query) => _mapQueryToUserDTO(query, user));
   }
 
   Future<String> addMatch({
@@ -56,7 +56,28 @@ class MatchRepository {
     return list;
   }
 
-  Future<List<MatchDTO>> fetchMatches(UserInfo user) async {
+  Stream<List<MatchDTO>> subscribeToMatches(UserInfo user) {
+    final userTypeField =
+        user.isClub() ? FirestorePaths.CLUB : FirestorePaths.BUSINESS;
+    return _firestore
+        .collection(FirestorePaths.MATCHES)
+        .where(userTypeField, isEqualTo: user.uid)
+        .orderBy(FirestorePaths.CREATED_AT, descending: true)
+        .snapshots()
+        .map((QuerySnapshot query) {
+      final list = <MatchDTO>[];
+      for (final changes in query.docChanges) {
+        final doc = changes.doc;
+        final data = doc.data();
+        if (data != null) {
+          list.add(MatchDTO.fromNetwork(doc.id, data as Map<String, dynamic>));
+        }
+      }
+      return list;
+    });
+  }
+
+  Future<List<MatchDTO>> fetchAllMatches(UserInfo user) async {
     final userTypeField =
         user.isClub() ? FirestorePaths.CLUB : FirestorePaths.BUSINESS;
     return await _firestore
@@ -64,17 +85,22 @@ class MatchRepository {
         .where(userTypeField, isEqualTo: user.uid)
         .orderBy(FirestorePaths.CREATED_AT, descending: true)
         .get()
-        .then((QuerySnapshot query) => _mapQueryToMatchDTO(query));
+        .then((QuerySnapshot query) {
+      final list = <MatchDTO>[];
+      for (final doc in query.docs) {
+        final data = doc.data();
+        if (data != null) {
+          list.add(MatchDTO.fromNetwork(doc.id, data as Map<String, dynamic>));
+        }
+      }
+      return list;
+    });
   }
 
-  List<MatchDTO> _mapQueryToMatchDTO(QuerySnapshot query) {
-    final list = <MatchDTO>[];
-
-    for (final element in query.docs) {
-      final obj = element.data() as Map<String, dynamic>;
-      list.add(MatchDTO.fromNetwork(element.id, obj));
-    }
-
-    return list;
+  Future<void> changeIsNewStatus(String matchId) async {
+    await _firestore
+        .collection(FirestorePaths.MATCHES)
+        .doc(matchId)
+        .update({FirestorePaths.IS_NEW: false});
   }
 }

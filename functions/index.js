@@ -22,17 +22,26 @@ exports.sendMatchNotification = functions.firestore
         return functions.logger.log("There are no notification tokens to send to");
       }
 
+      const name = business.data().name;
+      const imageUrl = business.data().profile_images[0];
+
       const payload = {
         notification: {
           title: "You have a new match!",
-          body: `${business.data().name} matched with you!`,
-          icon: business.data().profile_images[0],
+          body: `${name} matched with you!`,
+          icon: imageUrl,
         },
         data: {
-          match_id: value.id,
-
-        }
+          name: name,
+          profile_image_url: imageUrl,
+          user_id: businessId,
+        },
       };
+
+      await admin.firestore().doc(`users/${businessId}`).update({
+        newMatches: admin.firestore().FieldValue.arrayUnion(value.id),
+      });
+
 
       const response = await admin.messaging().sendToDevice(tokens, payload);
       response.results.forEach((result, index) => {
@@ -43,11 +52,8 @@ exports.sendMatchNotification = functions.firestore
               tokens[index],
               error,
           );
-          // Cleanup the tokens who are not registered anymore.
-          //   if (error.code === "messaging/invalid-registration-token" ||
-          //                                 error.code === "messaging/registration-token-not-registered") {
-          //     tokensToRemove.push(clubSnapshot.update({notification_tokens: admin.firestore.arrayRemove()}));
-          //   }
+        } else {
+          functions.logger.log("Notification sent to " + tokens[index]);
         }
       });
     });
@@ -85,20 +91,60 @@ exports.sendNewPitchNotification = functions.firestore
               tokens[index],
               error,
           );
-          // Cleanup the tokens who are not registered anymore.
-          //   if (error.code === "messaging/invalid-registration-token" ||
-          //                                 error.code === "messaging/registration-token-not-registered") {
-          //     tokensToRemove.push(tokensSnapshot.ref.child(tokens[index]).remove());
-          //   }
         } else {
           functions.logger.log("Notification sent to " + tokens[index]);
         }
       });
     });
-// // Create and deploy your first functions
-// // https://firebase.google.com/docs/functions/get-started
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+
+exports.sendNewMessageNotification = functions.firestore
+    .document("messages/{message_id}")
+    .onCreate(async (snap, context) => {
+      const value = snap.data();
+
+      const chatId = value.chat_id;
+      const message = value.content;
+      const userType = value.sent_by_user_type;
+
+      const chat = await admin.firestore().doc(`chats/${chatId}`).get();
+
+      let receiverId;
+      let senderId;
+      if (userType == "club") {
+        receiverId = chat.data().business;
+        senderId = chat.data().club;
+      } else {
+        receiverId = chat.data().club;
+        senderId = chat.data().business;
+      }
+
+      const sender = await admin.firestore().doc(`users/${senderId}`).get();
+      const receiver = await admin.firestore().doc(`users/${receiverId}`).get();
+      const tokens = receiver.data().notification_token;
+
+      if (tokens.length == 0) {
+        return functions.logger.log("There are no notification tokens to send to");
+      }
+
+      const payload = {
+        notification: {
+          title: `${sender.data().name}`,
+          body: `${message}`,
+          icon: sender.data().profile_images[0],
+        },
+      };
+
+      const response = await admin.messaging().sendToDevice(tokens, payload);
+      response.results.forEach((result, index) => {
+        const error = result.error;
+        if (error) {
+          functions.logger.error(
+              "Failure sending notification to",
+              tokens[index],
+              error,
+          );
+        } else {
+          functions.logger.log("Notification sent to " + tokens[index]);
+        }
+      });
+    });

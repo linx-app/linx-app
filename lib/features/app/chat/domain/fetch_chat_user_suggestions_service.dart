@@ -29,7 +29,7 @@ class FetchChatUserSuggestionsService {
     final isClub = currentUser.info.isClub();
     final uid = currentUser.info.uid;
 
-    final allMatches = await _matchRepository.fetchMatches(currentUser.info);
+    final allMatches = await _matchRepository.fetchAllMatches(currentUser.info);
     final matchUserIds =
         allMatches.map((e) => isClub ? e.businessId : e.clubId).toList();
     final allChats = await _chatRepository.fetchAllChats(isClub, uid);

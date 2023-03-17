@@ -34,12 +34,16 @@ class FirestorePaths {
   static const String PITCHES_TO = "pitches_to";
   static const String SEARCHES = "searches";
   static const String NEW_MATCHES = "new_matches";
+  static const String NUMBER_OF_NEW_PITCHES = "number_of_new_pitches";
+  static const String NEW_CHATS = "new_chats";
 
   /// PITCH COLLECTION ///
   static const String PITCHES = "pitches";
   static const String MESSAGE = "message";
   static const String RECEIVER = "receiver_id";
   static const String SENDER = "sender_id";
+  static const String VIEWED = "viewed";
+  static const String DISMISSED = "dismessed";
 
 
   /// PACKAGE COLLECTION ///
@@ -54,7 +58,6 @@ class FirestorePaths {
   /// CHAT COLLECTION ///
   static const String CHATS = "chats";
   static const String LAST_MESSAGE_ID = "last_message_id";
-  static const String LAST_MESSAGE_NEW = "last_message_new";
 
   /// CHAT COLLECTION ///
   static const String MESSAGES = "messages";

@@ -14,6 +14,8 @@ class FetchRecentSearchesService {
   FetchRecentSearchesService(this._userRepository);
 
   Future<List<String>> execute(LinxUser user) async {
-    return await _userRepository.fetchRecentSearches(user.info.uid);
+    final searches = await _userRepository.fetchRecentSearches(user.info.uid);
+    final reversed = searches.reversed.take(5);
+    return reversed.toList();
   }
 }

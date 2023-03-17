@@ -6,43 +6,47 @@ import 'package:linx/features/app/chat/presentation/chat_screen_controller.dart'
 import 'package:linx/features/app/chat/ui/model/chat_creation_screen_state.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_info.dart';
-import 'package:linx/features/user/domain/user_service.dart';
+import 'package:linx/features/user/domain/subscribe_to_current_user_service.dart';
 
 final chatCreationScreenControllerProvider = StateNotifierProvider.autoDispose<
     ChatCreationScreenController, ChatCreationScreenUiState>(
   (ref) => ChatCreationScreenController(
-    ref.read(UserService.provider),
     ref.read(FetchChatUserSuggestionsService.provider),
     ref.read(SendMessageService.provider),
     ref.read(selectedChatIdUpdater),
+    ref.read(SubscribeToCurrentUserService.provider),
   ),
 );
 
 class ChatCreationScreenController
     extends StateNotifier<ChatCreationScreenUiState> {
-  final UserService _userService;
   final FetchChatUserSuggestionsService _fetchChatUserSuggestionsService;
   final SendMessageService _sendMessageService;
   final Function(String?) _updateSelectedChatId;
+  final SubscribeToCurrentUserService _subscribeToCurrentUserService;
 
   late LinxUser _currentUser;
   late List<ChatUserSuggestion> _fullSuggestionList;
   late ChatUserSuggestion? _selectedUser;
 
   ChatCreationScreenController(
-    this._userService,
     this._fetchChatUserSuggestionsService,
     this._sendMessageService,
     this._updateSelectedChatId,
+    this._subscribeToCurrentUserService,
   ) : super(ChatCreationScreenUiState()) {
     _initialize();
   }
 
   void _initialize() async {
-    _currentUser = await _userService.fetchUser();
     _fullSuggestionList =
         await _fetchChatUserSuggestionsService.execute(_currentUser);
     _selectedUser = null;
+
+    _subscribeToCurrentUserService.execute().listen((event) {
+      _currentUser = event;
+    });
+
     state = ChatCreationScreenUiState(
       state: ChatCreationScreenState.list,
       suggestions: _fullSuggestionList,

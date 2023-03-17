@@ -1,36 +1,45 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:linx/features/app/core/presentation/app_bottom_nav_screen_controller.dart';
-import 'package:linx/features/app/match/domain/fetch_matches_service.dart';
 import 'package:linx/features/app/match/domain/model/match.dart';
+import 'package:linx/features/app/match/domain/subscribe_to_matches_service.dart';
+import 'package:linx/features/app/match/domain/view_match_service.dart';
 import 'package:linx/features/app/match/ui/model/matches_screen_state.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/subscribe_to_current_user_service.dart';
 
 final matchesScreenControllerProvider = StateNotifierProvider.autoDispose<
     MatchesScreenController, MatchesScreenUiState>(
   (ref) => MatchesScreenController(
-    ref.read(FetchMatchesService.provider),
-    ref.watch(currentUserProvider),
+    ref.read(SubscribeToMatchesService.provider),
+    ref.read(ViewMatchService.provider),
+    ref.read(SubscribeToCurrentUserService.provider),
   ),
 );
 
 class MatchesScreenController extends StateNotifier<MatchesScreenUiState> {
-  final FetchMatchesService _fetchMatchesService;
-  final LinxUser? _currentUser;
+  final SubscribeToMatchesService _subscribeToMatchesService;
+  final ViewMatchService _viewMatchService;
+  final SubscribeToCurrentUserService _subscribeToCurrentUserService;
 
   MatchesScreenController(
-    this._fetchMatchesService,
-    this._currentUser,
+    this._subscribeToMatchesService,
+    this._viewMatchService,
+    this._subscribeToCurrentUserService,
   ) : super(MatchesScreenUiState()) {
     _initialize();
   }
 
   void _initialize() async {
-    if (_currentUser == null) return;
-    final matches = await _fetchMatchesService.execute(_currentUser!.info);
-    state = MatchesScreenUiState(
-      state: MatchesScreenState.results,
-      matches: matches,
-    );
+    _subscribeToCurrentUserService.execute().listen((event) {
+      _subscribeToMatchesService.execute(event.info).listen((event) {
+        state = MatchesScreenUiState(
+          state: MatchesScreenState.results,
+          matches: event,
+        );
+      });
+    });
+  }
+
+  void onViewMatch(String matchId) async {
+    await _viewMatchService.execute(matchId);
   }
 }
 

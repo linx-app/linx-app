@@ -1,40 +1,40 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:linx/features/app/chat/domain/subscribe_to_all_chats_service.dart';
 import 'package:linx/features/app/chat/domain/model/chat.dart';
+import 'package:linx/features/app/chat/domain/subscribe_to_all_chats_service.dart';
 import 'package:linx/features/app/chat/presentation/chat_screen_controller.dart';
 import 'package:linx/features/app/chat/ui/model/chat_list_screen_state.dart';
-import 'package:linx/features/app/core/presentation/app_bottom_nav_screen_controller.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
+import 'package:linx/features/user/domain/subscribe_to_current_user_service.dart';
 
 final chatListScreenControllerProvider = StateNotifierProvider.autoDispose<
     ChatListScreenController, ChatListScreenUiState>(
   (ref) => ChatListScreenController(
-    ref.watch(currentUserProvider),
     ref.read(SubscribeToAllChatsService.provider),
     ref.read(selectedChatIdUpdater),
+    ref.read(SubscribeToCurrentUserService.provider),
   ),
 );
 
 class ChatListScreenController extends StateNotifier<ChatListScreenUiState> {
-  final LinxUser? _currentUser;
   final SubscribeToAllChatsService _fetchAllChatsService;
   final Function(String?) _updateSelectedChatId;
+  final SubscribeToCurrentUserService _subscribeToCurrentUserService;
 
   ChatListScreenController(
-    this._currentUser,
     this._fetchAllChatsService,
     this._updateSelectedChatId,
+    this._subscribeToCurrentUserService,
   ) : super(ChatListScreenUiState()) {
     _initialize();
   }
 
   void _initialize() {
-    if (_currentUser == null) return;
-    _fetchAllChatsService.execute(_currentUser!).listen((chats) {
-      state = ChatListScreenUiState(
-        state: ChatListScreenState.results,
-        chats: chats,
-      );
+    _subscribeToCurrentUserService.execute().listen((event) {
+      _fetchAllChatsService.execute(event).listen((chats) {
+        state = ChatListScreenUiState(
+          state: ChatListScreenState.results,
+          chats: chats,
+        );
+      });
     });
   }
 

@@ -19,6 +19,8 @@ extension UserDTOExtension on UserDTO {
       pitchesTo: pitchesTo,
       searches: searches,
       newMatches: newMatches,
+      numberOfNewPitches: numberOfNewPitches,
+      newChats: newChats,
     );
   }
 }

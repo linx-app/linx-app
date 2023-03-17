@@ -12,23 +12,23 @@ class SponsorshipPackageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedBorder.all(10),
-      margin: EdgeInsets.only(left: 24),
+      margin: const EdgeInsets.only(left: 24),
       elevation: 10,
       child: Container(
         height: 250,
         width: 200,
-        padding: EdgeInsets.all(17),
+        padding: const EdgeInsets.all(17),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildTitleText(),
-            SizedBox(height: 17),
+            const SizedBox(height: 17),
             _buildSubtitleText("What you get"),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             _buildDescriptionText(package.ownBenefit),
-            SizedBox(height: 32),
+            const SizedBox(height: 32),
             _buildSubtitleText("What your partner get"),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             _buildDescriptionText(package.partnerBenefit),
           ],
         ),

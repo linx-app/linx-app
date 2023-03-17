@@ -61,13 +61,12 @@ class ChatListScreen extends StatelessWidget {
     final data = _state.chats
         .map((e) => ChatItemData.fromChat(_currentUser.info.type, e));
 
-    final items = data.map(
-          (e) =>
-          ChatItem(
-            data: e,
-            onPressed: () => _onChatPressed(context, e.chatId),
-          ),
-    );
+    final items = data.map((e) {
+      return ChatItem(
+        data: e,
+        onPressed: () => _onChatPressed(context, e.chatId),
+      );
+    });
 
     return Column(children: [...items]);
   }
