@@ -27,21 +27,34 @@ class FetchChatUserSuggestionsService {
 
   Future<List<ChatUserSuggestion>> execute(LinxUser currentUser) async {
     final isClub = currentUser.info.isClub();
-    final uid = currentUser.info.uid;
+    final currentUserId = currentUser.info.uid;
 
     final allMatches = await _matchRepository.fetchAllMatches(currentUser.info);
     final matchUserIds =
-        allMatches.map((e) => isClub ? e.businessId : e.clubId).toList();
-    final allChats = await _chatRepository.fetchAllChats(isClub, uid);
+        allMatches.map((e) => isClub ? e.businessId : e.clubId).toSet();
+
+    final allChats = await _chatRepository.fetchAllChats(isClub, currentUserId);
     final chatUserIds =
         allChats.map((e) => isClub ? e.businessId : e.clubId).toList();
-    matchUserIds.removeWhere((element) => chatUserIds.contains(element));
 
     final names = <ChatUserSuggestion>[];
 
     for (final uid in matchUserIds) {
       final user = await _userRepository.fetchUserProfile(uid);
-      names.add(ChatUserSuggestion(userId: uid, name: user.displayName));
+      final chatExists = chatUserIds.contains(uid);
+      final chatId = chatExists
+          ? allChats.firstWhere((e) {
+              return currentUserId == (isClub ? e.clubId : e.businessId);
+            }).chatId
+          : null;
+
+      names.add(
+        ChatUserSuggestion(
+          userId: uid,
+          name: user.displayName,
+          chatId: chatId,
+        ),
+      );
     }
 
     return names;

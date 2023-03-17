@@ -10,6 +10,7 @@ import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/chat/ui/model/chat_item_data.dart';
 import 'package:linx/features/app/chat/ui/widgets/chat_address_bar.dart';
 import 'package:linx/features/app/chat/ui/widgets/chat_item.dart';
+import 'package:linx/features/app/chat/ui/widgets/message_suggestion.dart';
 import 'package:linx/features/app/core/domain/model/sponsorship_package.dart';
 import 'package:linx/features/app/core/ui/profile_modal_screen.dart';
 import 'package:linx/features/app/core/ui/widgets/new_match_bottom_sheet.dart';
@@ -202,7 +203,11 @@ class WidgetTestingScreen extends ConsumerWidget {
               RoundedButton(
                   style: greenButtonStyle(),
                   onPressed: () => _openNewMatchBottomSheet(context),
-                  text: "Show new match bottom sheet"),
+                  text: "Show new match bottom sheet",
+              ),
+            ),
+            _widgetContainer(
+              const MessageSuggestion(isCurrentClub: true),
             ),
             SizedBox(height: context.height() * 0.05),
           ],
