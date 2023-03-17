@@ -1,5 +1,6 @@
 enum ChatCreationScreenState {
   loading,
   list,
-  selected;
+  new_chat,
+  existing_chat;
 }

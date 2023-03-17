@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/app/chat/domain/fetch_chat_user_suggestions_service.dart';
 import 'package:linx/features/app/chat/domain/model/chat_user_suggestion.dart';
+import 'package:linx/features/app/chat/domain/model/message.dart';
 import 'package:linx/features/app/chat/domain/send_message_service.dart';
+import 'package:linx/features/app/chat/domain/subscribe_to_chat_service.dart';
 import 'package:linx/features/app/chat/presentation/chat_screen_controller.dart';
 import 'package:linx/features/app/chat/ui/model/chat_creation_screen_state.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
@@ -15,6 +17,7 @@ final chatCreationScreenControllerProvider = StateNotifierProvider.autoDispose<
     ref.read(SendMessageService.provider),
     ref.read(selectedChatIdUpdater),
     ref.read(SubscribeToCurrentUserService.provider),
+    ref.read(SubscribeToChatService.provider),
   ),
 );
 
@@ -24,6 +27,7 @@ class ChatCreationScreenController
   final SendMessageService _sendMessageService;
   final Function(String?) _updateSelectedChatId;
   final SubscribeToCurrentUserService _subscribeToCurrentUserService;
+  final SubscribeToChatService _subscribeToChatService;
 
   late LinxUser _currentUser;
   late List<ChatUserSuggestion> _fullSuggestionList;
@@ -34,23 +38,25 @@ class ChatCreationScreenController
     this._sendMessageService,
     this._updateSelectedChatId,
     this._subscribeToCurrentUserService,
+    this._subscribeToChatService,
   ) : super(ChatCreationScreenUiState()) {
     _initialize();
   }
 
   void _initialize() async {
-    _fullSuggestionList =
-        await _fetchChatUserSuggestionsService.execute(_currentUser);
     _selectedUser = null;
 
-    _subscribeToCurrentUserService.execute().listen((event) {
+    _subscribeToCurrentUserService.execute().listen((event) async {
       _currentUser = event;
-    });
+      _fullSuggestionList =
+          await _fetchChatUserSuggestionsService.execute(_currentUser);
 
-    state = ChatCreationScreenUiState(
-      state: ChatCreationScreenState.list,
-      suggestions: _fullSuggestionList,
-    );
+      state = ChatCreationScreenUiState(
+        state: ChatCreationScreenState.list,
+        suggestions: _fullSuggestionList,
+        isCurrentClub: _currentUser.info.isClub(),
+      );
+    });
   }
 
   void searchForSuggestions(String search) {
@@ -60,6 +66,7 @@ class ChatCreationScreenController
     state = ChatCreationScreenUiState(
       state: ChatCreationScreenState.list,
       suggestions: filtered.toList(),
+      isCurrentClub: _currentUser.info.isClub(),
     );
   }
 
@@ -77,20 +84,34 @@ class ChatCreationScreenController
     return false;
   }
 
-  void onSuggestionPressed(ChatUserSuggestion selected) {
+  void onSuggestionPressed(ChatUserSuggestion selected) async {
     _selectedUser = selected;
-    state = ChatCreationScreenUiState(
-      state: ChatCreationScreenState.selected,
-    );
+
+    if (selected.chatId == null) {
+      state = ChatCreationScreenUiState(
+        state: ChatCreationScreenState.new_chat,
+        isCurrentClub: _currentUser.info.isClub(),
+      );
+    } else {
+      final id = selected.chatId!;
+      final msgs = await _subscribeToChatService.execute(id).first;
+      state = ChatCreationScreenUiState(
+        state: ChatCreationScreenState.existing_chat,
+        messages: msgs,
+      );
+    }
   }
 }
 
 class ChatCreationScreenUiState {
   final ChatCreationScreenState state;
   final List<ChatUserSuggestion> suggestions;
+  final List<Message> messages;
+  final bool isCurrentClub;
 
-  ChatCreationScreenUiState({
-    this.state = ChatCreationScreenState.loading,
-    this.suggestions = const [],
-  });
+  ChatCreationScreenUiState(
+      {this.state = ChatCreationScreenState.loading,
+      this.suggestions = const [],
+      this.messages = const [],
+      this.isCurrentClub = false});
 }
