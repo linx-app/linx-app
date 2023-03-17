@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/common/base_scaffold.dart';
-import 'package:linx/common/empty.dart';
 import 'package:linx/common/linx_loading_spinner.dart';
 import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
@@ -10,6 +9,7 @@ import 'package:linx/features/app/chat/ui/chat_list_screen.dart';
 import 'package:linx/features/app/chat/ui/chat_screen.dart';
 import 'package:linx/features/app/core/presentation/app_bottom_nav_screen_controller.dart';
 import 'package:linx/features/app/core/presentation/model/in_app_state.dart';
+import 'package:linx/features/app/core/ui/widgets/bottom_navigation_bar.dart';
 import 'package:linx/features/app/core/ui/widgets/new_match_bottom_sheet.dart';
 import 'package:linx/features/app/discover/presentation/discover_screen_controller.dart';
 import 'package:linx/features/app/discover/ui/discover_screen.dart';
@@ -28,10 +28,7 @@ import 'package:linx/features/user/domain/model/user_info.dart';
 final _bottomNavigationStateProvider = StateProvider<int>((ref) => 0);
 
 class AppBottomNavigationScreen extends ConsumerWidget {
-  final _notificationBadgeStyle = const TextStyle(
-      fontSize: 10, fontWeight: FontWeight.w500, color: LinxColors.white);
-  final TextEditingController _discoverSearchController =
-      TextEditingController();
+  final TextEditingController _discoverSearchController = TextEditingController();
   final TextEditingController _searchSearchController = TextEditingController();
 
   void dispose() {
@@ -50,8 +47,8 @@ class AppBottomNavigationScreen extends ConsumerWidget {
       final user = uiState.currentUser!;
       _handleNotifications(context, ref, uiState.notification);
       final bottomNavItems = user.info.isClub()
-          ? _getClubBottomNavBarItems(selectedIndex, user)
-          : _getBusinessBottomNavBarItems(selectedIndex, user);
+          ? buildClubBottomNavBarItems(selectedIndex, user)
+          : buildBusinessBottomNavBarItems(selectedIndex, user);
       final body = _buildBody(ref, user, selectedIndex);
 
       return BaseScaffold(
@@ -84,110 +81,6 @@ class AppBottomNavigationScreen extends ConsumerWidget {
 
   void _onItemTapped(int index, WidgetRef ref) {
     ref.read(_bottomNavigationStateProvider.notifier).state = index;
-  }
-
-  List<BottomNavigationBarItem> _getClubBottomNavBarItems(
-    int selectedIndex,
-    LinxUser user,
-  ) {
-    final newMatches = user.info.newMatches;
-    final newChats = user.info.newChats.length;
-
-    return [
-      BottomNavigationBarItem(
-        icon: _iconWidget(path: "leaf.png", isSelected: selectedIndex == 0),
-        label: "Discover",
-      ),
-      BottomNavigationBarItem(
-        icon: _iconWidget(path: "search.png", isSelected: selectedIndex == 1),
-        label: "Search",
-      ),
-      BottomNavigationBarItem(
-        icon: _iconWidget(
-          path: "pitch.png",
-          isSelected: selectedIndex == 2,
-          newAmount: newMatches.length,
-        ),
-        label: "Pitches",
-      ),
-      BottomNavigationBarItem(
-        icon: _iconWidget(
-          path: "chat.png",
-          isSelected: selectedIndex == 3,
-          newAmount: newChats,
-        ),
-        label: "Chat",
-      )
-    ];
-  }
-
-  List<BottomNavigationBarItem> _getBusinessBottomNavBarItems(
-    int selectedIndex,
-    LinxUser user,
-  ) {
-    final newPitches = user.info.numberOfNewPitches;
-    final newChats = user.info.newChats.length;
-
-    return [
-      BottomNavigationBarItem(
-        icon: _iconWidget(path: "leaf.png", isSelected: selectedIndex == 0),
-        label: "Requests",
-      ),
-      BottomNavigationBarItem(
-        icon: _iconWidget(path: "search.png", isSelected: selectedIndex == 1),
-        label: "Discover",
-      ),
-      BottomNavigationBarItem(
-        icon: _iconWidget(
-          path: "match.png",
-          isSelected: selectedIndex == 2,
-          newAmount: newPitches,
-        ),
-        label: "Matches",
-      ),
-      BottomNavigationBarItem(
-        icon: _iconWidget(
-          path: "chat.png",
-          isSelected: selectedIndex == 3,
-          newAmount: newChats,
-        ),
-        label: "Chat",
-      )
-    ];
-  }
-
-  SizedBox _iconWidget({
-    required String path,
-    bool isSelected = false,
-    int newAmount = 0,
-  }) {
-    final badge = newAmount == 0
-        ? Empty()
-        : Container(
-            alignment: Alignment.topRight,
-            child: CircleAvatar(
-              radius: 8,
-              backgroundColor: LinxColors.red,
-              child: Center(
-                child: Text("$newAmount", style: _notificationBadgeStyle),
-              ),
-            ),
-          );
-    return SizedBox(
-      height: 24,
-      width: 24,
-      child: Stack(
-        children: [
-          Center(
-            child: Image.asset(
-              "assets/$path",
-              color: _getSelectedColor(isSelected),
-            ),
-          ),
-          badge,
-        ],
-      ),
-    );
   }
 
   Color _getSelectedColor(bool isSelected) {
@@ -249,11 +142,9 @@ class AppBottomNavigationScreen extends ConsumerWidget {
     return ChatListScreen(user, state, controller);
   }
 
-  void _handleNotifications(
-    BuildContext context,
-    WidgetRef ref,
-    FCMNotification? notif,
-  ) {
+  void _handleNotifications(BuildContext context,
+      WidgetRef ref,
+      FCMNotification? notif,) {
     if (notif == null) return;
     if (notif is NewMessageNotification) {
       if (notif.wasClickedOnBackground) {
@@ -272,21 +163,20 @@ class AppBottomNavigationScreen extends ConsumerWidget {
     }
   }
 
-  void _showNewMatchBottomSheet(
-    BuildContext context,
-    NewMatchNotification notif,
-  ) {
+  void _showNewMatchBottomSheet(BuildContext context,
+      NewMatchNotification notif,) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) => Wrap(
-        children: [
-          NewMatchBottomSheet(
-            notification: notif,
-            onButtonPressed: () {},
+      builder: (context) =>
+          Wrap(
+            children: [
+              NewMatchBottomSheet(
+                notification: notif,
+                onButtonPressed: () {},
+              ),
+            ],
           ),
-        ],
-      ),
       barrierColor: Colors.black.withOpacity(0.60),
       shape: RoundedBorder.clockwise(10, 10, 0, 0),
     );
