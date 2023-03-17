@@ -31,6 +31,12 @@ class AppBottomNavigationScreen extends ConsumerWidget {
   final _notificationBadgeStyle = const TextStyle(
       fontSize: 10, fontWeight: FontWeight.w500, color: LinxColors.white);
   final TextEditingController _discoverSearchController = TextEditingController();
+  final TextEditingController _searchSearchController = TextEditingController();
+
+  void dispose() {
+    _discoverSearchController.dispose();
+    _searchSearchController.dispose();
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -206,16 +212,12 @@ class AppBottomNavigationScreen extends ConsumerWidget {
     if (isClub) {
       final state = ref.watch(searchScreenControllerProvider);
       final controller = ref.watch(searchScreenControllerProvider.notifier);
-      return SearchScreen(state, controller);
+      return SearchScreen(state, controller, _searchSearchController);
     } else {
       final state = ref.watch(discoverScreenControllerProvider);
       final controller = ref.watch(discoverScreenControllerProvider.notifier);
       return DiscoverScreen(state, controller, _discoverSearchController);
     }
-  }
-
-  void dispose() {
-    _discoverSearchController.dispose();
   }
 
   Widget _buildThirdScreen(WidgetRef ref, LinxUser user, bool isClub) {
