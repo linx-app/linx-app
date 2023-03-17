@@ -15,15 +15,15 @@ class MatchRepository {
 
   MatchRepository(this._firestore);
 
-  Future<List<UserDTO>> fetchUsersWithMatchingInterests(UserInfo user) async {
+  Stream<List<UserDTO>> fetchUsersWithMatchingInterests(UserInfo user) {
     final type = user.isClub() ? UserType.business : UserType.club;
-    var interests = user.interests.take(10).toList();
-    return await _firestore
+    final interests = user.interests.take(10).toList();
+    return _firestore
         .collection(FirestorePaths.USERS)
         .where(FirestorePaths.INTERESTS, arrayContainsAny: interests)
         .where(FirestorePaths.TYPE, isEqualTo: type.name)
-        .get()
-        .then((QuerySnapshot query) => _mapQueryToUserDTO(query, user));
+        .snapshots()
+        .map((QuerySnapshot query) => _mapQueryToUserDTO(query, user));
   }
 
   Future<String> addMatch({

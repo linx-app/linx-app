@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linx/features/app/core/presentation/app_bottom_nav_screen_controller.dart';
 import 'package:linx/features/app/core/ui/model/search_state.dart';
 import 'package:linx/features/app/match/domain/match_service.dart';
+import 'package:linx/features/app/search/domain/fetch_recent_searches_service.dart';
 import 'package:linx/features/app/search/domain/model/user_search_page.dart';
 import 'package:linx/features/app/search/domain/search_users_service.dart';
 import 'package:linx/features/authentication/domain/log_out_service.dart';
@@ -13,10 +14,10 @@ final discoverScreenControllerProvider = StateNotifierProvider.autoDispose<
   final currentUser = ref.watch(currentUserProvider);
   return DiscoverScreenController(
     currentUser,
-    ref.read(updateCurrentUserProvider),
     ref.read(MatchService.provider),
     ref.read(LogOutService.provider),
     ref.read(SearchUsersService.provider),
+    ref.read(FetchRecentSearchesService.provider),
   );
 });
 
@@ -24,26 +25,27 @@ class DiscoverScreenController extends StateNotifier<DiscoverScreenUiState> {
   final MatchService _matchService;
   final LogOutService _logOutService;
   final SearchUsersService _searchUsersService;
+  final FetchRecentSearchesService _fetchRecentSearchesService;
   final LinxUser? _currentUser;
-  final Function() _updateCurrentUser;
 
   late List<LinxUser> _matches;
 
   DiscoverScreenController(
     this._currentUser,
-    this._updateCurrentUser,
     this._matchService,
     this._logOutService,
     this._searchUsersService,
+    this._fetchRecentSearchesService,
   ) : super(DiscoverScreenUiState()) {
     initialize();
   }
 
   void initialize() async {
     if (_currentUser == null) return;
-    _matches =
-        await _matchService.fetchUsersWithMatchingInterests(_currentUser!.info);
-    _loadMatches();
+    _matchService.execute(_currentUser!.info).listen((event) {
+      _matches = event;
+      _loadMatches();
+    });
   }
 
   void _load() {
@@ -54,11 +56,11 @@ class DiscoverScreenController extends StateNotifier<DiscoverScreenUiState> {
     );
   }
 
-  void onSearchInitiated() {
-    if (_currentUser == null) return;
+  void onSearchInitiated() async {
+    final recents = await _fetchRecentSearchesService.execute(_currentUser!);
     state = DiscoverScreenUiState(
       state: SearchState.searching,
-      recents: _currentUser!.info.searches,
+      recents: recents,
       isCurrentUserClub: _currentUser!.info.isClub(),
     );
   }
@@ -69,9 +71,8 @@ class DiscoverScreenController extends StateNotifier<DiscoverScreenUiState> {
     if (search.isEmpty) {
       _loadMatches();
     } else {
-      final results = await _searchUsersService.execute(_currentUser!.info, search);
-      _updateCurrentUser.call();
-
+      final results =
+          await _searchUsersService.execute(_currentUser!.info, search);
       final length = results.users.length;
       final subtitle = "Results for \"$search\" ($length)";
 

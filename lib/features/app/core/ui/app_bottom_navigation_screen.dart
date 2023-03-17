@@ -30,6 +30,7 @@ final _bottomNavigationStateProvider = StateProvider<int>((ref) => 0);
 class AppBottomNavigationScreen extends ConsumerWidget {
   final _notificationBadgeStyle = const TextStyle(
       fontSize: 10, fontWeight: FontWeight.w500, color: LinxColors.white);
+  final TextEditingController _discoverSearchController = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -193,7 +194,7 @@ class AppBottomNavigationScreen extends ConsumerWidget {
     if (isClub) {
       final state = ref.watch(discoverScreenControllerProvider);
       final controller = ref.watch(discoverScreenControllerProvider.notifier);
-      return DiscoverScreen(state, controller);
+      return DiscoverScreen(state, controller, null);
     } else {
       final state = ref.watch(requestScreenControllerProvider);
       final controller = ref.watch(requestScreenControllerProvider.notifier);
@@ -209,8 +210,12 @@ class AppBottomNavigationScreen extends ConsumerWidget {
     } else {
       final state = ref.watch(discoverScreenControllerProvider);
       final controller = ref.watch(discoverScreenControllerProvider.notifier);
-      return DiscoverScreen(state, controller);
+      return DiscoverScreen(state, controller, _discoverSearchController);
     }
+  }
+
+  void dispose() {
+    _discoverSearchController.dispose();
   }
 
   Widget _buildThirdScreen(WidgetRef ref, LinxUser user, bool isClub) {

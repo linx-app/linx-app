@@ -4,7 +4,9 @@ import 'package:linx/common/empty.dart';
 import 'package:linx/common/linx_loading_spinner.dart';
 import 'package:linx/common/rounded_border.dart';
 import 'package:linx/constants/colors.dart';
+import 'package:linx/features/app/core/ui/model/search_state.dart';
 import 'package:linx/features/app/core/ui/profile_modal_screen.dart';
+import 'package:linx/features/app/core/ui/search_bar.dart';
 import 'package:linx/features/app/core/ui/widgets/app_title_bar.dart';
 import 'package:linx/features/app/core/ui/widgets/home_app_bar.dart';
 import 'package:linx/features/app/core/ui/widgets/profile_bottom_sheet.dart';
@@ -15,20 +17,16 @@ import 'package:linx/features/app/discover/ui/widgets/top_matches_carousel.dart'
 import 'package:linx/features/app/search/ui/widgets/empty_search_page.dart';
 import 'package:linx/features/app/search/ui/widgets/recents_search_page.dart';
 import 'package:linx/features/app/search/ui/widgets/results_search_page.dart';
-import 'package:linx/features/app/core/ui/model/search_state.dart';
-import 'package:linx/features/app/core/ui/search_bar.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class DiscoverScreen extends StatelessWidget {
-  final TextEditingController _searchController = TextEditingController();
   final String _searchText = "Search for a team or club...";
-
+  final TextEditingController? _searchController;
   final DiscoverScreenUiState _state;
   final DiscoverScreenController _controller;
 
-  DiscoverScreen(this._state, this._controller, {super.key});
-
+  DiscoverScreen(this._state, this._controller, this._searchController, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,26 +39,28 @@ class DiscoverScreen extends StatelessWidget {
 
     return BaseScaffold(
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            spacer,
-            screenBar,
-            const AppTitleBar(title: "Discover"),
-            searchBar,
-            body,
-          ],
+          child: Column(
+            children: [
+              spacer,
+              screenBar,
+              const AppTitleBar(title: "Discover"),
+              searchBar,
+              body,
+            ],
+          ),
         ),
-      ),
     );
   }
 
-  SearchBar _buildSearchBar() {
+  Widget _buildSearchBar() {
+    if (_searchController == null) return Empty();
     return SearchBar(
-      controller: _searchController,
+      controller: _searchController!,
       label: _searchText,
       onFocusChanged: (focus) => _onSearchBarFocusChanged(focus),
       onXPressed: () {
-        _searchController.clear();
+        FocusManager.instance.primaryFocus?.unfocus();
+        _searchController!.clear();
         _controller.onSearchCompleted("");
       },
     );
@@ -70,11 +70,13 @@ class DiscoverScreen extends StatelessWidget {
     if (hasFocus) {
       _controller.onSearchInitiated();
     } else {
-      _controller.onSearchCompleted(_searchController.text);
+      _controller.onSearchCompleted(_searchController!.text);
     }
   }
 
-  Widget _buildMatchesCarousel(BuildContext context,) {
+  Widget _buildMatchesCarousel(
+    BuildContext context,
+  ) {
     final pages = buildTopMatchesCarouselPages(
       context: context,
       users: _state.topMatches,
@@ -207,7 +209,7 @@ class DiscoverScreen extends StatelessWidget {
   }
 
   void _onSearchCompleted(String search) {
-    _searchController.text = search;
+    _searchController!.text = search;
     _controller.onSearchCompleted(search);
   }
 }
