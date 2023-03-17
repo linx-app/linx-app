@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linx/common/empty.dart';
 import 'package:linx/common/separator_line.dart';
 import 'package:linx/constants/colors.dart';
 import 'package:linx/features/app/chat/ui/model/chat_item_data.dart';
@@ -22,6 +23,7 @@ class ChatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isNewBadge = data.isNew ? _buildNewBadge() : Empty();
     return InkWell(
       onTap: onPressed,
       child: Column(
@@ -29,6 +31,7 @@ class ChatItem extends StatelessWidget {
           const SeparatorLine(),
           Row(
             children: [
+              isNewBadge,
               _buildProfileImage(),
               Expanded(child: _buildChatDetails()),
               Container(
@@ -46,10 +49,21 @@ class ChatItem extends StatelessWidget {
     );
   }
 
+  Container _buildNewBadge() {
+    return Container(
+      padding: const EdgeInsets.only(left: 12),
+      child: const CircleAvatar(
+        backgroundColor: LinxColors.green,
+        radius: 4,
+      ),
+    );
+  }
+
   Container _buildProfileImage() {
     final image = data.imageUrl != null ? NetworkImage(data.imageUrl!) : null;
+    final leftPadding = data.isNew ? 12.0 : 24.0;
     return Container(
-        padding: const EdgeInsets.fromLTRB(24, 12, 0, 12),
+        padding: EdgeInsets.fromLTRB(leftPadding, 12, 0, 12),
         child: CircleAvatar(
           foregroundImage: image,
           backgroundColor: LinxColors.black,

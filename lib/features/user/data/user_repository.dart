@@ -202,4 +202,16 @@ class UserRepository {
       FirestorePaths.NEW_MATCHES: FieldValue.arrayRemove([matchId]),
     });
   }
+
+  Future<void> addNewChatId(String userId, String chatId) async {
+    await _firestore.collection(FirestorePaths.USERS).doc(userId).update({
+      FirestorePaths.NEW_CHATS: FieldValue.arrayUnion([chatId]),
+    });
+  }
+
+  Future<void> removeNewChatId(String userId, String chatId) async {
+    await _firestore.collection(FirestorePaths.USERS).doc(userId).update({
+      FirestorePaths.NEW_CHATS: FieldValue.arrayRemove([chatId]),
+    });
+  }
 }

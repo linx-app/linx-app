@@ -39,7 +39,7 @@ class SearchScreen extends StatelessWidget {
             SearchBar(
               controller: _searchController,
               label: _searchText,
-              onFocusChanged: (focus) => _onSearchBarFocusChanged(focus),
+              onFocusChanged: (focus) => _onSearchBarFocusChanged,
               onXPressed: () {
                 _searchController.clear();
                 _controller.onSearchCompleted("");

@@ -16,6 +16,7 @@ class UserInfo {
   final List<String> searches;
   final List<String> newMatches;
   final int numberOfNewPitches;
+  final List<String> newChats;
 
   const UserInfo({
     required this.uid,
@@ -33,6 +34,7 @@ class UserInfo {
     this.searches = const [],
     this.newMatches = const [],
     this.numberOfNewPitches = 0,
+    this.newChats = const [],
   });
 }
 

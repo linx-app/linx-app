@@ -20,6 +20,7 @@ extension UserDTOExtension on UserDTO {
       searches: searches,
       newMatches: newMatches,
       numberOfNewPitches: numberOfNewPitches,
+      newChats: newChats,
     );
   }
 }

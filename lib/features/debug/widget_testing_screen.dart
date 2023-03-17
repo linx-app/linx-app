@@ -79,6 +79,7 @@ class WidgetTestingScreen extends ConsumerWidget {
       name: "William's Fresh Cafe",
       lastMessage:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna adipiscing elit",
+      isNew: false,
     ),
   );
 
@@ -180,7 +181,22 @@ class WidgetTestingScreen extends ConsumerWidget {
             _widgetContainer(
               ImageUploader((p0) {}),
             ),
-            Column(children: [_chatItem, _chatItem, _chatItem]),
+            Column(
+              children: [
+                _chatItem,
+                _chatItem,
+                ChatItem(
+                  data: ChatItemData(
+                    chatId: "id",
+                    imageUrl: "https://picsum.photos/500/300",
+                    name: "William's Fresh Cafe",
+                    lastMessage:
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna adipiscing elit",
+                    isNew: true,
+                  ),
+                ),
+              ],
+            ),
             _widgetContainer(const ChatAddressBar()),
             _widgetContainer(
               RoundedButton(

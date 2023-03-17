@@ -12,8 +12,9 @@ class ChatAppBar extends StatelessWidget {
     fontWeight: FontWeight.w600,
   );
   final String title;
+  final VoidCallback? onBackPressed;
 
-  const ChatAppBar({super.key, required this.title});
+  const ChatAppBar({super.key, required this.title, this.onBackPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,10 @@ class ChatAppBar extends StatelessWidget {
     return Container(
       alignment: Alignment.bottomLeft,
       width: context.width() / 2,
-      child: LinxBackButton(onPressed: () => Navigator.of(context).maybePop()),
+      child: LinxBackButton(onPressed: () {
+        onBackPressed?.call();
+        Navigator.of(context).maybePop();
+      }),
     );
   }
 

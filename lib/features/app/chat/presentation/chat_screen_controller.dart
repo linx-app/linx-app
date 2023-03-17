@@ -4,6 +4,7 @@ import 'package:linx/features/app/chat/domain/model/chat.dart';
 import 'package:linx/features/app/chat/domain/model/message.dart';
 import 'package:linx/features/app/chat/domain/send_message_service.dart';
 import 'package:linx/features/app/chat/domain/subscribe_to_chat_service.dart';
+import 'package:linx/features/app/chat/domain/view_chat_service.dart';
 import 'package:linx/features/app/chat/ui/model/chat_screen_state.dart';
 import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/features/user/domain/model/user_info.dart';
@@ -13,11 +14,13 @@ final chatScreenControllerProvider =
     StateNotifierProvider.autoDispose<ChatScreenController, ChatScreenUiState>(
         (ref) {
   return ChatScreenController(
-      ref.watch(selectedChatIdProvider),
-      ref.read(FetchChatService.provider),
-      ref.read(SubscribeToChatService.provider),
-      ref.read(SendMessageService.provider),
-      ref.read(SubscribeToCurrentUserService.provider));
+    ref.watch(selectedChatIdProvider),
+    ref.read(FetchChatService.provider),
+    ref.read(SubscribeToChatService.provider),
+    ref.read(SendMessageService.provider),
+    ref.read(SubscribeToCurrentUserService.provider),
+    ref.read(ViewChatService.provider),
+  );
 });
 
 final selectedChatIdProvider = StateProvider<String?>((ref) => null);
@@ -34,6 +37,7 @@ class ChatScreenController extends StateNotifier<ChatScreenUiState> {
   final SubscribeToChatService _subscribeToChatService;
   final SendMessageService _sendMessageService;
   final SubscribeToCurrentUserService _subscribeToCurrentUserService;
+  final ViewChatService _viewChatService;
 
   late LinxUser _currentUser;
   late Chat _chat;
@@ -44,6 +48,7 @@ class ChatScreenController extends StateNotifier<ChatScreenUiState> {
     this._subscribeToChatService,
     this._sendMessageService,
     this._subscribeToCurrentUserService,
+    this._viewChatService,
   ) : super(ChatScreenUiState()) {
     _initialize();
   }
@@ -85,6 +90,10 @@ class ChatScreenController extends StateNotifier<ChatScreenUiState> {
       state: newState ?? state.state,
       isCurrentUserClub: _currentUser.info.isClub(),
     );
+  }
+
+  void onChatViewed() async {
+    await _viewChatService.execute(_chat.chatId);
   }
 }
 

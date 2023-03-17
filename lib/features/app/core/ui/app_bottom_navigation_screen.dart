@@ -30,7 +30,8 @@ final _bottomNavigationStateProvider = StateProvider<int>((ref) => 0);
 class AppBottomNavigationScreen extends ConsumerWidget {
   final _notificationBadgeStyle = const TextStyle(
       fontSize: 10, fontWeight: FontWeight.w500, color: LinxColors.white);
-  final TextEditingController _discoverSearchController = TextEditingController();
+  final TextEditingController _discoverSearchController =
+      TextEditingController();
   final TextEditingController _searchSearchController = TextEditingController();
 
   void dispose() {
@@ -90,6 +91,7 @@ class AppBottomNavigationScreen extends ConsumerWidget {
     LinxUser user,
   ) {
     final newMatches = user.info.newMatches;
+    final newChats = user.info.newChats.length;
 
     return [
       BottomNavigationBarItem(
@@ -109,7 +111,11 @@ class AppBottomNavigationScreen extends ConsumerWidget {
         label: "Pitches",
       ),
       BottomNavigationBarItem(
-        icon: _iconWidget(path: "chat.png", isSelected: selectedIndex == 3),
+        icon: _iconWidget(
+          path: "chat.png",
+          isSelected: selectedIndex == 3,
+          newAmount: newChats,
+        ),
         label: "Chat",
       )
     ];
@@ -120,6 +126,7 @@ class AppBottomNavigationScreen extends ConsumerWidget {
     LinxUser user,
   ) {
     final newPitches = user.info.numberOfNewPitches;
+    final newChats = user.info.newChats.length;
 
     return [
       BottomNavigationBarItem(
@@ -139,7 +146,11 @@ class AppBottomNavigationScreen extends ConsumerWidget {
         label: "Matches",
       ),
       BottomNavigationBarItem(
-        icon: _iconWidget(path: "chat.png", isSelected: selectedIndex == 3),
+        icon: _iconWidget(
+          path: "chat.png",
+          isSelected: selectedIndex == 3,
+          newAmount: newChats,
+        ),
         label: "Chat",
       )
     ];
