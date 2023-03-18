@@ -30,10 +30,12 @@ final _bottomNavigationStateProvider = StateProvider<int>((ref) => 0);
 class AppBottomNavigationScreen extends ConsumerWidget {
   final TextEditingController _discoverSearchController = TextEditingController();
   final TextEditingController _searchSearchController = TextEditingController();
+  final TextEditingController _matchesSearchController = TextEditingController();
 
   void dispose() {
     _discoverSearchController.dispose();
     _searchSearchController.dispose();
+    _matchesSearchController.dispose();
   }
 
   @override
@@ -132,7 +134,7 @@ class AppBottomNavigationScreen extends ConsumerWidget {
     } else {
       final state = ref.watch(matchesScreenControllerProvider);
       final controller = ref.watch(matchesScreenControllerProvider.notifier);
-      return MatchesScreen(state, controller);
+      return MatchesScreen(state, controller, _matchesSearchController);
     }
   }
 

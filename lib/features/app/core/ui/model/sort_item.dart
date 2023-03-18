@@ -1,0 +1,4 @@
+enum SortItem {
+  match,
+  alphabetical;
+}
