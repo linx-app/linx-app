@@ -38,8 +38,8 @@ class PitchesScreenController extends StateNotifier<PitchesScreenUiState> {
       });
       _subscribeToOutgoingPitchesService.execute(event).listen((event) {
         _outgoing = event;
+        _setStateOutgoing();
       });
-      _setStateOutgoing();
     });
   }
 

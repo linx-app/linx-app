@@ -114,10 +114,13 @@ class DiscoverScreen extends StatelessWidget {
     if (cards.isEmpty) return Empty();
 
     final titleBar = AppTitleBar(
+      padding: const EdgeInsets.symmetric(horizontal: 0),
       subtitle: "Find a match",
       icon: Image.asset(
         "assets/sort.png",
         color: LinxColors.subtitleGrey,
+        height: 24,
+        width: 24,
       ),
     );
 
@@ -136,8 +139,8 @@ class DiscoverScreen extends StatelessWidget {
       users: _state.topMatches,
       requests: const [],
       isCurrentUserClub: _state.isCurrentUserClub,
-      onMainButtonPressed: (user) {
-        _onSendPitchPressed(user, context);
+      onMainButtonPressed: (idx) {
+        _onSendPitchPressed(_state.topMatches[idx], context);
       },
     );
     final builder = PageRouteBuilder(

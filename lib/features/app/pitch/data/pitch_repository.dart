@@ -23,7 +23,8 @@ class PitchRepository {
       FirestorePaths.SENDER: senderId,
       FirestorePaths.MESSAGE: message,
       FirestorePaths.VIEWED: false,
-      FirestorePaths.DISMISSED: false
+      FirestorePaths.DISMISSED: false,
+      FirestorePaths.MATCHED: false,
     });
   }
 
@@ -32,7 +33,7 @@ class PitchRepository {
         .collection(FirestorePaths.PITCHES)
         .where(FirestorePaths.RECEIVER, isEqualTo: receiverId)
         .where(FirestorePaths.DISMISSED, isEqualTo: false)
-        .limit(10)
+        .where(FirestorePaths.MATCHED, isEqualTo: false)
         .snapshots()
         .map(_mapSnapshotToPitches);
   }
@@ -70,6 +71,13 @@ class PitchRepository {
       }
     }
     return list;
+  }
+
+  Future<void> changeMatchFlag(String pitchId) async {
+    await _firestore
+        .collection(FirestorePaths.PITCHES)
+        .doc(pitchId)
+        .update({FirestorePaths.MATCHED: true});
   }
 
   PitchDTO _mapDocToPitch(String id, Map<String, dynamic> obj) {

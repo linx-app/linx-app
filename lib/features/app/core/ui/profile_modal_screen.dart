@@ -17,7 +17,7 @@ class ProfileModalScreen extends ConsumerWidget {
   final int initialIndex;
   final List<LinxUser> users;
   final List<Request> requests;
-  final Function(LinxUser receiver) onMainButtonPressed;
+  final Function(int) onMainButtonPressed;
   late StateProvider _profileModalCarouselSelectedIndexProvider;
 
   ProfileModalScreen({
@@ -61,15 +61,13 @@ class ProfileModalScreen extends ConsumerWidget {
       pages = buildTopMatchesModalCards(
         users: users,
         onXPressed: () => _onXPressed(context),
-        onMainButtonPressed: (index) => onMainButtonPressed(users[index]),
+        onMainButtonPressed: onMainButtonPressed,
       );
     } else {
       pages = buildRequestsModalCards(
         requests: requests,
         onXPressed: () => _onXPressed(context),
-        onMainButtonPressed: (index) {
-          onMainButtonPressed(requests[index].sender);
-        },
+        onMainButtonPressed: (index) => onMainButtonPressed
       );
     }
 

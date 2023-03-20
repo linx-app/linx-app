@@ -48,9 +48,9 @@ class RequestScreenController extends StateNotifier<RequestScreenUiState?> {
     });
   }
 
-  void onImInterestedPressed({required UserInfo club}) async {
-    _createAMatchService.execute(business: _currentUser.info, club: club);
-    _requests.removeWhere((element) => element.sender.info.uid == club.uid);
+  void onImInterestedPressed({required Request request}) async {
+    _createAMatchService.execute(request: request);
+    _requests.removeWhere((element) => element.id == request.id);
     _setRequestState();
   }
 

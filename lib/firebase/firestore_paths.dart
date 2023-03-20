@@ -43,8 +43,8 @@ class FirestorePaths {
   static const String RECEIVER = "receiver_id";
   static const String SENDER = "sender_id";
   static const String VIEWED = "viewed";
-  static const String DISMISSED = "dismessed";
-
+  static const String DISMISSED = "dismissed";
+  static const String MATCHED = "matched";
 
   /// PACKAGE COLLECTION ///
   static const String PACKAGES = "packages";

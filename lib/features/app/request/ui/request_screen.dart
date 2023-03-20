@@ -11,7 +11,6 @@ import 'package:linx/features/app/request/domain/model/request.dart';
 import 'package:linx/features/app/core/ui/profile_modal_screen.dart';
 import 'package:linx/features/app/request/presentation/request_screen_controller.dart';
 import 'package:linx/features/app/request/ui/widgets/request_screen_widgets.dart';
-import 'package:linx/features/user/domain/model/linx_user.dart';
 import 'package:linx/utils/ui_extensions.dart';
 
 class RequestScreen extends StatelessWidget {
@@ -48,6 +47,7 @@ class RequestScreen extends StatelessWidget {
       context: context,
       requests: _state!.topRequests,
       onMainButtonPressed: (index) {
+        _controller.onRequestViewed(_state!.topRequests[index]);
         _onProfileCardSeePitchPressed(context, index);
       },
     );
@@ -106,8 +106,8 @@ class RequestScreen extends StatelessWidget {
       initialIndex: initialIndex,
       users: const [],
       requests: _state!.topRequests,
-      onMainButtonPressed: (user) {
-        _onImInterestedPressed(context, user);
+      onMainButtonPressed: (idx) {
+        _onImInterestedPressed(context, _state!.topRequests[idx]);
       },
       isCurrentUserClub: false,
     );
@@ -115,6 +115,7 @@ class RequestScreen extends StatelessWidget {
       pageBuilder: (_, __, ___) => screen,
       opaque: false,
     );
+
     Navigator.of(context).push(builder);
   }
 
@@ -130,7 +131,7 @@ class RequestScreen extends StatelessWidget {
         mainButtonText: "Send pitch",
         onXPressed: () => Navigator.maybePop(context),
         onMainButtonPressed: () {
-          _onImInterestedPressed(context, request.sender);
+          _onImInterestedPressed(context, request);
         },
       ),
     );
@@ -146,8 +147,8 @@ class RequestScreen extends StatelessWidget {
     );
   }
 
-  void _onImInterestedPressed(BuildContext context, LinxUser club) {
-    _controller.onImInterestedPressed(club: club.info);
+  void _onImInterestedPressed(BuildContext context, Request request) {
+    _controller.onImInterestedPressed(request: request);
     Navigator.of(context).pop();
   }
 }
