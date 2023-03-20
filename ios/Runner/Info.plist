@@ -51,5 +51,7 @@
 	<false/>
 	<key>NSPhotoLibraryUsageDescription</key>
    	<string>Photo Library Access Warning</string>
+   	<key>FirebaseAppDelegateProxyEnabled</key>
+   	<true/>
 </dict>
 </plist>

@@ -44,6 +44,7 @@ exports.sendMatchNotification = functions.firestore
 
 
       const response = await admin.messaging().sendToDevice(tokens, payload);
+      await cleanupTokens(response, tokens, clubId);
       response.results.forEach((result, index) => {
         const error = result.error;
         if (error) {
@@ -83,6 +84,7 @@ exports.sendNewPitchNotification = functions.firestore
       };
 
       const response = await admin.messaging().sendToDevice(tokens, payload);
+      await cleanupTokens(response, tokens, receiverId);
       response.results.forEach((result, index) => {
         const error = result.error;
         if (error) {
@@ -135,6 +137,7 @@ exports.sendNewMessageNotification = functions.firestore
       };
 
       const response = await admin.messaging().sendToDevice(tokens, payload);
+      await cleanupTokens(response, tokens, receiverId);
       response.results.forEach((result, index) => {
         const error = result.error;
         if (error) {
@@ -148,3 +151,29 @@ exports.sendNewMessageNotification = functions.firestore
         }
       });
     });
+
+/**
+ * Cleans up tokens no longer valid
+ * @param {number} response The first number.
+ * @param {number} tokens The second number.
+ * @param {number} userId The second number.
+ * @return {number} The sum of the two numbers.
+ */
+function cleanupTokens(response, tokens, userId) {
+  const tokensDelete = [];
+  response.results.forEach((result, index) => {
+    const error = result.error;
+    if (error) {
+      console.error("Failure sending notification to", tokens[index], error);
+      // Cleanup the tokens who are not registered anymore.
+      if (error.code === "messaging/invalid-registration-token" ||
+          error.code === "messaging/registration-token-not-registered") {
+        const deleteTask = admin.firestore().doc(`users/${userId}`).update({
+          notificationToken: admin.firestore().FieldValue.arrayRemove(tokens[index]),
+        });
+        tokensDelete.push(deleteTask);
+      }
+    }
+  });
+  return Promise.all(tokensDelete);
+}

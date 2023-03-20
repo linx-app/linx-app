@@ -36,12 +36,10 @@ class UserRepository {
     required String type,
     required String email,
   }) async {
-    var token = await _fcmToken;
     _firestore.collection(FirestorePaths.USERS).doc(uid).set({
       FirestorePaths.TYPE: type,
       FirestorePaths.CREATED_AT: DateTime.now().millisecondsSinceEpoch,
       FirestorePaths.EMAIL: email,
-      FirestorePaths.NOTIFICATION_TOKEN: token == null ? [] : [token],
     });
   }
 
