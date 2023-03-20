@@ -66,6 +66,7 @@ dependencies:
 
   # Search by Algolia
   algolia: ^1.1.2
+  firebase_crashlytics: ^3.0.17
 
 dev_dependencies:
   flutter_test:

@@ -29,7 +29,6 @@ class LogInService {
     if (res is AuthSuccess) {
       var user = await _userRepository.fetchUserProfile(res.userId);
       await _sessionRepository.saveUser(user);
-      await _userRepository.addFCMToken(res.userId);
     }
 
     return res;
