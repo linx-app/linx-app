@@ -70,9 +70,15 @@ class ChatCreationScreen extends ConsumerWidget {
   }
 
   Widget _buildMessageSuggestion(ChatCreationScreenUiState state) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      child: MessageSuggestion(isCurrentClub: state.isCurrentClub),
+    return SingleChildScrollView(
+      child: Wrap(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(24),
+            child: MessageSuggestion(isCurrentClub: state.isCurrentClub),
+          ),
+        ],
+      ),
     );
   }
 
