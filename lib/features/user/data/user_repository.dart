@@ -71,7 +71,7 @@ class UserRepository {
       {
         FirestorePaths.NAME: name,
         FirestorePaths.PHONE_NUMBER: phoneNumber,
-        FirestorePaths.LOCATION: location ?? "Waterloo, ON",
+        FirestorePaths.LOCATION: location?.isEmpty == true ? "Waterloo, ON" : location,
       },
     );
   }

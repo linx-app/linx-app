@@ -32,6 +32,10 @@ class OnboardingCreateProfileController
 
   Future<void> updateUserInfo(String biography) async {
     await _userInfoService.updateUserBiography(biography);
+    if (state.profileImageUrls.length == 1) {
+      await _userProfileImageService
+          .uploadProfileImage("https://picsum.photos/200/500");
+    }
   }
 
   Future<void> fetchUserInfo() async {
@@ -50,9 +54,6 @@ class OnboardingCreateProfileController
     if (url != null) {
       await _userProfileImageService.uploadProfileImage(url);
       _replaceLoading(url);
-    } else {
-      await _userProfileImageService
-          .uploadProfileImage("https://picsum.photos/200/500");
     }
   }
 
