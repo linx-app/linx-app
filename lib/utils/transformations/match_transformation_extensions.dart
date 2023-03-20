@@ -7,7 +7,7 @@ extension MatchDTOExtensions on MatchDTO {
     return Match(
       id: matchId,
       user: user,
-      date: DateTime.fromMicrosecondsSinceEpoch(createdAt),
+      date: DateTime.fromMillisecondsSinceEpoch(createdAt),
       isNew: isNew,
     );
   }
