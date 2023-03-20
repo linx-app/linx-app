@@ -57,7 +57,7 @@ class MatchesScreenController extends StateNotifier<MatchesScreenUiState> {
             a.user.info.displayName.compareTo(b.user.info.displayName));
         break;
     }
-    print("Sorted!");
+
     state = MatchesScreenUiState(
       state: MatchesScreenState.results,
       matches: temp,
